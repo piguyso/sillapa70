@@ -14,25 +14,19 @@ class NoticeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function noticeupload(Request $request){
-     
-       // dd($request);
-        if ($_FILES['image']['name']) {
-            if (!$_FILES['image']['error']) {
-               $name = md5(rand(100, 200));
-               $ext = explode('.', $_FILES['image']['name']);
-               $filename = $name . '.' . $ext[1];
-               $destination = 'upload/' . $filename; //change this directory
-               $location = $_FILES["image"]["tmp_name"];
-               move_uploaded_file($location, $destination);
-               echo 'upload/' . $filename;//change this URL
-            }
-            else
-            {
-             echo  $message = 'Ooops!  Your upload triggered the following error:  '.$_FILES['file']['error'];
-            }
-           }
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:12048'
+            ]);
 
-
+            $file = $request->file('image');
+            $filename = md5(uniqid(rand(), true)) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('upload'), $filename);
+            
+            echo 'upload/' . $filename;
+        } else {
+            echo 'No file uploaded';
+        }
     }
 
 

@@ -225,7 +225,7 @@ Route::get('/home','HomeController@index2');
 
 Route::get('/adduser', 'HomeController@adduser')->middleware(['auth', 'centermiddleware']);
 Route::post('/adduser_prc','HomeController@adduser_prc')->middleware(['auth', 'centermiddleware']);
-Route::post('/userlogin','UserauthController@authenticate');
+Route::post('/userlogin','UserauthController@authenticate')->middleware('throttle:5,1');
 Route::get('/showschool/{id}','HomeController@showschool');
 Route::get('/showschooldetail/{id}/{school_group}','HomeController@showschooldetail');
 

@@ -23,7 +23,7 @@ class areamiddleware
         {
           return $next($request);
         }
-        elseif (Auth::user()->position >= '10')
+        elseif ((int) Auth::user()->position >= 10)
         {
           return $next($request);
         }

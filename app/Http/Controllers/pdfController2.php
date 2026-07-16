@@ -15,6 +15,10 @@ use App\Years;
 use App\Configs;
 class pdfController2 extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     //---------------------------- ปริ้นเกียรติบัตร รายกิจกรรม
 public function printPDF(request $request){
 

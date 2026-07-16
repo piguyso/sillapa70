@@ -32,12 +32,12 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-      //  $this->middleware('auth');
-      $config = Configs::all();
-      Session::put('app_name',$config[0]->app_name);
-      Session::put('app_group',$config[0]->app_group);
-      Session::put('app_area',$config[0]->app_area);
-      Session::put('app_year',$config[0]->app_year);
+        $this->middleware('auth')->except(['index', 'index2', 'viewactivity', 'viewbranch', 'showschool']);
+        $config = Configs::all();
+        Session::put('app_name',$config[0]->app_name);
+        Session::put('app_group',$config[0]->app_group);
+        Session::put('app_area',$config[0]->app_area);
+        Session::put('app_year',$config[0]->app_year);
     }
 
     /**
@@ -735,15 +735,15 @@ $activityNames = Addschool::select('school_activity')
     $addschool2 = addschool::where('school','=',$id)->Where('activity_status','=','1')->Where('activity_rank','=','1')->paginate(1000);
     $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
    // $student2 = addschool::where('school','=',$id)->get();
-   $dbrank = DB::select("SELECT a.school_name , 
-   (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.student_score >= 80) as Gold,
-   (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.student_score < 80 and c.student_score >= 70) as Silver,
-   (select count(activity_rank) from addschools d where d.school_name = a.school_name  and d.student_score < 70 and d.student_score > 0) as Bronce
-   FROM addschools a 
-   where activity_status = 1
-   and school = $id
-   group by school_name
-   order by Gold desc,Silver desc, Bronce desc,activity_rank asc limit 10");
+    $dbrank = DB::select("SELECT a.school_name , 
+    (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.student_score >= 80) as Gold,
+    (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.student_score < 80 and c.student_score >= 70) as Silver,
+    (select count(activity_rank) from addschools d where d.school_name = a.school_name  and d.student_score < 70 and d.student_score > 0) as Bronce
+    FROM addschools a 
+    where activity_status = 1
+    and school = ?
+    group by school_name
+    order by Gold desc,Silver desc, Bronce desc,activity_rank asc limit 10", [$id]);
 
   $dbrank = DB::select("
     SELECT 
@@ -752,11 +752,11 @@ $activityNames = Addschool::select('school_activity')
         COUNT(CASE WHEN student_score < 80 AND student_score >= 70 THEN 1 END) as Silver,
         COUNT(CASE WHEN student_score < 70 AND student_score > 0 THEN 1 END) as Bronce
     FROM addschools
-    WHERE activity_status = 1 and school = $id
+    WHERE activity_status = 1 and school = ?
     GROUP BY school_name
     ORDER BY Gold DESC, Silver DESC, Bronce DESC, MIN(activity_rank) ASC 
     LIMIT 10
-");
+", [$id]);
     $data = Array(
       'addschool'=>$addschool,
       'addschool2'=>$addschool2,

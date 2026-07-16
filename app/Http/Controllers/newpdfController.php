@@ -22,6 +22,10 @@ use App\Jows_areas;
 use App\Schoolgroup;
 class newpdfController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
         public function printtop($id){
 
         $addschool = addschool::where('school_activity','=',$id)->orderBy('student_score','desc')->paginate(1000);
