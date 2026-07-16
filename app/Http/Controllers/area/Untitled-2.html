@@ -1,0 +1,275 @@
+<?php
+
+namespace App\Http\Controllers\area;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Subjectgroup;
+use App\Schoolgroup;
+use App\addschool;
+use App\addstudent;
+use App\addschools_areas;
+use App\addstudents_areas;
+use App\Activities;
+use App\activities_areas;
+use App\Branch;
+use App\Dayofsillapas;
+use App\Classes;
+use App\School;
+use App\Schoolranks;
+use App\Jows;
+use App\Jows_areas;
+use Session;
+use Auth;
+use DB;
+class DatatranferController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('datatranfer.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function dataempty(Request $request)
+    {
+        // 1. เริ่มต้น Transaction เพื่อความปลอดภัยในการลบข้อมูลที่เชื่อมโยง
+        DB::beginTransaction();
+
+        try {
+            // 2. ลบข้อมูลใน Addstudent ก่อน เนื่องจากมีการเชื่อมโยง Foreign Key กับ Addschool
+            // **การใช้ truncate() จะเร็วกว่า delete() และรีเซ็ต Auto-Increment ID**
+            $timestamp = date('YmdHis'); 
+            $backupSchoolTable = 'addschools_backup_' . $timestamp;
+            $backupStudentTable = 'addstudents_backup_' . $timestamp;
+// 1. สร้างตารางสำเนา Addschool พร้อมคัดลอกข้อมูล
+            DB::statement("CREATE TABLE {$backupSchoolTable} AS SELECT * FROM addschools");
+            
+            // 2. สร้างตารางสำเนา Addstudent พร้อมคัดลอกข้อมูล
+            DB::statement("CREATE TABLE {$backupStudentTable} AS SELECT * FROM addstudents");
+            // ตาราง Addstudent
+            Addstudent::truncate(); 
+
+            // ตาราง Addschool
+            Addschool::truncate(); 
+
+            // 3. Commit Transaction หากสำเร็จ
+            DB::commit();
+
+            return back()->with('massage', 'ล้างข้อมูลตาราง Addschool และ Addstudent เสร็จสมบูรณ์แล้ว');
+
+        } catch (\Exception $e) {
+            // 4. Rollback หากเกิดข้อผิดพลาด
+            DB::rollback();
+            
+     
+
+            return back()->with('massage', 'การล้างข้อมูลล้มเหลว: ' . $e->getMessage());
+        }
+    }
+    public function store(Request $request)
+    {
+       // 1. เริ่มต้น Transaction เพื่อความปลอดภัยในการดำเนินการ
+        DB::beginTransaction();
+
+     
+            
+            // 1.1 ดึงค่า school_activity ทั้งหมดที่ไม่ซ้ำกันจาก Addschool
+            $activityIdsToUpdate = Addschool::pluck('school_activity')->unique();
+
+            // 1.2 ทำการอัปเดต activities.activity_status = 0
+            if ($activityIdsToUpdate->isNotEmpty()) {
+                Activities::whereIn('id', $activityIdsToUpdate)
+                        ->update(['activity_status' => 0]);
+            }
+            
+            // ==========================================================
+            // 2. ขั้นตอนล้างข้อมูล (Empty Tables)
+            // ==========================================================
+            $timestamp = date('YmdHis'); 
+            $backupSchoolTable = 'addschools_backup_' . $timestamp;
+            $backupStudentTable = 'addstudents_backup_' . $timestamp;
+// 1. สร้างตารางสำเนา Addschool พร้อมคัดลอกข้อมูล
+           // DB::statement("CREATE TABLE {$backupSchoolTable} AS SELECT * FROM addschools");
+            
+            // 2. สร้างตารางสำเนา Addstudent พร้อมคัดลอกข้อมูล
+           // DB::statement("CREATE TABLE {$backupStudentTable} AS SELECT * FROM addstudents");
+            // 2.1 ลบข้อมูลใน Addstudent ก่อน (ตารางลูก)
+            Addstudent::truncate(); 
+
+            // 2.2 ลบข้อมูลใน Addschool (ตารางหลัก)
+            Addschool::truncate(); 
+
+            // 3. Commit Transaction หากสำเร็จ
+            DB::commit();
+
+   
+
+
+                 // ตาราง Addstudent
+            Addstudent::truncate(); 
+
+            // ตาราง Addschool
+            Addschool::truncate(); 
+
+            // 3. Commit Transaction หากสำเร็จ
+            DB::commit();
+        // 1. ตรวจสอบว่ามี session('area') หรือไม่
+       // $sessionArea = Session::get('area');
+
+       // if (empty($sessionArea)) {
+           // return back()->with('massage', 'ไม่พบค่า Session สำหรับ \'area\' กรุณาตรวจสอบการตั้งค่า Session');
+       // }
+
+        // 2. เริ่มต้น Transaction เพื่อรับประกันความสมบูรณ์ของข้อมูล
+      //  DB::beginTransaction();
+
+        try {
+            // ดึงข้อมูล addschools_areas ที่มี activity_rank เป็น 1, 2, หรือ 3
+            $schoolsToTransfer = addschools_areas::whereIn('activity_rank', [1, 2, 3,98,99])
+            ->whereIn('activity_status', [1, 98, 99])
+            ->get();
+           // dd($schoolsToTransfer);
+            // ตรวจสอบว่ามีข้อมูลให้ย้ายหรือไม่
+            if ($schoolsToTransfer->isEmpty()) {
+                DB::commit(); // ไม่มีข้อมูลให้ย้าย ถือว่าสำเร็จ
+                return back()->with('massage', 'ไม่พบข้อมูลโรงเรียนที่ต้องย้ายใน addschools_areas');
+            }
+
+            // 3. วนลูปเพื่อย้ายข้อมูลทีละ record (Step 1 -> Step 2)
+            foreach ($schoolsToTransfer as $areaSchool) {
+                // --- Step 1: ย้าย addschools_areas ไปยัง Addschool ---
+
+                // สร้าง Addschool ใหม่จากข้อมูล addschools_areas
+                $newSchool = Addschool::create([
+                    'school' => $areaSchool->school,
+                    'school_name' => $areaSchool->school_name,
+                    'school_schoolgroup' => $areaSchool->school_schoolgroup,
+                    'school_activity' => $areaSchool->school_activity,
+                    // activity_rank ไม่ได้ระบุให้ copy ไป Addschool แต่ใช้เป็นเงื่อนไขในการดึงข้อมูล
+                    // หากต้องการเก็บ activity_rank ด้วย ต้องเพิ่มฟิลด์ใน Model Addschool
+                ]);
+
+                // ตรวจสอบว่าการสร้างโรงเรียนสำเร็จหรือไม่
+                if (!$newSchool) {
+                    throw new \Exception('เกิดข้อผิดพลาดในการสร้างโรงเรียนใหม่');
+                }
+
+                $newSchoolId = $newSchool->id; // เก็บ id ของ Addschool ที่เพิ่งสร้าง
+                $oldschoolId = $areaSchool->id;
+        
+                $studentsToTransfer = addstudents_areas::
+                    //where('activity', $newSchool->school_activity)
+                //    ->where('schoolgroup', $sessionArea)
+                    where('school',$oldschoolId)
+                    ->get();
+             //   dd($studentsToTransfer);
+                if ($studentsToTransfer->isNotEmpty()) {
+                    // เตรียมข้อมูลสำหรับ bulk insert (เพื่อประสิทธิภาพที่ดีขึ้น)
+                    $studentsData = [];
+                    foreach ($studentsToTransfer as $areaStudent) {
+                        $studentsData[] = [
+                            'title' => $areaStudent->title,
+                            'name' => $areaStudent->name,
+                            'lastname' => $areaStudent->lastname,
+                            'activity' => $areaStudent->activity,
+                            'type' => $areaStudent->type,
+                            'school' => $newSchoolId, // ใช้ Addschool.id ที่เพิ่งสร้าง
+                            // เพิ่ม created_at และ updated_at เพื่อความสมบูรณ์
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    //dd($studentsData);
+                    // Insert ข้อมูลนักเรียนทั้งหมดที่เกี่ยวข้อง
+                    Addstudent::insert($studentsData);
+                }
+
+
+            }
+
+            // 4. Commit Transaction หากทุกอย่างสำเร็จ
+            DB::commit();
+
+            return back()->with('massage', 'การย้ายข้อมูลเสร็จสมบูรณ์แล้ว');
+
+        } catch (\Exception $e) {
+            // 5. Rollback Transaction หากเกิดข้อผิดพลาด
+            DB::rollback();
+            // log the error if necessary: \Log::error($e->getMessage());
+
+            return back()->with('massage', 'การย้ายข้อมูลล้มเหลว: ' . $e->getMessage());
+        }
+
+
+
+
+
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

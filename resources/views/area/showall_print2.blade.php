@@ -1,0 +1,171 @@
+@extends('layouts.apparea')
+
+@section('content')
+<div class="container">
+<div class="jumbotron" >
+  <h2> 
+       @guest
+                      
+ 
+                       {{ session('app_name')}}ระดับเครือข่ายสถานศึกษา{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
+                         
+                     @else
+                        
+ 
+                          {{ session('app_name')}}ระดับเครือข่ายสถานศึกษา{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
+                        
+                     @endif
+
+</h2>
+
+</div>
+
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+               
+             <a href="{{url('area/'.session('area'))}}" class="btn btn-info btn-md" onclick="">
+                
+                <span class="glyphicon glyphicon-backward"></span>
+                </a> รายชื่อทัั้งหมด
+                <?php 
+             //   if(isset($addschool[0])){
+              //    echo $addschool[0]->getschoolname->school_name;
+            //    }
+                ?>
+              </div>
+
+              <div class="panel-body">
+                  @if (session('status'))
+                      <div class="alert alert-success">
+                          {{ session('status') }}
+                      </div>
+                  @endif
+                  <h4>รายชื่อทัั้งหมด </h4>
+                  <table class="table table-hover table-bordered" id="table1">
+                   <thead>
+                     <tr>
+                       <th>อันดับที่</th>
+                       <th>กลุ่มสาระ</th>
+                       <th>รายการแข่งขัน</th>
+                       <th>ระดับชั้น</th>
+                       <th>โรงเรียน</th>
+                       <th>คำนำหน้า</th>
+                       <th>ชื่อ นร.</th>
+                       <th>นามสกุล นร.</th>
+                       <th>คำนำหน้า</th>
+                       <th>ชื่อ ครู</th>
+                       <th>นามสกุล ครู</th>
+       
+                     
+                     </tr>
+                   </thead>
+                   <tbody>
+         
+    
+                    
+      @foreach($student as $s)
+        
+      <tr>
+                      <td>{{$s->getaddschool->activity_rank}}</td>
+                      <td> {{$s->getstudentactivity->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$s->getstudentactivity->activity_name}}</td>
+                       <td>{{$s->getstudentactivity->getclass->class_name}}</td>
+                       <td>{{$s->getaddschool->getschoolname->school_name}}</td>
+                       <td>
+                        @if($s->type == 0)
+                        {{$s->getstudenttitle->title}}
+                        @endif
+                      </td>
+                      <td>
+                        @if($s->type == 0)
+                       {{$s->name}} 
+                        @endif
+                      </td>
+                      <td>
+                        @if($s->type == 0)
+                        {{$s->lastname}}
+                        @endif
+                      </td>
+                       <td>
+                       @if($s->type == 1)
+                        {{$s->getstudenttitle->title}}
+                        @endif
+                       </td>
+                       <td>
+                       @if($s->type == 1)
+                         {{$s->name}} 
+                        @endif
+                       </td>
+                       <td>
+                       @if($s->type == 1)
+                         {{$s->lastname}}
+                        @endif
+                       </td>
+                     </tr>
+ 
+      @endforeach
+  
+
+                   </tbody>
+
+
+
+
+                 </table> 
+              </div>
+          </div>
+          @if(Session::has('massage'))
+            <div class="alert alert-success">
+                <strong>{{Session::get('massage')}}</strong>
+            </div>
+          @endif
+                        </div>
+    </div>
+</div>
+@endsection
+<?php
+/*
+                      $ArrayData=[];
+                      $ii=1;
+                      for($i=0;$i<count($s->getstudentname);$i++) {   // วนลูปเอารายชื่อ นักเรียนมาใส่ใน Array
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==0){
+                           
+                            $ArrayData[$i + 1] = [
+                              'student_title' => $s->getstudentname[$i]->getstudenttitle->title,
+                              'student_name' => $s->getstudentname[$i]->name,
+                              'student_lname' => $s->getstudentname[$i]->lastname,
+                              ];
+//  echo $ii.'. '.$s->getstudentname[$i]->getstudenttitle->title.' '.$s->getstudentname[$i]->name.' '.$s->getstudentname[$i]->lastname."<br>";
+// echo $ArrayData[$i+1]['student_title'];
+                            $ii++;
+                          }
+                        }   
+                      }
+                        
+                      
+                      
+                       @foreach($addschool2 as $l)
+                     <tr>
+                      <td></td>
+                      <td>{{$l->getactivityname->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$l->getactivityname->activity_name}}</td>
+                       <td>{{$l->getschoolname->school_name}}</td>
+                       <td>{{$s->getstudentname}}</td>
+                       <td></td>
+                     </tr>
+                     @endforeach
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      */
+
+
+                      ?>

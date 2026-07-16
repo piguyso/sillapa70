@@ -1,0 +1,251 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'THSarabunNew';
+            font-style: normal;
+            font-weight: normal;
+            src: url("{{ public_path('fonts/THSarabunNew.ttf') }}") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'THSarabunNew';
+            font-style: normal;
+            font-weight: bold;
+            src: url("{{ public_path('fonts/THSarabunNew Bold.ttf') }}") format('truetype');
+        }
+
+        body {
+            font-family: "THSarabunNew";
+            font-size:18px;
+            margin-top: 2.8cm;
+            margin-left: 0.5cm;
+            margin-right: 1cm;
+            margin-bottom: 1cm;
+        }
+        @page {
+       size: A4 landscape; 
+     /*  size: A4 portrait;  */
+       
+        margin: 0cm 0cm;
+         }
+            header {
+                position: fixed;
+                top: 0.3cm;
+                left: 1.5cm;
+                right: 1.5cm;
+                height: 2.3cm;
+
+                /** Extra personal styles **/
+               /* background-color: #03a9f4;
+                color: white; */
+                text-align: center;
+                line-height: 0.4cm;
+                font-family: "THSarabunNew";
+                font-size:18px;
+            }
+
+            /** Define the footer rules **/
+            footer {
+                position: fixed; 
+                bottom: 0cm; 
+                left: 0cm; 
+                right: 0cm;
+                height: 2cm;
+
+                /** Extra personal styles **/
+                background-color: #03a9f4;
+                color: white;
+                text-align: center;
+                line-height: 1cm;
+            }
+            thead {
+                
+                font-family: "THSarabunNew";
+                font-size:16px;
+                line-height: 0.3cm;
+               
+            }
+       
+            table{
+        width:783px;
+      height:auto;
+    table-layout:fixed;
+  }
+  td{
+    padding: 1px;
+  }
+
+    </style>
+</head>
+<body>
+<header>
+    <img src ="imgs\obec.jpg" width="50px" style="float: left";  
+>
+ใบลงทะเบียนผู้เข้าร่วมแข่งขัน 
+<?php
+if($type==0){
+  echo "(นักเรียน)";
+}elseif($type==1){
+  echo "(ครูผู้ฝึกสอน)";
+}
+?>    {{ session('app_name') }}ระดับเครือข่ายสถานศึกษา ปีการศึกษา {{session('app_year') }} <br>
+            กลุ่มสาระการเรียนรู้ {{$activity->getactivitysubject->subjectgroup_name}} กิจกรรม {{$activity->activity_name}} {{$activity->getclass->class_name}}
+           <br>
+          เครือข่ายสถานศึกษา{{Auth::user()->lastname}} 
+          <br> วันที่ _________ เดือน __________________ พ.ศ. _________  
+        </header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+  
+         
+          
+                  <table class="table table-bordered" style="table-layout:fixed;">
+     
+<thead>
+                     <tr>
+                       <th style="width:4%;height:30px;">ที่</th>
+                       <th style="width:25%;height:30px;">โรงเรียน</th>
+                       <th style="width:20%;height:30px;">ชื่อ-สกุล</th>
+                     
+                       <th style="width:10%;height:30px;">เวลามา</th>
+                       <th style="width:10%;height:30px;">ลายมือชื่อ</th>
+                       <th style="width:10%;height:30px;">เวลากลับ</th>
+                       <th style="width:10%;">ลายมือชื่อ</th>
+                       <th>เบอร์โทร</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     <?php 
+                     $xc=0;
+                     $x=0;
+                     $temp_score =0;
+                     ?>
+
+
+
+                  
+                    @forelse($addschool as $l)
+                     <tr>
+                       <td>
+                        <?php
+                        $xc++;
+                        echo $xc;
+                        
+                        ?>
+                       </td>
+           
+                       <td class="wx">{{$l->getschoolname->school_name}}</td>
+                      
+                       <td>
+                      @forelse($student as $s)
+                      
+                      
+                      <?php
+                      $ii=1;
+                      for($i=0;$i<count($s->getstudentname);$i++) {
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==$type){
+                           
+                           echo $ii.'. '.$s->getstudentname[$i]->getstudenttitle->title.' '.$s->getstudentname[$i]->name.' '.$s->getstudentname[$i]->lastname."<br>";
+                            $ii++;
+                          }
+                        }   
+                      }
+                      ?>
+                      @empty
+                      @endforelse
+                       </td>
+                       <td>
+                       @forelse($student as $s)
+                      <?php
+                      for($i=0;$i<count($s->getstudentname);$i++) {
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==$type){
+                           echo "..........................<br>";
+                          }
+                        }   
+                      }
+                      ?>
+                      @empty
+                      @endforelse
+
+                       </td>
+                       <td>
+                       @forelse($student as $s)
+                      <?php
+                      for($i=0;$i<count($s->getstudentname);$i++) {
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==$type){
+                           echo "..........................<br>";
+                          }
+                        }   
+                      }
+                      ?>
+                      @empty
+                      @endforelse
+                      
+                       </td>
+                       <td>
+                       @forelse($student as $s)
+                      <?php
+                      for($i=0;$i<count($s->getstudentname);$i++) {
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==$type){
+                           echo "..........................<br>";
+                          }
+                        }   
+                      }
+                      ?>
+                      @empty
+                      @endforelse
+                      
+                       </td>
+                       <td>
+                       @forelse($student as $s)
+                      <?php
+                      for($i=0;$i<count($s->getstudentname);$i++) {
+                        if($l->id == $s->getstudentname[$i]->school){
+                          if($s->getstudentname[$i]->type==$type){
+                           echo "..........................<br>";
+                          }
+                        }   
+                      }
+                      ?>
+                      @empty
+                      @endforelse
+                       </td>
+                       <td>
+                        <!--
+                       <a href="#" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-print"></span></a>
+                    -->
+                 
+                      
+                       </td>
+                     </tr>
+                  
+               
+                   @empty
+                     <tr>
+                       <td>ไม่พบข้อมูล</td>
+
+                     </tr>
+                   @endforelse
+
+                   
+
+                   </tbody>
+                 </table>
+                
+            
+    </div>
+</div>
+
+</body>
+</html>

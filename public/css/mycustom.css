@@ -1,0 +1,173 @@
+body{
+    font-family: 'Athiti', sans-serif;
+    font-size: 16px;
+    margin:0;
+    padding:0;
+    height:100%;
+    color:rgb(0, 0, 0);
+}
+#container
+{
+    min-height:100%;
+    position:relative;
+}
+
+
+.navbar-default .navbar-nav>li>a {
+    color: #fbf8f8;
+    
+}
+
+.footer {
+    height: 50px;
+    margin-top: -50px;
+  }
+
+  .view_parent_image1{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: url('imgs/buttom.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+  a {
+    color: #2659b8;
+    text-decoration: none;
+}
+
+/* กำหนดขอบให้กับตาราง */
+table {
+  width: 100%; /* ขยายตารางให้เต็มความกว้างของ container */
+  border-collapse: collapse; /* รวมขอบให้เป็นหนึ่งเดียว */
+}
+
+/* กำหนดขอบให้กับทุกเซลล์ในตาราง */
+th{
+  border: 1px solid #ddd;  /* ขอบเป็นเส้นทึบสีดำ */
+  padding: 10px;  /* ระยะห่างภายในเซลล์ */
+  text-align: center;  /* จัดข้อความให้อยู่ตรงกลาง */
+}
+td {
+  font-size: 16px;
+  border: 1px solid #ddd;  /* ขอบเป็นเส้นทึบสีดำ */
+  padding: 0px;  /* ระยะห่างภายในเซลล์ */
+  text-align: left;  /* จัดข้อความให้อยู่ตรงกลาง */
+}
+
+/* กำหนดขอบให้กับแถว (tr) */
+tr {
+  background-color: #f4f4f4;  /* เปลี่ยนสีพื้นหลังของแถว */
+}
+
+th {
+  background-color: #ddd;  /* เปลี่ยนสีพื้นหลังของหัวข้อ */
+}
+
+
+  /* Style the container with the background image */
+.background {
+  position: relative;
+  background-image: url('{{url("/")}}/imgs/head.png');
+  background-size: contain;  /* Ensures the image covers the container */
+  background-position: center;  /* Centers the image */
+  background-repeat: no-repeat;
+  height: 700px;  /* Adjust to your desired height */
+}
+
+/* Style the text */
+.text {
+  position: absolute;
+  font-size: 40px;
+  top: 570px;  /* Centers the text vertically */
+  left: 50%;  /* Centers the text horizontally */
+  transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+  color: rgb(0, 0, 0);  /* Text color */
+  text-align: center;  /* Centers text horizontally */
+}
+.txtgold {
+  position: absolute;
+  font-size: 200px;
+  top: 300px;  /* Centers the text vertically */
+  left: 50%;  /* Centers the text horizontally */
+  transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+  color: rgb(255, 0, 0);  /* Text color */
+  text-align: center;  /* Centers text horizontally */
+}
+.txtsilver {
+  position: absolute;
+  font-size: 150px;
+  top: 355px;  /* Centers the text vertically */
+  left: 28%;  /* Centers the text horizontally */
+  transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+  color: rgb(255, 0, 0);  /* Text color */
+  text-align: center;  /* Centers text horizontally */
+}
+.txtbronze {
+  position: absolute;
+  font-size: 150px;
+  top: 355px;  /* Centers the text vertically */
+  left: 72%;  /* Centers the text horizontally */
+  transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+  color: rgb(255, 0, 0);  /* Text color */
+  text-align: center;  /* Centers text horizontally */
+}
+/* Optional: Add some padding or shadow for better visibility */
+.text h1, .text p {
+  margin: 0;
+  padding: 10px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);  /* Optional for visibility */
+}
+
+@media screen and (max-width: 768px) {
+.container{
+  padding: 0px;  /* ลดการเว้นว่างรอบๆ */
+}
+  .txtgold {
+    position: absolute;
+    font-size: 50px;
+    top: 90px;  /* Centers the text vertically */
+    left: 50%;  /* Centers the text horizontally */
+    transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+    color: rgb(255, 0, 0);  /* Text color */
+    text-align: center;  /* Centers text horizontally */
+  }
+  .txtsilver {
+    position: absolute;
+    font-size: 40px;
+    top: 115px;  /* Centers the text vertically */
+    left: 30%;  /* Centers the text horizontally */
+    transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+    color: rgb(255, 0, 0);  /* Text color */
+    text-align: center;  /* Centers text horizontally */
+  }
+  .txtbronze {
+    position: absolute;
+    font-size: 40px;
+    top: 115px;  /* Centers the text vertically */
+    left: 70%;  /* Centers the text horizontally */
+    transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+    color: rgb(255, 0, 0);  /* Text color */
+    text-align: center;  /* Centers text horizontally */
+  }
+  .text {
+    position: absolute;
+    font-size: 16px;
+    top: 185px;  /* Centers the text vertically */
+    left: 50%;  /* Centers the text horizontally */
+    transform: translate(-50%, -50%);  /* Adjusts to perfectly center the text */
+    color: rgb(0, 0, 0);  /* Text color */
+    text-align: center;  /* Centers text horizontally */
+  }
+  .background {
+    position: relative;
+    background-image: url('https://sillapa.cpn1.go.th/2568/imgs/head.png');
+    background-size: contain;  /* Ensures the image covers the container */
+    background-position: center;  /* Centers the image */
+    background-repeat: no-repeat;
+    height: 220px;  /* Adjust to your desired height */
+  }
+
+
+}

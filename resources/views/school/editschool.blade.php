@@ -1,0 +1,92 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sarabun text-slate-800">
+    
+    <div class="flex items-center gap-4 mb-8">
+        <a href="{{ url('school') }}" 
+           class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-emerald-600 border border-gray-200 hover:bg-emerald-600 hover:text-white transition-all shadow-sm group">
+            <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
+        </a>
+        <div>
+            <h1 class="text-2xl font-black text-gray-800 leading-none mb-1 uppercase italic text-emerald-700">Edit School / แก้ไขข้อมูลโรงเรียน</h1>
+            <p class="text-sm text-gray-400 font-bold tracking-widest uppercase italic">School Information Management</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-gray-100 overflow-hidden">
+        <div class="bg-emerald-600 px-8 py-6 text-white flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                <i class="ri-government-line text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black leading-none">ปรับปรุงข้อมูลสถานศึกษา</h3>
+                <p class="text-emerald-100 text-xs mt-1 opacity-80 uppercase tracking-tighter italic">Update school records and details</p>
+            </div>
+        </div>
+
+        <div class="p-8 md:p-12">
+            @if(Session::has('massage'))
+                <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-xl shadow-sm animate-fade-in">
+                    <i class="ri-checkbox-circle-fill text-xl"></i>
+                    <span class="font-bold">{{ Session::get('massage') }}</span>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ Route('school.update', $school->id) }}" class="space-y-8">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="put">
+
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="space-y-2">
+                        <label for="school_name" class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">
+                            <i class="ri-hotel-line text-emerald-500 mr-1"></i> ชื่อสถานศึกษา
+                        </label>
+                        <input id="school_name" type="text" 
+                               class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner" 
+                               name="school_name" value="{{ $school->school_name }}" required placeholder="ระบุชื่อโรงเรียน...">
+                        
+                        @if ($errors->has('school_name'))
+                            <p class="text-red-500 text-xs font-bold mt-1 flex items-center gap-1">
+                                <i class="ri-error-warning-line"></i> {{ $errors->first('school_name') }}
+                            </p>
+                        @endif
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="school_detail" class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">
+                            <i class="ri-information-line text-emerald-500 mr-1"></i> รายละเอียด / ข้อมูลเพิ่มเติม
+                        </label>
+                        <textarea id="school_detail" name="school_detail" rows="4"
+                                  class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner"
+                                  placeholder="ระบุที่ตั้งโรงเรียนหรือข้อมูลอื่นๆ...">{{ $school->school_detail }}</textarea>
+                        
+                        @if ($errors->has('school_detail'))
+                            <p class="text-red-500 text-xs font-bold mt-1 flex items-center gap-1">
+                                <i class="ri-error-warning-line"></i> {{ $errors->first('school_detail') }}
+                            </p>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-gray-100 flex flex-col md:flex-row gap-4">
+                    <button type="submit" 
+                            class="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-100 uppercase tracking-widest italic">
+                        <i class="ri-refresh-line text-xl"></i>
+                        Update Record
+                    </button>
+                    <a href="{{ url('school') }}" 
+                       class="inline-flex items-center justify-center px-8 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black hover:bg-gray-200 transition-all uppercase italic tracking-widest text-sm">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-4 italic text-sm text-slate-500">
+        <i class="ri-lightbulb-line text-emerald-500 text-xl"></i>
+        <p>การแก้ไขชื่อสถานศึกษาจะมีผลต่อการแสดงผลในหน้าเกียรติบัตรและรายงานสรุปผลการแข่งขันทั้งหมด กรุณาตรวจสอบความถูกต้องของตัวสะกดก่อนบันทึก</p>
+    </div>
+</div>
+@endsection
