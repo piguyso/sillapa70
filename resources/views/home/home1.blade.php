@@ -94,7 +94,7 @@
               <div class="panel-heading">ผลการแข่งขันล่าสุด</div>
               <div class="panel-body">
   <!--
-             <a href="https://www.cpn1.go.th/2021/?cat=295" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> ข้อมูลการแข่งขันงานศิลปหัตถกรรมนักเรียนครั้งที่ 70 สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑ </a><br>
+             <a href="https://www.cpn1.go.th/2021/?cat=295" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> ข้อมูลการแข่งขัน{{ session('app_name') ?: 'งานศิลปหัตถกรรมนักเรียนครั้งที่ 70' }} {{ session('app_area') ?: 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑' }} </a><br>
              <a href="https://south70.sillapa.net/" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> เว็บการแข่งขันระดับชาติ(ภาคใต้) </a><br>
              
              

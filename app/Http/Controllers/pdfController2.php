@@ -17,7 +17,7 @@ class pdfController2 extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
     //---------------------------- ปริ้นเกียรติบัตร รายกิจกรรม
 public function printPDF(request $request){

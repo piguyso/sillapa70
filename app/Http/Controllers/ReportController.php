@@ -27,13 +27,10 @@ class ReportController extends Controller
      */
     public function __construct()
     {
-      
-       // $this->middleware('auth');
-       // $this->middleware('centermiddleware');
-        
-
-    
-   
+        $this->middleware('auth')->except([
+            'index', 'show', 'jowviewactivity', 'reportviewjow', 
+            'areareport', 'areareportviewjow', 'areajowviewactivity'
+        ]);
     }
     public function areareport($id){
         

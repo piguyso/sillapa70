@@ -58,11 +58,19 @@
         <div class="mt-8 flex justify-center gap-4 opacity-80">
             <div class="text-xs sm:text-sm border border-white/30 rounded-full px-4 py-1 flex items-center bg-white/10 backdrop-blur-sm">
                 <span class="w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
-                สพป.ชุมพร เขต 1
+                {{ session('app_area') ?: 'สพป.ชุมพร เขต 1' }}
             </div>
         </div>
     </div>
 </div>
+
+@php
+    $firstConfig = $config->first();
+    $linkCriteria = ($firstConfig && $firstConfig->link_criteria) ? $firstConfig->link_criteria : 'https://drive.google.com/drive/folders/1xP0lMwMDzPHG3KEML2wmo2PT9MJx4gEU';
+    $linkAi = ($firstConfig && $firstConfig->link_ai) ? $firstConfig->link_ai : 'https://notebooklm.google.com/notebook/4fa8bf0a-65f9-497f-97f6-ad382590d334';
+    $linkSurvey = ($firstConfig && $firstConfig->link_survey) ? $firstConfig->link_survey : 'https://docs.google.com/forms/d/e/1FAIpQLSem-nWKQ3a9FjvS_8oklPsDs4VGZ3bIe6dPEOBTNtYqnu9qrg/viewform';
+    $surveyQr = ($firstConfig && $firstConfig->survey_qr) ? 'upload/' . $firstConfig->survey_qr : 'imgs/qr-code.png';
+@endphp
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
     <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
@@ -71,25 +79,25 @@
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <a href="https://drive.google.com/drive/folders/1xP0lMwMDzPHG3KEML2wmo2PT9MJx4gEU" target="_blank" 
+        <a href="{{ $linkCriteria }}" target="_blank" 
             class="flex flex-col items-center justify-center p-8 bg-gray-50 border border-gray-200 rounded-xl hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md min-h-[200px]">
             <i class="ri-folder-open-fill text-yellow-500 group-hover:text-white text-6xl mb-4 transition-colors"></i>
             <span class="font-bold text-center text-lg">เกณฑ์การแข่งขัน</span>
         </a>
 
-        <a href="https://notebooklm.google.com/notebook/4fa8bf0a-65f9-497f-97f6-ad382590d334" target="_blank" 
+        <a href="{{ $linkAi }}" target="_blank" 
             class="flex flex-col items-center justify-center p-8 bg-gray-50 border border-gray-200 rounded-xl hover:bg-secondary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md min-h-[200px]">
             <i class="ri-robot-fill text-blue-500 group-hover:text-white text-6xl mb-4 transition-colors"></i>
             <span class="font-bold text-center text-lg">สอบถาม AI เรื่องเกณฑ์</span>
         </a>
 
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSem-nWKQ3a9FjvS_8oklPsDs4VGZ3bIe6dPEOBTNtYqnu9qrg/viewform" target="_blank" 
+        <a href="{{ $linkSurvey }}" target="_blank" 
             class="flex flex-col items-center justify-center p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-300 min-h-[200px] group cursor-pointer">
             <span class="font-bold text-gray-700 mb-4 text-sm flex items-center text-center group-hover:text-gray-900 transition-colors">
                 <i class="ri-qr-scan-2-line mr-2"></i> สแกนหรือคลิกทำแบบสอบถามความพึงพอใจ
             </span>
             <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 transition-transform group-hover:scale-105 duration-300">
-                <img src="imgs/qr-code.png" alt="QR Code แบบสอบถาม" class="w-28 h-28 object-contain">
+                <img src="{{ $surveyQr }}" alt="QR Code แบบสอบถาม" class="w-28 h-28 object-contain">
             </div>
         </a>
         

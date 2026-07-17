@@ -18,17 +18,78 @@ class ConfigController extends Controller
      {
          $this->middleware('auth');
      }
-    public function index()
+    public function index(Request $request)
     {
+        $selectedYear = $request->query('year') ?: active_year();
         
-       $config = Configs::where('schoolgroup',0)->get();
-       $configarea = Configs::all();
-       $data = Array(
-           'config' =>$config,
-           'configarea' => $configarea,
-       );
-   
-       return view('Home.config',$data);
+        $config = Configs::where('schoolgroup', 0)
+                         ->where('app_year', $selectedYear)
+                         ->get();
+                         
+        if ($config->isEmpty()) {
+            // Clone the most recent config info if available, to make creation seamless
+            $latestConfig = Configs::where('schoolgroup', 0)->orderBy('app_year', 'desc')->first();
+            
+            $newConfig = new Configs();
+            $newConfig->schoolgroup = 0;
+            $newConfig->app_year = $selectedYear;
+            
+            if ($latestConfig) {
+                $newConfig->app_name = $latestConfig->app_name;
+                $newConfig->app_group = $latestConfig->app_group;
+                $newConfig->app_area = $latestConfig->app_area;
+                $newConfig->app_certificate = $latestConfig->app_certificate;
+                $newConfig->app_logo = $latestConfig->app_logo;
+                $newConfig->link_criteria = $latestConfig->link_criteria;
+                $newConfig->link_ai = $latestConfig->link_ai;
+                $newConfig->link_survey = $latestConfig->link_survey;
+                $newConfig->survey_qr = $latestConfig->survey_qr;
+            } else {
+                $newConfig->app_name = "งานศิลปหัตถกรรมนักเรียน";
+            }
+            $newConfig->save();
+            
+            $config = Configs::where('schoolgroup', 0)
+                             ->where('app_year', $selectedYear)
+                             ->get();
+        }
+
+        $configarea = Configs::all();
+        $years = \App\Years::orderBy('years', 'desc')->get();
+        $data = Array(
+            'config' => $config,
+            'configarea' => $configarea,
+            'years' => $years,
+            'selectedYear' => $selectedYear,
+        );
+    
+        return view('Home.config', $data);
+    }
+
+    public function addYear(Request $request)
+    {
+        $request->validate([
+            'year' => 'required|numeric|digits:4|unique:years,years'
+        ]);
+
+        $year = new \App\Years();
+        $year->years = $request->year;
+        $year->save();
+
+        return response()->json([
+            'success' => true,
+            'year' => $year
+        ]);
+    }
+
+    public function deleteYear($id)
+    {
+        $year = \App\Years::findOrFail($id);
+        $year->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     /**
@@ -88,7 +149,7 @@ class ConfigController extends Controller
     {
        // dd($request);
         $this->validate($request,[
-   
+    
             'app_certificate' => 'mimes:JPG,jpg,jpeg,png|max:12048'
            
         ]);
@@ -96,8 +157,8 @@ class ConfigController extends Controller
         if($fileupload){
 
             $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
-           $fileupload_filepath = $fileupload->move(public_path("upload"), $fileupload_filename);
-         
+            $fileupload_filepath = $fileupload->move(public_path("upload"), $fileupload_filename);
+          
            // return($fileupload_filename.'=='.$fileupload_filepath);
        }else{
             $fileupload_filename='';
@@ -117,30 +178,53 @@ class ConfigController extends Controller
             $imageName = "";
         }
 
+        if ($request->filled('cropped_qr')) {
+            $imageQr = $request->cropped_qr;  // data:image/png;base64,xxxx
+            $imageQr = str_replace('data:image/png;base64,', '', $imageQr);
+            $imageQr = str_replace(' ', '+', $imageQr);
+            $imageQrName = time().'_qr.png';
+            \File::put(public_path(). '/upload/' . $imageQrName, base64_decode($imageQr));
+        }else{
+            $imageQrName = "";
+        }
+
         //dd($fileupload_filename);
        // $Configs= Configs::find($id);
-        $Configs = Configs::where('schoolgroup',Auth::user()->schoolgroup)->first();
+        $Configs = Configs::where('schoolgroup', Auth::user()->schoolgroup)->where('id', $id)->firstOrFail();
         $Configs->app_name = $request->app_name;
         $Configs->app_group = $request->app_group;
         $Configs->app_area = $request->app_area;
         $Configs->app_year = $request->app_year;
         
+        $Configs->link_criteria = $request->link_criteria;
+        $Configs->link_ai = $request->link_ai;
+        $Configs->link_survey = $request->link_survey;
+
         if($fileupload_filename != ""){
-        $Configs->app_certificate = $fileupload_filename;
+            $Configs->app_certificate = $fileupload_filename;
+        }
+        if($imageQrName != ""){
+            $Configs->survey_qr = $imageQrName;
         }
         if($imageName != "")
-            {
-                $Configs->app_logo = $imageName;
-            }
+        {
+            $Configs->app_logo = $imageName;
+        }
    
-    
-    
-    
-    
         $Configs->save();
+        
+        session([
+            'app_name'  => $Configs->app_name,
+            'app_group' => $Configs->app_group,
+            'app_area'  => $Configs->app_area,
+            'app_year'  => $Configs->app_year,
+            'year'      => $Configs->app_year,
+        ]);
+        session()->forget('manual_year');
+
         Session::flash('massage','Data was update successfull!!');
-       // return redirect('config');
-       return redirect()->back();
+        // return redirect('config');
+        return redirect()->back();
     }
 
     /**

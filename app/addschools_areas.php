@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class addschools_areas extends Model
 {
+    protected $fillable = ['school', 'school_name', 'school_schoolgroup', 'school_activity', 'school_class', 'year'];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\YearScope);
+
+        static::creating(function ($model) {
+            if (empty($model->year)) {
+                $model->year = active_year();
+            }
+        });
+    }
        public function getschoolname(){
         return $this->hasOne('App\School','id','school');
     }

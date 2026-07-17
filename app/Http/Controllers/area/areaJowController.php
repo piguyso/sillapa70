@@ -32,18 +32,21 @@ class areaJowController extends Controller
        // dd(Auth::user()->position);
         if(true){
             $activityinbranch = activities::all()->groupBy('activity_subject');
+            $activeYear = active_year();
             $activitycount = DB::table('Activities')
             ->select('activity_subject', DB::raw('count(*) as total'))
-           
+            ->where('year', $activeYear)
             ->groupBy('activity_subject')
             ->pluck('total','activity_subject');
        
         }else
         {
             $activityinbranch = activities::where('activity_branch','=',Auth::user()->branch)->get()->groupBy('activity_subject');
+            $activeYear = active_year();
             $activitycount = DB::table('Activities')
             ->select('activity_subject', DB::raw('count(*) as total'))
             ->where('activity_branch','=',Auth::user()->branch)
+            ->where('year', $activeYear)
             ->groupBy('activity_subject')
             ->pluck('total','activity_subject');
         }
@@ -62,8 +65,10 @@ class areaJowController extends Controller
     public function jowviewactivity($id){
         //dd($id);
 
+        $activeYear = active_year();
         $schoolcountactivity = DB::table('addschools_areas')
         ->select('school_activity', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('school_activity')
         ->pluck('total','school_activity');
 

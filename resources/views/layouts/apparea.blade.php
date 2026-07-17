@@ -32,6 +32,119 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <style>
+    /* ยกระดับการออกแบบระบบปุ่มควบคุมหน้า (Pagination) ให้สวยงามและมองเห็นง่าย */
+    
+    /* 1. สำหรับ DataTables (Tailwind) */
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 6px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border: 1px solid #d1d5db !important; /* ขอบชัดเจน */
+        background-color: #ffffff !important;
+        color: #374151 !important;
+        padding: 6px 14px !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease-in-out !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #f3f4f6 !important;
+        border-color: #9ca3af !important;
+        color: #059669 !important; /* สีเขียวหลัก */
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.active {
+        background-color: #059669 !important; /* สีเขียวเด่นชัด */
+        color: #ffffff !important;
+        border-color: #059669 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        background-color: #f9fafb !important;
+        color: #9ca3af !important;
+        border-color: #e5e7eb !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
+    /* 2. สำหรับ Laravel Pagination (ทั้ง Tailwind และ Bootstrap) */
+    nav[role="navigation"], .pagination {
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 6px !important;
+        list-style: none !important;
+        padding-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* ตกแต่งลิงก์และปุ่มตัวเลข */
+    nav[role="navigation"] a,
+    nav[role="navigation"] span,
+    .pagination .page-link {
+        border: 1px solid #d1d5db !important;
+        background-color: #ffffff !important;
+        color: #374151 !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        text-decoration: none !important;
+        transition: all 0.2s ease-in-out !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* โหมดโฮเวอร์ */
+    nav[role="navigation"] a:hover,
+    .pagination .page-link:hover {
+        background-color: #f3f4f6 !important;
+        border-color: #9ca3af !important;
+        color: #059669 !important;
+    }
+
+    /* โหมดกำลังใช้งาน (Active) */
+    nav[role="navigation"] span[aria-current="page"],
+    nav[role="navigation"] .bg-emerald-600,
+    nav[role="navigation"] .bg-primary,
+    .pagination .page-item.active .page-link {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+        border-color: #059669 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
+    }
+
+    /* ปรับแต่งปุ่ม Disabled */
+    nav[role="navigation"] span[aria-disabled="true"],
+    .pagination .page-item.disabled .page-link {
+        background-color: #f9fafb !important;
+        color: #9ca3af !important;
+        border-color: #e5e7eb !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
     /* บังคับขนาดตัวอักษรในตารางทุกหน้า */
     table, 
     table th, 
@@ -149,21 +262,21 @@
                         <i class="ri-home-4-line mr-1"></i> หน้าหลัก
                     </a>
 
-                    @guest
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" @click.away="open = false" class="text-white hover:bg-primaryDark px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1">
-                                <i class="ri-information-line mr-1"></i> ข้อมูลสารสนเทศ <i class="ri-arrow-down-s-line text-xs"></i>
-                            </button>
-                            <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
-                                <a href="{{ url('showall_print')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
-                                <a href="{{ url('showall_print2')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-group-line"></i> Print รายชื่อทั้งหมด</a>
-                                <a href="{{ url('showall_print3')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-government-line"></i> Print รายชื่อโรงเรียน</a>
-                                <a href="{{ url('showall_print6')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-list-check-3"></i> Print รายชื่อกิจกรรม</a>
-                                <div class="border-t border-gray-100 my-1"></div>
-                                <a href="{{ url('report')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-bold"><i class="ri-medal-line text-amber-500"></i> เกียรติบัตร</a>
-                            </div>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false" class="text-white hover:bg-primaryDark px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1">
+                            <i class="ri-information-line mr-1"></i> ข้อมูลสารสนเทศ <i class="ri-arrow-down-s-line text-xs"></i>
+                        </button>
+                        <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
+                            <a href="{{ url('showall_print')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
+                            <a href="{{ url('showall_print2')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-group-line"></i> Print รายชื่อทั้งหมด</a>
+                            <a href="{{ url('showall_print3')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-government-line"></i> Print รายชื่อโรงเรียน</a>
+                            <a href="{{ url('showall_print6')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-list-check-3"></i> Print รายชื่อกิจกรรม</a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="{{ url('report')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-bold"><i class="ri-medal-line text-amber-500"></i> เกียรติบัตร</a>
                         </div>
+                    </div>
 
+                    @guest
                         <a href="{{ route('login') }}" class="bg-secondary hover:bg-orange-800 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transition transform active:scale-95">
                             <i class="ri-login-circle-line mr-1"></i> Login
                         </a>

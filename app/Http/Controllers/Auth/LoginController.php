@@ -46,8 +46,9 @@ class LoginController extends Controller
         $center = systemactives::where('systemname','=','center')->get();
         $score = systemactives::where('systemname','=','score')->get();
 
-                session(['year' => $request->year]);
-                session(['position' => Auth::user()->position]);
+        $activeYear = $request->year ?: active_year();
+        session(['year' => $activeYear]);
+        session(['position' => Auth::user()->position]);
                 session(['name' => Auth::user()->name]);
                 session(['lastname' => Auth::user()->lastname]);
                 session(['userid' => Auth::user()->id]);

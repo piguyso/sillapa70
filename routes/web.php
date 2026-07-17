@@ -137,15 +137,16 @@ Route::resource('centersillapa','CentersillapaController');
 Route::resource('systemactive','SystemactiveController')->middleware(['auth', 'centermiddleware']);
 Route::resource('title','titleController');
 Route::resource('jow','jowController');
-Route::resource('report','ReportController')->middleware('auth');
-Route::resource('Notice','NoticeController')->middleware('auth');
+Route::resource('report','ReportController');
+Route::resource('Notice','NoticeController');
 
 //Route::post('noticeupload',[NoticeController::class,'noticeupload'])->name('noticeupload');
 Route::post('noticeupload','NoticeController@noticeupload')->middleware('auth')->name('noticeupload');
 Route::get('area/shownotice','NoticeController@shownoticearea')->middleware('auth');
 
 
-Route::resource('picture','PictureController')->middleware(['auth', 'centermiddleware']);
+Route::post('config/years', 'ConfigController@addYear')->name('config.addYear')->middleware(['auth', 'centermiddleware']);
+Route::delete('config/years/{id}', 'ConfigController@deleteYear')->name('config.deleteYear')->middleware(['auth', 'centermiddleware']);
 Route::resource('config','ConfigController')->middleware(['auth', 'centermiddleware']);
 
 Route::get('myreg','Auth\RegisterController@myreg')->name('myreg.form');
@@ -226,6 +227,7 @@ Route::get('/home','HomeController@index2');
 Route::get('/adduser', 'HomeController@adduser')->middleware(['auth', 'centermiddleware']);
 Route::post('/adduser_prc','HomeController@adduser_prc')->middleware(['auth', 'centermiddleware']);
 Route::post('/userlogin','UserauthController@authenticate')->middleware('throttle:5,1');
+Route::post('/switch-year','HomeController@switchYear')->name('switch-year');
 Route::get('/showschool/{id}','HomeController@showschool');
 Route::get('/showschooldetail/{id}/{school_group}','HomeController@showschooldetail');
 

@@ -37,14 +37,15 @@ class areaCentersillapaController extends Controller
       
         $activityinbranch = activities::all()->groupBy('activity_subject');
   
+        $activeYear = active_year();
         $activitycount = DB::table('Activities')
         ->select('activity_subject', DB::raw('count(*) as total'))
-        
+        ->where('year', $activeYear)
         ->groupBy('activity_subject')
         ->pluck('total','activity_subject');
         $activityactivecount = DB::table('Activities')
         ->select('activity_subject', DB::raw('count(*) as total'))
-        //->where('activity_branch','=',Auth::user()->branch)->where('activity_status','=',1)
+        ->where('year', $activeYear)
         ->groupBy('activity_subject')
         ->pluck('total','activity_subject');
 
@@ -60,8 +61,10 @@ class areaCentersillapaController extends Controller
     public function centerviewactivity($id){
              //dd($id);
 
+             $activeYear = active_year();
              $schoolcountactivity = DB::table('addschools')
              ->select('school_activity', DB::raw('count(*) as total'))
+             ->where('year', $activeYear)
              ->groupBy('school_activity')
              ->pluck('total','school_activity');
      

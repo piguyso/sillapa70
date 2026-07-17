@@ -27,7 +27,7 @@ class PdfController extends Controller
      */
      public function __construct()
      {
-         $this->middleware('auth');
+         // $this->middleware('auth');
      }
 
 public function areaprinttest($id){
@@ -1626,7 +1626,7 @@ if (file_exists($imagePath)) {
                 $pdf->SetY(+5);
                 $pdf->AddFont('fonts/THSarabun.ttf','','fonts/thsarabunpsk.php');
                 $pdf->SetFont('fonts/THSarabun.ttf','',18);
-                $pdf->Cell(0, 15,'งานศิลปหัตถกรรมนักเรียนครั้งที่ 71 ปีการศึกษา 2566 ระดับเขตพื้นที่การศึกษา', 0, 1, 'C', 0, '', 0, false, 'M', 'M');
+                $pdf->Cell(0, 15,(session('app_name') ?: 'งานศิลปหัตถกรรมนักเรียนครั้งที่ 71') . ' ปีการศึกษา ' . thainumDigit(active_year()) . ' ' . (session('app_group') ?: 'ระดับเขตพื้นที่การศึกษา'), 0, 1, 'C', 0, '', 0, false, 'M', 'M');
                 $pdf->SetFont('fonts/THSarabun.ttf','',16);
                 $pdf->Cell(0, 15,'กลุ่มสาระการเรียนรู้ '.session('subject_name').' กิจกรรม '.session('activity_name'), 0, 1, 'C', 0, '', 0, false, 'M', 'M');
                 $pdf->SetFont('fonts/THSarabun.ttf','',16);
@@ -1718,7 +1718,7 @@ if (file_exists($imagePath)) {
                 $pdf->SetY(+5);
                 $pdf->AddFont('fonts/THSarabun.ttf','','fonts/thsarabunpsk.php');
                 $pdf->SetFont('fonts/THSarabun.ttf','',18);
-                $pdf->Cell(0, 15,'งานศิลปหัตถกรรมนักเรียนครั้งที่ 71 ปีการศึกษา 2566 ระดับเขตพื้นที่การศึกษา', 0, 1, 'C', 0, '', 0, false, 'M', 'M');
+                $pdf->Cell(0, 15,(session('app_name') ?: 'งานศิลปหัตถกรรมนักเรียนครั้งที่ 71') . ' ปีการศึกษา ' . thainumDigit(active_year()) . ' ' . (session('app_group') ?: 'ระดับเขตพื้นที่การศึกษา'), 0, 1, 'C', 0, '', 0, false, 'M', 'M');
                 $pdf->SetFont('fonts/THSarabun.ttf','',16);
                 $pdf->Cell(0, 15,'กลุ่มสาระการเรียนรู้ '.session('subject_name').' กิจกรรม '.session('activity_name'), 0, 1, 'C', 0, '', 0, false, 'M', 'M');
                 $pdf->SetFont('fonts/THSarabun.ttf','',16);

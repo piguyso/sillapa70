@@ -42,9 +42,10 @@ class areaSubjectgroupController extends Controller
 
         $subjectgroup = subjectgroup::where('id','like','%')->orderby('in_dex','asc')->paginate(20);
       //  $activitycount = Activities::groupBy('activity_subject')->get();
+        $activeYear = active_year();
         $activitycount = DB::table('Activities')
     ->select('activity_subject', DB::raw('count(*) as total'))
-   
+    ->where('year', $activeYear)
     ->groupBy('activity_subject')
     ->pluck('total','activity_subject');
   

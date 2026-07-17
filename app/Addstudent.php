@@ -7,7 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Addstudent extends Model
 {
  ///  model ปลายทาง , ฟิล ปลายทาง , ฟิล ต้นทาง (ของโมเดล นี้) 
-    protected $fillable = ['title', 'name', 'lastname', 'activity', 'school', 'type'];
+    protected $fillable = ['title', 'name', 'lastname', 'activity', 'school', 'type', 'year'];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\YearScope);
+
+        static::creating(function ($model) {
+            if (empty($model->year)) {
+                $model->year = active_year();
+            }
+        });
+    }
     
     public function getstudentactivity(){
         return $this->hasOne('App\Activities','id','activity');

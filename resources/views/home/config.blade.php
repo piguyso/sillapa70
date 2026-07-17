@@ -23,6 +23,7 @@
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="put">
         <input type="hidden" name="cropped_logo" id="cropped_logo">
+        <input type="hidden" name="cropped_qr" id="cropped_qr">
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
@@ -59,11 +60,57 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Year (พ.ศ.)</label>
-                            <input type="text" name="app_year" value="{{ $l->app_year }}" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
+                            <div class="flex gap-2">
+                                <select name="app_year" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
+                                    @foreach($years as $y)
+                                        <option value="{{ $y->years }}" {{ $l->app_year == $y->years ? 'selected' : '' }}>{{ $y->years }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button" onclick="openYearModal()" class="px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-2xl font-black text-xs border border-emerald-200 transition-all flex items-center gap-1 shadow-sm whitespace-nowrap">
+                                    <i class="ri-calendar-event-line"></i> จัดการปี
+                                </button>
+                            </div>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Certificate Year</label>
                             <input type="text" name="cerf_year" value="{{ $l->app_year }}" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Links & Documents Settings Card -->
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                    <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
+                        <i class="ri-links-line text-emerald-500"></i> Links & Documents Settings (ลิงก์และเอกสารสำคัญ)
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">เกณฑ์การแข่งขัน (Link)</label>
+                            <input type="url" name="link_criteria" value="{{ $l->link_criteria }}" placeholder="https://..." class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                        </div>
+
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">สอบถาม AI เรื่องเกณฑ์ (Link)</label>
+                            <input type="url" name="link_ai" value="{{ $l->link_ai }}" placeholder="https://..." class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                        </div>
+
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">แบบสอบถามความพึงพอใจ (Link)</label>
+                            <input type="url" name="link_survey" value="{{ $l->link_survey }}" placeholder="https://..." class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                        </div>
+
+                        <div class="md:col-span-2 flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                            <div class="relative">
+                                <div class="w-24 h-24 bg-white rounded-xl border flex items-center justify-center overflow-hidden shadow-sm flex-shrink-0">
+                                    <img id="img_preview_qr" src="{{ $l->survey_qr ? url('/upload/'.$l->survey_qr) : url('/imgs/qr-code.png') }}" class="max-w-full max-h-full object-contain">
+                                </div>
+                            </div>
+                            <div class="space-y-2 w-full">
+                                <label class="block text-sm font-black text-gray-400 uppercase italic">QR Code แบบสอบถาม</label>
+                                <input type="file" id="qr_input" accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 w-full">
+                                <p class="text-[10px] text-slate-400 italic">* อัปโหลดรูปภาพ QR Code สำหรับแบบสอบถาม</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +158,7 @@
     <div id="cropModal" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden">
             <div class="p-6 border-b flex justify-between items-center">
-                <h3 class="font-black italic uppercase">Crop System Logo</h3>
+                <h3 id="crop_title" class="font-black italic uppercase">Crop System Logo</h3>
                 <button type="button" onclick="closeCropModal()" class="text-slate-400 hover:text-slate-600"><i class="ri-close-line text-2xl"></i></button>
             </div>
             <div class="p-6">
@@ -122,6 +169,53 @@
             <div class="p-6 border-t bg-slate-50 flex justify-end gap-3">
                 <button type="button" onclick="closeCropModal()" class="px-6 py-2 font-bold text-slate-500">Cancel</button>
                 <button type="button" id="btn_crop_done" class="px-8 py-2 bg-emerald-600 text-white rounded-xl font-bold">Crop & Use</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Year Management Modal -->
+    <div id="yearModal" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 animate-fade-in font-sarabun text-slate-800">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-black italic uppercase text-lg text-slate-800 flex items-center gap-2">
+                    <i class="ri-calendar-line text-emerald-500"></i> จัดการปีการศึกษา
+                </h3>
+                <button type="button" onclick="closeYearModal()" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="ri-close-line text-2xl"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Form to Add Year -->
+                <form id="addYearForm" onsubmit="submitAddYear(event)" class="space-y-3">
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest italic leading-none">เพิ่มปีการศึกษาใหม่ (พ.ศ.)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="new_year_input" required placeholder="ตัวอย่าง: 2571" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center text-sm">
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-100">
+                            เพิ่มปี
+                        </button>
+                    </div>
+                    <p id="add_year_error" class="text-xs text-red-600 font-bold hidden italic leading-none"></p>
+                </form>
+
+                <hr class="border-slate-100">
+
+                <!-- List of Years -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest italic leading-none">ปีการศึกษาทั้งหมดในระบบ</label>
+                    <div class="max-h-48 overflow-y-auto pr-1 space-y-2" id="years_list_container">
+                        @foreach($years as $y)
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:bg-slate-100/50 transition-all" id="year_row_{{ $y->id }}">
+                                <span class="font-bold text-sm text-slate-700">{{ $y->years }}</span>
+                                <button type="button" onclick="deleteYear({{ $y->id }}, '{{ $y->years }}')" class="w-8 h-8 inline-flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button type="button" onclick="closeYearModal()" class="px-6 py-2.5 font-bold text-slate-500 text-sm hover:text-slate-700 transition-colors">ปิดหน้าต่าง</button>
             </div>
         </div>
     </div>
@@ -154,15 +248,20 @@
 
 <script>
     let cropper;
+    let cropTarget = 'logo'; // 'logo' or 'qr'
     const logoInput = document.getElementById('logo_input');
+    const qrInput = document.getElementById('qr_input');
     const cropModal = document.getElementById('cropModal');
     const cropImageElement = document.getElementById('crop_image_element');
     const btnCropDone = document.getElementById('btn_crop_done');
+    const cropTitle = document.getElementById('crop_title');
 
     // Handle Logo Selection
     logoInput.addEventListener('change', function(e) {
         const files = e.target.files;
         if (files && files.length > 0) {
+            cropTarget = 'logo';
+            if (cropTitle) cropTitle.innerText = "Crop System Logo";
             const reader = new FileReader();
             reader.onload = function(event) {
                 cropImageElement.src = event.target.result;
@@ -177,20 +276,48 @@
         }
     });
 
+    // Handle QR Selection
+    if (qrInput) {
+        qrInput.addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                cropTarget = 'qr';
+                if (cropTitle) cropTitle.innerText = "Crop QR Code";
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    cropImageElement.src = event.target.result;
+                    cropModal.classList.remove('hidden');
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(cropImageElement, {
+                        aspectRatio: 1,
+                        viewMode: 2,
+                    });
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        });
+    }
+
     btnCropDone.addEventListener('click', function() {
         const canvas = cropper.getCroppedCanvas({
             width: 512,
             height: 512
         });
         const base64data = canvas.toDataURL('image/png');
-        document.getElementById('img_preview_logo').src = base64data;
-        document.getElementById('cropped_logo').value = base64data;
+        if (cropTarget === 'logo') {
+            document.getElementById('img_preview_logo').src = base64data;
+            document.getElementById('cropped_logo').value = base64data;
+        } else if (cropTarget === 'qr') {
+            document.getElementById('img_preview_qr').src = base64data;
+            document.getElementById('cropped_qr').value = base64data;
+        }
         closeCropModal();
     });
 
     function closeCropModal() {
         cropModal.classList.add('hidden');
         logoInput.value = "";
+        if (qrInput) qrInput.value = "";
     }
 
     function previewCert(event) {
@@ -200,6 +327,94 @@
             output.src = reader.result;
         }
         reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // --- Year Modal Controls ---
+    let yearsModified = false;
+
+    function openYearModal() {
+        document.getElementById('yearModal').classList.remove('hidden');
+    }
+
+    function closeYearModal() {
+        document.getElementById('yearModal').classList.add('hidden');
+        if (yearsModified) {
+            location.reload();
+        }
+    }
+
+    function submitAddYear(e) {
+        e.preventDefault();
+        const yearInput = document.getElementById('new_year_input');
+        const yearVal = yearInput.value.trim();
+        const errorEl = document.getElementById('add_year_error');
+
+        errorEl.classList.add('hidden');
+
+        fetch("{{ route('config.addYear') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ year: yearVal })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                yearInput.value = '';
+                yearsModified = true;
+                
+                // Add to list UI
+                const container = document.getElementById('years_list_container');
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:bg-slate-100/50 transition-all";
+                row.id = `year_row_${data.year.id}`;
+                row.innerHTML = `
+                    <span class="font-bold text-sm text-slate-700">${data.year.years}</span>
+                    <button type="button" onclick="deleteYear(${data.year.id}, '${data.year.years}')" class="w-8 h-8 inline-flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                `;
+                container.insertBefore(row, container.firstChild);
+            } else {
+                errorEl.innerText = "เกิดข้อผิดพลาดในการบันทึก";
+                errorEl.classList.remove('hidden');
+            }
+        })
+        .catch(err => {
+            errorEl.innerText = "ปีการศึกษานี้มีอยู่แล้ว หรือข้อมูลไม่ถูกต้อง";
+            errorEl.classList.remove('hidden');
+        });
+    }
+
+    function deleteYear(id, yearVal) {
+        if (!confirm(`ยืนยันการลบปีการศึกษา ${yearVal} ใช่หรือไม่?`)) {
+            return;
+        }
+
+        fetch(`{{ url('config/years') }}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`year_row_${id}`).remove();
+                yearsModified = true;
+            }
+        });
+    }
+
+    // Listen to year select change to reload page with the selected year's config
+    const yearSelect = document.querySelector('select[name="app_year"]');
+    if (yearSelect) {
+        yearSelect.addEventListener('change', function() {
+            const yearVal = this.value;
+            window.location.href = "{{ route('config.index') }}?year=" + yearVal;
+        });
     }
 </script>
 @endsection

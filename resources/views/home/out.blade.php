@@ -6,10 +6,10 @@
     <div class="bg-gradient-to-r from-emerald-700 to-green-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white relative overflow-hidden text-center md:text-left">
         <div class="relative z-10">
             <h1 class="text-3xl md:text-5xl font-black mb-4 tracking-tight italic uppercase">
-                งานศิลปหัตถกรรมนักเรียนครั้งที่ 70
+                {{ session('app_name') ?: 'งานศิลปหัตถกรรมนักเรียนครั้งที่ 70' }}
             </h1>
             <p class="text-emerald-50 text-lg md:text-xl opacity-90 font-medium">
-                <i class="ri-map-pin-2-fill mr-2"></i>สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑
+                <i class="ri-map-pin-2-fill mr-2"></i>{{ session('app_area') ?: 'สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑' }}
             </p>
         </div>
         <i class="ri-brush-fill absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12"></i>

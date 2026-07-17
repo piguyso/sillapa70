@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class addstudents_areas extends Model
 {
+    protected $fillable = ['title', 'name', 'lastname', 'activity', 'school', 'type', 'year'];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\YearScope);
+
+        static::creating(function ($model) {
+            if (empty($model->year)) {
+                $model->year = active_year();
+            }
+        });
+    }
      ///  model ปลายทาง , ฟิล ปลายทาง , ฟิล ต้นทาง (ของโมเดล นี้) 
     public function getstudentactivity(){
         return $this->hasOne('App\Activities','id','activity');

@@ -8,9 +8,15 @@
             <h1 class="text-2xl sm:text-4xl font-black tracking-tight mb-2 italic uppercase text-white">
                 {{ session('app_name')}}
             </h1>
-            <h2 class="text-xl sm:text-2xl font-bold text-orange-100 italic">
+            <h2 class="text-xl sm:text-2xl font-bold text-orange-100 italic mb-4">
                 ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
             </h2>
+            <div class="flex justify-center">
+                <div class="text-xs sm:text-sm border border-white/30 rounded-full px-4 py-1 flex items-center bg-white/10 backdrop-blur-sm">
+                    <span class="w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
+                    {{ session('app_area') ?: 'สพป.ชุมพร เขต 1' }}
+                </div>
+            </div>
         </div>
         <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 text-white"></div>
         <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-orange-400 opacity-20 text-white"></div>

@@ -15,9 +15,9 @@ $header1='งานศิลปหัตถกรรมนักเรียน�
 $header2='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑';
 function thainumDigit($num){
   return str_replace(array( '0' , '1' , '2' , '3' , '4' , '5' , '6' ,'7' , '8' , '9' ),
-  array( "o" , "๑" , "๒" , "๓" , "๔" , "๕" , "๖" , "๗" , "๘" , "๙" ),
+  array( "๐" , "๑" , "๒" , "๓" , "๔" , "๕" , "๖" , "๗" , "๘" , "๙" ),
   $num);
-};
+}
 	 function getbudjetleft($id)
 	{
 		$project = project::find($id);
@@ -623,3 +623,10 @@ function pricechk3($int1,$int2)
   return $int1+$int2;
 
 }
+
+if (!function_exists('active_year')) {
+    function active_year() {
+        return session('year') ?: config('app.year') ?: env('APP_YEAR', '2570');
+    }
+}
+
