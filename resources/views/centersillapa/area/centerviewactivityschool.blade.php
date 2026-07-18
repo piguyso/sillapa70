@@ -15,11 +15,7 @@
         <i class="ri-edit-box-line absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12 text-white"></i>
     </div>
 
-    @if(Session::has('massage') || session('status'))
-        <div class="mb-8 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 rounded-xl shadow-sm font-bold animate-fade-in italic text-sm">
-            <i class="ri-checkbox-circle-fill text-xl mr-2"></i> {{ Session::get('massage') ?: session('status') }}
-        </div>
-    @endif
+
 
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden">
         <div class="bg-slate-50 px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -42,7 +38,7 @@
             <form id="saveform" method="POST" action="{{ Route('areacentersillapa.store') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="id" value="{{$activity->id}}"/>
-                <input type="hidden" id="activity_status" name="activity_status" value=""/>
+                <input type="hidden" id="activity_chk" name="activity_chk" value=""/>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-separate border-spacing-y-2">
@@ -129,24 +125,24 @@
                         @php $status = $activity->activity_status; @endphp
                         
                         @if($status == 0)
-                            <button type="submit" name="activity_chk" value='0' class="px-8 py-4 bg-orange-600 text-white rounded-2xl font-black text-sm hover:bg-orange-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-white" onClick="return confirm('ยืนยันการบันทึกคะแนน?');">
+                            <button type="button" class="px-8 py-4 bg-orange-600 text-white rounded-2xl font-black text-sm hover:bg-orange-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-white" onClick="submitWithConfirm('0');">
                                 <i class="ri-save-3-line mr-1 text-white"></i> บันทึกคะแนน
                             </button>
                             
-                            <button type="submit" name="activity_chk" value='1' class="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-100 uppercase italic tracking-widest text-white" onClick="return confirm('ยืนยันการประกาศผลการแข่งขัน?');">
+                            <button type="button" class="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-100 uppercase italic tracking-widest text-white" onClick="submitWithConfirm('1');">
                                 <i class="ri-megaphone-line mr-1 text-white"></i> ประกาศผลการแข่งขัน
                             </button>
 
                             @if($addschool->count() <= 3)
-                                <button type="submit" name="activity_chk" value='98' class="px-8 py-4 bg-slate-800 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="return confirm('ประกาศผลแบบไม่มีการแข่งขัน?');">
+                                <button type="button" class="px-8 py-4 bg-slate-800 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="submitWithConfirm('98');">
                                     ไม่มีการแข่งขัน (ไม่มอบเกียรติบัตร)
                                 </button>
-                                <button type="submit" name="activity_chk" value='99' class="px-8 py-4 bg-slate-700 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="return confirm('ประกาศผลแบบไม่มีการแข่งขัน?');">
+                                <button type="button" class="px-8 py-4 bg-slate-700 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="submitWithConfirm('99');">
                                     ไม่มีการแข่งขัน (มอบเกียรติบัตร)
                                 </button>
-                                <button type="submit" name="activity_chk" value='2' class="px-8 py-4 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-red-100 uppercase italic tracking-widest text-white" onClick="return confirm('ยืนยันยกเลิกผลการแข่งขัน?');">
-                                <i class="ri-close-circle-line mr-1 text-white"></i> ยกเลิกผลการแข่งขัน
-                            </button>
+                                <button type="button" class="px-8 py-4 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-red-100 uppercase italic tracking-widest text-white" onClick="submitWithConfirm('2');">
+                                    <i class="ri-close-circle-line mr-1 text-white"></i> ยกเลิกผลการแข่งขัน
+                                </button>
                             @endif
 
                             @elseif(in_array($status, [1, 98, 99]))
@@ -159,4 +155,32 @@
         </div>
     </div>
 </div>
+
+<script>
+    function submitWithConfirm(status) {
+        let title = '';
+        let message = '';
+        if (status === '0') {
+            title = 'ยืนยันการบันทึกคะแนน';
+            message = 'คุณต้องการยืนยันการบันทึกคะแนนใช่หรือไม่?';
+        } else if (status === '1') {
+            title = 'ยืนยันการประกาศผล';
+            message = 'คุณต้องการยืนยันการประกาศผลการแข่งขันใช่หรือไม่?';
+        } else if (status === '98') {
+            title = 'ประกาศผลแบบไม่มีการแข่งขัน';
+            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน (ไม่มอบเกียรติบัตร) ใช่หรือไม่?';
+        } else if (status === '99') {
+            title = 'ประกาศผลแบบไม่มีการแข่งขัน';
+            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน (มอบเกียรติบัตร) ใช่หรือไม่?';
+        } else if (status === '2') {
+            title = 'ยืนยันการยกเลิกผลการแข่งขัน';
+            message = '⚠️ ยืนยันยกเลิกผลการแข่งขัน? การกระทำนี้ไม่สามารถย้อนกลับได้!';
+        }
+        
+        showCustomConfirm(title, message, function() {
+            document.getElementById('activity_chk').value = status;
+            document.getElementById('saveform').submit();
+        });
+    }
+</script>
 @endsection

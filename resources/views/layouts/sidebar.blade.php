@@ -180,21 +180,16 @@
              @endguest
             </ul>
           </li>
-          <div style="text-align:center;">
- <!-- Histats.com  (div with counter) --><div id="histats_counter"></div>
-<!-- Histats.com  START  (aync)-->
-<script type="text/javascript">var _Hasync= _Hasync|| [];
-_Hasync.push(['Histats.start', '1,4737145,4,438,112,75,00011111']);
-_Hasync.push(['Histats.fasi', '1']);
-_Hasync.push(['Histats.track_hits', '']);
-(function() {
-var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-hs.src = ('//s10.histats.com/js15_as.js');
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-})();</script>
-<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4737145&101" alt="" border="0"></a></noscript>
-<!-- Histats.com  END  -->
-</div>
+          <div style="text-align:center; padding: 15px; background: #f8f9fa; border-radius: 8px; margin: 10px; font-family: sans-serif; font-size: 11px; font-weight: bold; color: #495057; border: 1px solid #dee2e6;">
+              <div style="margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <span style="display: inline-block; width: 8px; height: 8px; background-color: #28a745; border-radius: 50%;"></span>
+                  <span>ออนไลน์: {{ number_format(online_count()) }} คน</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <span style="color: #6c757d;">👁️</span>
+                  <span>ผู้เข้าชม: {{ number_format(visitor_count()) }} ครั้ง</span>
+              </div>
+          </div>
       </nav>
 	@show
 		<!-- /.sidebar-menu -->

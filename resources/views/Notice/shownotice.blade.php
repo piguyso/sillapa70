@@ -1,14 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <style>
-    /* ปรับแต่งความสูงของ Editor */
-    .ck-editor__editable {
-        min-height: 200px;
+    .ql-toolbar.ql-snow {
+        @apply border-none bg-gray-50 border-b border-gray-200 p-2 !important;
     }
-    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
-        border-color: #e5e7eb;
+    .ql-container.ql-snow {
+        @apply border-none !important;
+        font-family: 'Sarabun', sans-serif !important;
     }
 </style>
 
@@ -28,12 +29,7 @@
         </div>
     </div>
 
-    @if(Session::has('massage'))
-        <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-r-lg shadow-sm">
-            <i class="ri-checkbox-circle-fill text-xl"></i>
-            <span class="font-bold">{{ Session::get('massage') }}</span>
-        </div>
-    @endif
+
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -71,11 +67,15 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-6 align-top">
-                                    @if($l->notice_file)
-                                        <a href="upload/{{$l->notice_file}}" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[10px] font-bold border border-blue-100 break-all">
-                                            <i class="ri-file-download-line text-sm"></i>
-                                            {{$l->notice_file}}
-                                        </a>
+                                    @if(!empty($l->files))
+                                        <div class="flex flex-col gap-2">
+                                            @foreach($l->files as $file)
+                                                <a href="{{ url('upload/' . $file) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[10px] font-bold border border-blue-100 break-all">
+                                                    <i class="ri-file-download-line text-sm shrink-0"></i>
+                                                    <span class="truncate max-w-[150px]">{{ $file }}</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
                                     @else
                                         <span class="text-gray-300 italic text-xs">ไม่มีไฟล์</span>
                                     @endif
@@ -129,7 +129,12 @@
 
                         <div>
                             <label for="notice_detail" class="block text-sm font-bold text-gray-700 mb-2">รายละเอียด</label>
-                            <textarea id="notice_detail" name="notice_detail">{{ old('notice_detail') }}</textarea>
+                            <input type="hidden" name="notice_detail" id="notice_detail" value="{{ old('notice_detail') }}">
+                            <div class="rounded-xl overflow-hidden bg-white border border-gray-200">
+                                <div id="quill_editor" style="min-height: 200px; font-family: 'Sarabun', sans-serif;">
+                                    {!! old('notice_detail') !!}
+                                </div>
+                            </div>
                             @if ($errors->has('notice_detail'))
                                 <p class="mt-1 text-xs text-red-500 font-bold italic">{{ $errors->first('notice_detail') }}</p>
                             @endif
@@ -138,13 +143,13 @@
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">ไฟล์แนบ (PDF หรือ รูปภาพ)</label>
                             <div class="relative group">
-                                <input type="file" name="notice_file" id="chooseFile" 
-                                    accept="image/*,.pdf"
+                                <input type="file" name="notice_file[]" id="chooseFile" 
+                                    accept="image/*,.pdf" multiple
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     onchange="previewFile()">
                                 <div id="uploadPlaceholder" class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl py-6 px-4 text-center group-hover:border-primary transition-colors">
                                     <i class="ri-upload-cloud-2-line text-3xl text-gray-300 group-hover:text-primary mb-2 block"></i>
-                                    <span class="text-xs text-gray-400 font-bold">คลิกเลือกไฟล์</span>
+                                    <span class="text-xs text-gray-400 font-bold">คลิกเลือกไฟล์ (อัปโหลดได้หลายไฟล์)</span>
                                 </div>
                             </div>
 
@@ -154,14 +159,17 @@
                                 </button>
                                 <div class="flex flex-col items-center">
                                     <img id="imagePreview" src="#" alt="Preview" class="hidden max-h-48 rounded-lg shadow-sm mb-2 object-contain">
-                                    <div id="fileInfo" class="hidden flex items-center gap-3 w-full">
-                                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-2xl">
-                                            <i class="ri-file-text-line"></i>
+                                    <div id="fileInfo" class="hidden flex flex-col gap-2 w-full">
+                                        <div class="flex items-center gap-3 w-full">
+                                            <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-2xl">
+                                                <i class="ri-file-text-line"></i>
+                                            </div>
+                                            <div class="overflow-hidden">
+                                                <p id="fileName" class="text-sm font-bold text-gray-800 truncate"></p>
+                                                <p id="fileSize" class="text-[10px] text-gray-400 font-bold"></p>
+                                            </div>
                                         </div>
-                                        <div class="overflow-hidden">
-                                            <p id="fileName" class="text-sm font-bold text-gray-800 truncate"></p>
-                                            <p id="fileSize" class="text-[10px] text-gray-400 font-bold"></p>
-                                        </div>
+                                        <div id="fileListContainer" class="w-full text-xs text-gray-600 space-y-1 mt-2 border-t border-gray-200 pt-2 font-bold italic"></div>
                                     </div>
                                 </div>
                             </div>
@@ -183,41 +191,77 @@
 </div>
 
 <script>
-    // เริ่มต้นใช้งาน Rich Text Editor (CKEditor 5)
-    ClassicEditor
-        .create(document.querySelector('#notice_detail'), {
-            toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'],
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    // Initialize Quill Editor
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        placeholder: 'เขียนรายละเอียดประกาศตรงนี้...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
+    });
+
+    // Sync Quill content to hidden input on submit
+    document.querySelectorAll('form').forEach(form => {
+        const hiddenInput = form.querySelector('#notice_detail');
+        const editorDiv = form.querySelector('#quill_editor');
+        if (hiddenInput && editorDiv) {
+            form.addEventListener('submit', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+        }
+    });
 
     function previewFile() {
-        const file = document.getElementById('chooseFile').files[0];
+        const files = document.getElementById('chooseFile').files;
         const previewContainer = document.getElementById('previewContainer');
         const imagePreview = document.getElementById('imagePreview');
         const fileInfo = document.getElementById('fileInfo');
         const fileName = document.getElementById('fileName');
         const fileSize = document.getElementById('fileSize');
+        const fileListContainer = document.getElementById('fileListContainer');
         const placeholder = document.getElementById('uploadPlaceholder');
 
-        if (file) {
+        if (files && files.length > 0) {
             previewContainer.classList.remove('hidden');
             placeholder.classList.add('bg-emerald-50', 'border-primary');
-            fileName.textContent = file.name;
-            fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                    fileInfo.classList.add('hidden');
+            
+            if (files.length === 1) {
+                const file = files[0];
+                fileName.textContent = file.name;
+                fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                fileListContainer.innerHTML = '';
+                
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        fileInfo.classList.add('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.classList.add('hidden');
+                    fileInfo.classList.remove('hidden');
                 }
-                reader.readAsDataURL(file);
             } else {
                 imagePreview.classList.add('hidden');
                 fileInfo.classList.remove('hidden');
+                
+                fileName.textContent = `เลือกทั้งหมด ${files.length} ไฟล์`;
+                let totalSize = 0;
+                let listHtml = '';
+                for (let i = 0; i < files.length; i++) {
+                    totalSize += files[i].size;
+                    listHtml += `<div class="truncate text-left">• ${files[i].name} (${(files[i].size / (1024 * 1024)).toFixed(2)} MB)</div>`;
+                }
+                fileSize.textContent = `ขนาดรวม: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`;
+                fileListContainer.innerHTML = listHtml;
             }
         }
     }
@@ -231,10 +275,15 @@
         placeholder.classList.remove('bg-emerald-50', 'border-primary');
     }
 
+
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบประกาศ',
+            'คุณต้องการลบประกาศนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

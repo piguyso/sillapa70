@@ -56,11 +56,7 @@
         </div>
 
         <div class="lg:col-span-2">
-            @if(Session::has('massage'))
-                <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-xl shadow-sm font-bold animate-fade-in">
-                    <i class="ri-checkbox-circle-fill text-xl"></i> {{Session::get('massage')}}
-                </div>
-            @endif
+
 
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-8">
@@ -130,9 +126,13 @@
     });
 
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่?')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบข้อมูล',
+            'คุณต้องการลบข้อมูลนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

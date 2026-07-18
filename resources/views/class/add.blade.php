@@ -31,11 +31,7 @@
         <i class="ri-book-open-line absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12"></i>
     </div>
 
-    @if (session('status') || Session::has('massage'))
-        <div class="mb-8 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-xl shadow-sm font-bold animate-fade-in">
-            <i class="ri-checkbox-circle-fill text-xl"></i> {{ session('status') ?: Session::get('massage') }}
-        </div>
-    @endif
+
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -170,9 +166,13 @@
     });
 
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบข้อมูลระดับชั้นนี้ใช่หรือไม่? กิจกรรมการแข่งขันที่ผูกกับระดับชั้นนี้อาจได้รับผลกระทบ')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบข้อมูลระดับชั้น',
+            'คุณต้องการลบข้อมูลระดับชั้นนี้ใช่หรือไม่? กิจกรรมการแข่งขันที่ผูกกับระดับชั้นนี้อาจได้รับผลกระทบ การกระทำนี้ไม่สามารถย้อนกลับได้',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

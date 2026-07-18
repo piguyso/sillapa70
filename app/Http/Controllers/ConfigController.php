@@ -36,6 +36,7 @@ class ConfigController extends Controller
             
             if ($latestConfig) {
                 $newConfig->app_name = $latestConfig->app_name;
+                $newConfig->app_slogan = $latestConfig->app_slogan;
                 $newConfig->app_group = $latestConfig->app_group;
                 $newConfig->app_area = $latestConfig->app_area;
                 $newConfig->app_certificate = $latestConfig->app_certificate;
@@ -192,6 +193,7 @@ class ConfigController extends Controller
        // $Configs= Configs::find($id);
         $Configs = Configs::where('schoolgroup', Auth::user()->schoolgroup)->where('id', $id)->firstOrFail();
         $Configs->app_name = $request->app_name;
+        $Configs->app_slogan = $request->app_slogan;
         $Configs->app_group = $request->app_group;
         $Configs->app_area = $request->app_area;
         $Configs->app_year = $request->app_year;

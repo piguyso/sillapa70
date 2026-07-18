@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\TranslateToThaiNumbers::class);
+        $middleware->append(\App\Http\Middleware\TrackVisitors::class);
         $middleware->alias([
             'centermiddleware' => \App\Http\Middleware\mymiddleware::class,
             'areamiddleware' => \App\Http\Middleware\areamiddleware::class,

@@ -3,6 +3,22 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<style>
+    .ql-toolbar.ql-snow {
+        border: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        padding: 8px 12px !important;
+    }
+    .ql-container.ql-snow {
+        border: none !important;
+        font-family: 'Sarabun', sans-serif !important;
+        font-size: 0.95rem !important;
+        color: #374151 !important;
+    }
+</style>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sarabun text-slate-800">
 
@@ -57,6 +73,15 @@
                         <div class="space-y-2 md:col-span-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Application Area / Location</label>
                             <input type="text" name="app_area" value="{{ $l->app_area }}" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Application Slogan / Motto (คำขวัญระบบ)</label>
+                            <input type="hidden" name="app_slogan" id="app_slogan" value="{{ $l->app_slogan }}">
+                            <div class="w-full rounded-2xl border border-gray-200 overflow-hidden shadow-inner bg-white">
+                                <div id="quill_editor" style="min-height: 120px; font-family: 'Sarabun', sans-serif;">
+                                    {!! $l->app_slogan !!}
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Year (พ.ศ.)</label>
@@ -388,24 +413,27 @@
         });
     }
 
-    function deleteYear(id, yearVal) {
-        if (!confirm(`ยืนยันการลบปีการศึกษา ${yearVal} ใช่หรือไม่?`)) {
-            return;
-        }
 
-        fetch(`{{ url('config/years') }}/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    function deleteYear(id, yearVal) {
+        showCustomConfirm(
+            'ยืนยันการลบปีการศึกษา',
+            `ยืนยันการลบปีการศึกษา ${yearVal} ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`,
+            function() {
+                fetch(`{{ url('config/years') }}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`year_row_${id}`).remove();
+                        yearsModified = true;
+                    }
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById(`year_row_${id}`).remove();
-                yearsModified = true;
-            }
-        });
+        );
     }
 
     // Listen to year select change to reload page with the selected year's config
@@ -416,5 +444,28 @@
             window.location.href = "{{ route('config.index') }}?year=" + yearVal;
         });
     }
+
+    // Initialize Quill Editor
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    // Sync Quill content to hidden input on submit
+    document.querySelectorAll('form').forEach(form => {
+        const hiddenInput = form.querySelector('#app_slogan');
+        const editorDiv = form.querySelector('#quill_editor');
+        if (hiddenInput && editorDiv) {
+            form.addEventListener('submit', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+        }
+    });
 </script>
 @endsection

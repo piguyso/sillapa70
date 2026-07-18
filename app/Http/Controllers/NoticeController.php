@@ -10,7 +10,7 @@ class NoticeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show']);
+        $this->middleware('auth')->except(['index', 'show', 'notice_detail', 'areanotice_detail']);
     }
         /**
      * Display a listing of the resource.
@@ -113,22 +113,27 @@ class NoticeController extends Controller
      */
     public function store(Request $request)
     {
-       // dd($request);
         $this->validate($request,[
             'notice_text'=>'required',
             'notice_detail'=>'required',
-            'notice_file' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
-           
+            'notice_file' => 'nullable',
+            'notice_file.*' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
         ]);
-        $fileupload = $request->file('notice_file');
-        if($fileupload){
 
-            $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
-           $fileupload_filepath = $fileupload->move(public_path("upload"), $fileupload_filename);
-         
-           // return($fileupload_filename.'=='.$fileupload_filepath);
-       }else{
-            $fileupload_filename='';
+        $uploadedFilenames = [];
+        if ($request->hasFile('notice_file')) {
+            $fileUploads = $request->file('notice_file');
+            if (is_array($fileUploads)) {
+                foreach ($fileUploads as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path("upload"), $filename);
+                    $uploadedFilenames[] = $filename;
+                }
+            } else {
+                $filename = time() . '_' . $fileUploads->getClientOriginalName();
+                $fileUploads->move(public_path("upload"), $filename);
+                $uploadedFilenames[] = $filename;
+            }
         }
 
         $notice = new Notices;
@@ -137,7 +142,7 @@ class NoticeController extends Controller
         $notice->notice_type = Auth::user()->position;
         $notice->notice_owner = Auth::user()->name.' '.Auth::user()->lastname;
         $notice->owner_id = Auth::user()->id;
-        $notice->notice_file = $fileupload_filename;
+        $notice->notice_file = empty($uploadedFilenames) ? '' : json_encode($uploadedFilenames, JSON_UNESCAPED_UNICODE);
         $notice->schoolgroup = Auth::user()->schoolgroup;
         $notice->save();
         Session::flash('massage','เพิ่มข้อมูลสำเร็จ !!');
@@ -145,8 +150,6 @@ class NoticeController extends Controller
            return redirect('/Notice');
         }
         return back()->with('massage', 'บันทึกข้อมูลเรียบร้อยแล้ว');
-
-       // return redirect('/Notice');
     }
 
     /**
@@ -187,36 +190,34 @@ class NoticeController extends Controller
 
     public function update(Request $request, $id)
     {
-    //dd($request);
         $this->validate($request,[
             'notice_text'=>'required',
             'notice_detail'=>'required',
-            'notice_file' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
-           
+            'notice_file' => 'nullable',
+            'notice_file.*' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
         ]);
 
-        $fileupload = $request->file('notice_file');
-        if($fileupload){
+        $notice = Notices::findOrFail($id);
+        $notice->notice_text = $request->notice_text;
+        $notice->notice_detail = $request->notice_detail;
 
-           $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
-           $fileupload_filepath = $fileupload->move(public_path("upload"), $fileupload_filename);
-         
-           // return($fileupload_filename.'=='.$fileupload_filepath);
-       }else{
-            $fileupload_filename='';
+        if ($request->hasFile('notice_file')) {
+            $fileUploads = $request->file('notice_file');
+            $uploadedFilenames = [];
+            if (is_array($fileUploads)) {
+                foreach ($fileUploads as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path("upload"), $filename);
+                    $uploadedFilenames[] = $filename;
+                }
+            } else {
+                $filename = time() . '_' . $fileUploads->getClientOriginalName();
+                $fileUploads->move(public_path("upload"), $filename);
+                $uploadedFilenames[] = $filename;
+            }
+            $notice->notice_file = json_encode($uploadedFilenames, JSON_UNESCAPED_UNICODE);
         }
 
-       // dd($fileupload);
-
-        $notice= Notices::find($id);
-        
-        $notice->notice_text = $request->notice_text;
-   //     $notice->notice_type = $request->notice_type;
-        $notice->notice_detail = $request->notice_detail;
-        $notice->notice_file = $fileupload_filename;
-    
-    
-    
         $notice->save();
         Session::flash('massage','Data was update successfull!!');
         return redirect('Notice');

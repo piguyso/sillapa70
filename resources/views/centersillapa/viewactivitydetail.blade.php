@@ -22,12 +22,7 @@
         </div>
     </div>
 
-    @if(Session::has('massage'))
-        <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-r-lg shadow-sm animate-pulse">
-            <i class="ri-checkbox-circle-fill text-xl"></i>
-            <span class="font-bold">{{ Session::get('massage') }}</span>
-        </div>
-    @endif
+
 
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="bg-gray-50 px-8 py-5 border-b border-gray-100 flex items-center justify-between">
@@ -42,7 +37,7 @@
         <form id="saveform" method="POST" action="{{ Route('centersillapa.store') }}" class="p-0">
             {{ csrf_field() }}
             <input type="hidden" name="id" value="{{$activity->id}}"/>
-            <input type="hidden" id="activity_status" name="activity_status" value=""/>
+            <input type="hidden" id="activity_chk" name="activity_chk" value=""/>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -145,16 +140,16 @@
 
                 <div class="flex flex-col sm:flex-row items-center justify-end gap-4">
                     @if($activity->activity_status==0) 
-                        <button type="submit" name="activity_chk" value='0' 
+                        <button type="button" 
                                 class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-primary text-primary font-black rounded-2xl hover:bg-primary hover:text-white transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return confirm('ยืนยันการบันทึกคะแนนเพื่อจัดลำดับ?');">
+                                onClick="submitWithConfirm('0');">
                             <i class="ri-save-3-line text-xl"></i>
                             บันทึกคะแนนและจัดลำดับ
                         </button>
                         
-                        <button type="submit" name="activity_chk" value='1' 
+                        <button type="button" 
                                 class="w-full sm:w-auto px-8 py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 hover:shadow-2xl hover:shadow-red-200 transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return confirm('ยืนยันการประกาศผลการแข่งขัน? ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก');">
+                                onClick="submitWithConfirm('1');">
                             <i class="ri-notification-badge-line text-xl"></i>
                             ประกาศผลการแข่งขันสู่สาธารณะ
                         </button>
@@ -173,4 +168,23 @@
         {{ $addschool->links() }}
     </div>
 </div>
+
+<script>
+    function submitWithConfirm(status) {
+        let title = '';
+        let message = '';
+        if (status === '0') {
+            title = 'ยืนยันการบันทึกคะแนน';
+            message = 'คุณต้องการยืนยันการบันทึกคะแนนและจัดลำดับใช่หรือไม่?';
+        } else if (status === '1') {
+            title = 'ยืนยันการประกาศผล';
+            message = '⚠️ ยืนยันการประกาศผลการแข่งขัน? ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก!';
+        }
+        
+        showCustomConfirm(title, message, function() {
+            document.getElementById('activity_chk').value = status;
+            document.getElementById('saveform').submit();
+        });
+    }
+</script>
 @endsection

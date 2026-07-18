@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <style>
     #loading-overlay {
         @apply fixed inset-0 z-[9999] flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-500;
@@ -10,11 +10,12 @@
     .spinner {
         @apply w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin;
     }
-    .note-editor.note-frame {
-        @apply rounded-2xl border border-gray-200 overflow-hidden !important;
+    .ql-toolbar.ql-snow {
+        @apply border-none bg-gray-50 border-b border-gray-200 p-2 !important;
     }
-    .note-toolbar {
-        @apply bg-gray-50 border-b border-gray-100 !important;
+    .ql-container.ql-snow {
+        @apply border-none !important;
+        font-family: 'Sarabun', sans-serif !important;
     }
 </style>
 
@@ -113,8 +114,11 @@
 
                     <div class="space-y-2">
                         <label class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">รายละเอียดประกาศ (Details)</label>
-                        <div class="rounded-2xl overflow-hidden shadow-inner bg-gray-50">
-                            <textarea id="summernote" name="notice_detail">{{ old('notice_detail') }}</textarea>
+                        <input type="hidden" name="notice_detail" id="notice_detail" value="{{ old('notice_detail') }}">
+                        <div class="rounded-2xl overflow-hidden shadow-inner bg-white border border-gray-200">
+                            <div id="quill_editor" style="min-height: 300px; font-family: 'Sarabun', sans-serif;">
+                                {!! old('notice_detail') !!}
+                            </div>
                         </div>
                         @if ($errors->has('notice_detail'))
                             <p class="text-red-500 text-xs font-bold mt-1"> {{ $errors->first('notice_detail') }}</p>
@@ -137,34 +141,40 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        // Initialize Summernote
-        $('#summernote').summernote({
-            placeholder: 'เขียนรายละเอียดประกาศตรงนี้...',
-            tabsize: 2,
-            height: 350,
-            fontNames: ['Sarabun'],
-            fontNamesIgnoreCheck: ['Sarabun'],
+    // Initialize Quill Editor
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        placeholder: 'เขียนรายละเอียดประกาศตรงนี้...',
+        modules: {
             toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview']]
-            ],
-            callbacks: {
-                onInit: function() {
-                    $('#loading-overlay').addClass('opacity-0');
-                    setTimeout(() => $('#loading-overlay').remove(), 500);
-                }
-            }
-        });
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
     });
+
+    // Remove loading overlay immediately
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.remove(), 500);
+    }
+
+    // Sync Quill content to hidden input on submit
+    document.querySelectorAll('form').forEach(form => {
+        const hiddenInput = form.querySelector('#notice_detail');
+        const editorDiv = form.querySelector('#quill_editor');
+        if (hiddenInput && editorDiv) {
+            form.addEventListener('submit', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+        }
+    });
+</script>
 
     // Function for Image/PDF Preview
     function previewFile(input) {

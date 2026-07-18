@@ -78,29 +78,33 @@
                                 </div>
                             </td>
                             <td class="px-6 py-6">
-                                @php
-                                    $filename = $l->notice_file ?? '';
-                                    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                                    $filePath = url('/upload/'.$filename);
-                                @endphp
-
-                                @if(!empty($filename))
-                                    @if($extension == 'pdf')
-                                        <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-600 hover:text-white transition-all shadow-sm">
-                                            <i class="ri-file-pdf-2-line text-lg"></i> PDF File
-                                        </a>
-                                    @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                        <div class="relative group/img cursor-zoom-in" onclick="window.open('{{ $filePath }}', '_blank')">
-                                            <img src="{{ $filePath }}" class="w-20 h-12 object-cover rounded-lg shadow-sm border border-gray-100 group-hover/img:scale-110 transition-transform" alt="{{ $filename }}">
-                                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 rounded-lg flex items-center justify-center transition-opacity">
-                                                <i class="ri-eye-line text-white"></i>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-700 hover:text-white transition-all">
-                                            <i class="ri-file-line text-lg"></i> {{ $filename }}
-                                        </a>
-                                    @endif
+                                @if(!empty($l->files))
+                                    <div class="flex flex-col gap-2">
+                                        @foreach($l->files as $filename)
+                                            @php
+                                                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                                $filePath = url('/upload/'.$filename);
+                                            @endphp
+                                            @if($extension == 'pdf')
+                                                <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                                                    <i class="ri-file-pdf-2-line text-lg shrink-0"></i>
+                                                    <span class="truncate max-w-[100px]">{{ $filename }}</span>
+                                                </a>
+                                            @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                <div class="relative group/img cursor-zoom-in inline-block" onclick="window.open('{{ $filePath }}', '_blank')">
+                                                    <img src="{{ $filePath }}" class="w-20 h-12 object-cover rounded-lg shadow-sm border border-gray-100 group-hover/img:scale-110 transition-transform" alt="{{ $filename }}">
+                                                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 rounded-lg flex items-center justify-center transition-opacity">
+                                                        <i class="ri-eye-line text-white"></i>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-700 hover:text-white transition-all">
+                                                    <i class="ri-file-line text-lg shrink-0"></i>
+                                                    <span class="truncate max-w-[100px]">{{ $filename }}</span>
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 @else
                                     <span class="text-gray-300 italic text-[10px]">ไม่มีไฟล์แนบ</span>
                                 @endif
@@ -150,10 +154,15 @@
         }
     });
 
+
     function DelConfirm(id) {
-        if (confirm('ยืนยันการลบประกาศนี้? ข้อมูลจะไม่สามารถกู้คืนได้')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบประกาศ',
+            'คุณต้องการลบประกาศนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

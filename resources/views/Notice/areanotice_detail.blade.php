@@ -53,54 +53,63 @@
 
                 <hr class="border-slate-100 mb-8">
 
-                @php
-                    $fileName = $l->notice_file ?? null;
-                    $filePath = $fileName ? asset('upload/' . $fileName) : null;
-                    $fileExtension = $fileName ? strtolower(pathinfo($fileName, PATHINFO_EXTENSION)) : null;
-                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                    $pdfExtensions = ['pdf'];
-                    $isFileAvailable = $fileName && file_exists(public_path('upload/' . $fileName));
-                @endphp
+                @if (!empty($l->files))
+                    <div class="space-y-6">
+                        @foreach($l->files as $fileName)
+                            @php
+                                $filePath = asset('upload/' . $fileName);
+                                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                                $pdfExtensions = ['pdf'];
+                                $isFileAvailable = file_exists(public_path('upload/' . $fileName));
+                            @endphp
 
-                @if ($isFileAvailable)
-                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-slate-800">
-                        <div class="flex items-center gap-2 mb-4 text-slate-800">
-                            <i class="ri-attachment-2 text-orange-600 text-xl"></i>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-400">Attached File: {{ $fileName }}</span>
-                        </div>
+                            @if ($isFileAvailable)
+                                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-slate-800">
+                                    <div class="flex items-center gap-2 mb-4 text-slate-800">
+                                        <i class="ri-attachment-2 text-orange-600 text-xl"></i>
+                                        <span class="text-xs font-black uppercase tracking-widest text-slate-400">Attached File: {{ $fileName }}</span>
+                                    </div>
 
-                        {{-- 🖼️ รูปภาพ --}}
-                        @if (in_array($fileExtension, $imageExtensions))
-                            <div class="relative group">
-                                <img src="{{ $filePath }}" class="rounded-xl border-4 border-white shadow-lg max-w-full h-auto mx-auto group-hover:opacity-95 transition-opacity">
-                                <a href="{{ $filePath }}" target="_blank" class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-xl">
-                                    <span class="bg-white text-orange-600 px-4 py-2 rounded-lg font-black shadow-xl italic uppercase text-xs">View Full Image</span>
-                                </a>
-                            </div>
+                                    {{-- 🖼️ รูปภาพ --}}
+                                    @if (in_array($fileExtension, $imageExtensions))
+                                        <div class="relative group">
+                                            <img src="{{ $filePath }}" class="rounded-xl border-4 border-white shadow-lg max-w-full h-auto mx-auto group-hover:opacity-95 transition-opacity">
+                                            <a href="{{ $filePath }}" target="_blank" class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-xl">
+                                                <span class="bg-white text-orange-600 px-4 py-2 rounded-lg font-black shadow-xl italic uppercase text-xs">View Full Image</span>
+                                            </a>
+                                        </div>
 
-                        {{-- 📄 PDF --}}
-                        @elseif (in_array($fileExtension, $pdfExtensions))
-                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-white">
-                                <iframe src="{{ $filePath }}" width="100%" height="500px" class="border-none"></iframe>
-                            </div>
-                            <div class="mt-4 flex justify-end">
-                                <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl font-black text-sm hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 uppercase italic text-white">
-                                    <i class="ri-download-cloud-2-line text-white"></i> Download PDF
-                                </a>
-                            </div>
+                                    {{-- 📄 PDF --}}
+                                    @elseif (in_array($fileExtension, $pdfExtensions))
+                                        <div class="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-white">
+                                            <iframe src="{{ $filePath }}" width="100%" height="500px" class="border-none"></iframe>
+                                        </div>
+                                        <div class="mt-4 flex justify-end">
+                                            <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl font-black text-sm hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 uppercase italic text-white">
+                                                <i class="ri-download-cloud-2-line text-white"></i> Download PDF
+                                            </a>
+                                        </div>
 
-                        {{-- 🗄️ อื่นๆ --}}
-                        @else
-                            <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200">
-                                <div class="flex items-center gap-3">
-                                    <i class="ri-file-unknow-line text-3xl text-slate-300"></i>
-                                    <span class="font-bold text-slate-600 uppercase">{{ strtoupper($fileExtension) }} File</span>
+                                    {{-- 🗄️ อื่นๆ --}}
+                                    @else
+                                        <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200">
+                                            <div class="flex items-center gap-3">
+                                                <i class="ri-file-unknow-line text-3xl text-slate-300"></i>
+                                                <span class="font-bold text-slate-600 uppercase">{{ strtoupper($fileExtension) }} File</span>
+                                            </div>
+                                            <a href="{{ $filePath }}" target="_blank" class="px-4 py-2 bg-slate-800 text-white rounded-lg font-black text-xs hover:bg-orange-600 transition-all uppercase italic text-white">
+                                                Download
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
-                                <a href="{{ $filePath }}" target="_blank" class="px-4 py-2 bg-slate-800 text-white rounded-lg font-black text-xs hover:bg-orange-600 transition-all uppercase italic text-white">
-                                    Download
-                                </a>
-                            </div>
-                        @endif
+                            @else
+                                <div class="bg-amber-50 border border-amber-100 text-amber-800 p-4 rounded-xl text-xs font-bold italic">
+                                    <i class="ri-error-warning-line"></i> ไม่พบไฟล์แนบ: {{ $fileName }}
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
                 @else
                     <div class="flex items-center gap-2 text-slate-300 italic text-sm">

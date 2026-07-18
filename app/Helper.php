@@ -630,3 +630,25 @@ if (!function_exists('active_year')) {
     }
 }
 
+if (!function_exists('visitor_count')) {
+    function visitor_count() {
+        try {
+            $baseOffset = 1578;
+            return \Illuminate\Support\Facades\DB::table('visitor_logs')->count() + $baseOffset;
+        } catch (\Exception $e) {
+            return 1578;
+        }
+    }
+}
+
+if (!function_exists('online_count')) {
+    function online_count() {
+        try {
+            return \Illuminate\Support\Facades\DB::table('visitor_logs')
+                ->where('last_activity', '>=', now()->subMinutes(5))
+                ->count();
+        } catch (\Exception $e) {
+            return 1;
+        }
+    }
+}

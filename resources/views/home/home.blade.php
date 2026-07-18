@@ -19,6 +19,10 @@
     }
     .animate-float { animation: float 8s ease-in-out infinite; }
     .animate-float-delayed { animation: float 10s ease-in-out infinite; animation-delay: 3s; }
+    .home-slogan strong, .home-slogan b {
+        font-weight: normal;
+        color: #fef08a; /* text-yellow-200 color */
+    }
     .particle {
         position: absolute;
         background: white;
@@ -50,10 +54,9 @@
         
         <div class="w-24 h-1 bg-yellow-400 mx-auto mb-6 rounded-full shadow-sm"></div>
 
-        <p class="text-lg sm:text-2xl text-emerald-50 font-light max-w-4xl mx-auto leading-relaxed drop-shadow-md">
-            "วิจิตรเมืองชุมพร อารยธรรมท่าแซะ พุทธศิลป์ปะทิว ถิ่นขวัญสืบศาสตร์ <br class="hidden md:inline"> 
-            <span class="font-normal text-yellow-200">สร้างสรรค์คู่คุณธรรม ล้ำหน้าเทคโนโลยี</span> วิถีคุณภาพชุมพรหนึ่ง"
-        </p>
+        <div class="text-lg sm:text-2xl text-emerald-50 font-light max-w-4xl mx-auto leading-relaxed drop-shadow-md home-slogan">
+            {!! ($config->first() && $config->first()->app_slogan) ? $config->first()->app_slogan : '"วิจิตรเมืองชุมพร อารยธรรมท่าแซะ พุทธศิลป์ปะทิว ถิ่นขวัญสืบศาสตร์ <br class=\"hidden md:inline\"> <span class=\"font-normal text-yellow-200\">สร้างสรรค์คู่คุณธรรม ล้ำหน้าเทคโนโลยี</span> วิถีคุณภาพชุมพรหนึ่ง"' !!}
+        </div>
 
         <div class="mt-8 flex justify-center gap-4 opacity-80">
             <div class="text-xs sm:text-sm border border-white/30 rounded-full px-4 py-1 flex items-center bg-white/10 backdrop-blur-sm">

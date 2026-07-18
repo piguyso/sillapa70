@@ -216,19 +216,54 @@ window.setTimeout(function() {
 });
 
 
+function showCustomConfirm(title, message, onConfirm) {
+    const modalHtml = `
+        <div id="custom-confirm-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;">
+            <div style="background-color: white; border-radius: 24px; padding: 32px; max-width: 448px; width: 100%; margin: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #f1f5f9; text-align: center; font-family: 'Sarabun', sans-serif;">
+                <div style="width: 64px; height: 64px; background-color: #fef2f2; color: #ef4444; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 30px;">
+                    <i class="ri-error-warning-line"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 900; color: #1e293b; margin-bottom: 8px; margin-top: 0;">${title}</h3>
+                <p style="font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 32px; line-height: 1.625;">${message}</p>
+                <div style="display: flex; gap: 16px;">
+                    <button id="confirm-cancel" style="flex: 1; padding: 14px 0; background-color: #f1f5f9; color: #475569; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                        ยกเลิก
+                    </button>
+                    <button id="confirm-ok" style="flex: 1; padding: 14px 0; background-color: #dc2626; color: white; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                        ยืนยัน
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = document.getElementById('custom-confirm-modal');
+    const cancelBtn = document.getElementById('confirm-cancel');
+    const okBtn = document.getElementById('confirm-ok');
+    const closeModal = () => { modal.remove(); };
+    cancelBtn.addEventListener('click', closeModal);
+    okBtn.addEventListener('click', () => {
+        closeModal();
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+    });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
+
 function DelConfirm($x)
 {
-var result = confirm("ยืนยันการลบข้อมูล?");
-    if (result) {
+    showCustomConfirm('ยืนยันการลบข้อมูล', 'คุณต้องการลบข้อมูลนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้', function() {
         document.getElementById('delform'+$x).submit();
-    }
+    });
 }
 function SaveConfirm($x)
 {
-var result = confirm("ยืนยันการบันทึกข้อมูล?");
-    if (result) {
+    showCustomConfirm('ยืนยันการบันทึกข้อมูล', 'คุณต้องการยืนยันการบันทึกข้อมูลใช่หรือไม่?', function() {
         document.getElementById($x).submit();
-    }
+    });
 }
 
 
@@ -283,6 +318,33 @@ var result = confirm("ยืนยันการบันทึกข้อม�
           });  //กำหนดเป็นวันปัจุบัน
   
 </script>
-
+    @if(Session::has('massage') || Session::has('success') || Session::has('status'))
+        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #10b981; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
+            <i class="ri-checkbox-circle-fill" style="font-size: 20px;"></i>
+            <span>{{ Session::get('massage') ?? Session::get('success') ?? Session::get('status') }}</span>
+        </div>
+        <style>
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(100px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        </style>
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-notification');
+                if (toast) {
+                    toast.style.transform = 'translateY(20px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        </script>
+    @endif
 </body>
 </html>

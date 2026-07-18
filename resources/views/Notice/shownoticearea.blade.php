@@ -1,24 +1,15 @@
 @extends('layouts.apparea')
 
 @section('content')
-<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <style>
-    /* ปรับแต่งความสูงของ Editor และสไตล์ให้เข้ากับธีม */
-    .ck-editor__editable {
-        min-height: 200px;
-        @apply rounded-b-2xl !important;
+    .ql-toolbar.ql-snow {
+        @apply border-none bg-slate-50 border-b border-slate-200 p-2 !important;
     }
-    .ck-toolbar {
-        @apply rounded-t-2xl border-slate-200 !important;
-        bg-slate-50 !important;
-    }
-    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
-        border-color: #e2e8f0 !important;
-    }
-    .ck.ck-editor__main>.ck-editor__editable.ck-focused {
-        border-color: #f97316 !important; /* orange-500 */
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1) !important;
+    .ql-container.ql-snow {
+        @apply border-none !important;
+        font-family: 'Sarabun', sans-serif !important;
     }
 </style>
 
@@ -110,8 +101,11 @@
 
                         <div class="space-y-1 text-slate-800">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest italic text-slate-800">รายละเอียด (Detail)</label>
-                            <div class="text-slate-800 italic font-sarabun text-slate-800">
-                                <textarea name="notice_detail" id="editor">{{ old('notice_detail') }}</textarea>
+                            <input type="hidden" name="notice_detail" id="notice_detail" value="{{ old('notice_detail') }}">
+                            <div class="rounded-2xl overflow-hidden bg-white border border-slate-200">
+                                <div id="quill_editor" style="min-height: 200px; font-family: 'Sarabun', sans-serif;">
+                                    {!! old('notice_detail') !!}
+                                </div>
                             </div>
                         </div>
 
@@ -131,20 +125,41 @@
 </div>
 
 <script>
-    // Initialize CKEditor 5
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-            language: 'th'
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    // Initialize Quill Editor
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        placeholder: 'เขียนรายละเอียดประกาศตรงนี้...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
+    });
+
+    // Sync Quill content to hidden input on submit
+    document.querySelectorAll('form').forEach(form => {
+        const hiddenInput = form.querySelector('#notice_detail');
+        const editorDiv = form.querySelector('#quill_editor');
+        if (hiddenInput && editorDiv) {
+            form.addEventListener('submit', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+        }
+    });
+
 
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบประกาศนี้?')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบประกาศ',
+            'คุณต้องการลบประกาศนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

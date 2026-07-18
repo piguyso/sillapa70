@@ -21,4 +21,19 @@ class Notices extends Model
      public function getschoolgroup(){
         return $this->hasOne('App\Schoolgroup','id','schoolgroup');
     }
+
+    public function getFilesAttribute()
+    {
+        $file = $this->notice_file;
+        if (empty($file)) {
+            return [];
+        }
+        if (strpos($file, '[') === 0) {
+            $decoded = json_decode($file, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return [$file];
+    }
 }

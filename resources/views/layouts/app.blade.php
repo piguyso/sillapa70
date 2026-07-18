@@ -444,9 +444,18 @@
 
     <footer class="bg-white border-t-4 border-primary mt-12 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="mb-4 flex justify-center">
-                <div id="histats_counter"></div>
-                <script type="text/javascript">var _Hasync= _Hasync|| [];_Hasync.push(['Histats.start', '1,4737145,4,438,112,75,00011111']);_Hasync.push(['Histats.fasi', '1']);_Hasync.push(['Histats.track_hits', '']);(function() {var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;hs.src = ('//s10.histats.com/js15_as.js');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);})();</script>
+            <div class="mb-4 flex items-center justify-center gap-4">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200 shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>ผู้ใช้งานออนไลน์: <strong class="font-black">{{ number_format(online_count()) }}</strong> คน</span>
+                </div>
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 rounded-full text-xs font-bold border border-slate-200 shadow-sm">
+                    <i class="ri-eye-line text-slate-500 text-sm"></i>
+                    <span>ผู้เข้าชมทั้งหมด: <strong class="font-black">{{ number_format(visitor_count()) }}</strong> ครั้ง</span>
+                </div>
             </div>
             <p class="text-gray-500 text-sm font-bold">© COPYRIGHT 2026, ALL RIGHTS RESERVED</p>
             <p class="text-gray-400 text-xs mt-1">Version 1.2.0 (Develop by <a href="https://www.facebook.com/piguyso" class="text-primary hover:underline">piguyso</a>)</p>
@@ -463,5 +472,71 @@
 
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        window.showCustomConfirm = function(title, message, onConfirm) {
+            const modalHtml = `
+                <div id="custom-confirm-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div style="background-color: white; border-radius: 24px; padding: 32px; max-width: 448px; width: 100%; mx: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #f1f5f9; text-align: center; font-family: 'Sarabun', 'Inter', sans-serif;" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 text-center animate-in zoom-in duration-300">
+                        <div style="width: 64px; height: 64px; background-color: #fef2f2; color: #ef4444; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 30px;" class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                            <i class="ri-error-warning-line"></i>
+                        </div>
+                        <h3 style="font-size: 20px; font-weight: 900; color: #1e293b; margin-bottom: 8px; margin-top: 0;" class="text-xl font-black text-slate-800 mb-2 font-sarabun">${title}</h3>
+                        <p style="font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 32px; line-height: 1.625;" class="text-sm text-slate-500 font-medium mb-8 font-sarabun leading-relaxed">${message}</p>
+                        <div style="display: flex; gap: 16px;" class="flex gap-4 font-sarabun">
+                            <button id="confirm-cancel" style="flex: 1; padding: 14px 0; background-color: #f1f5f9; color: #475569; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 bg-slate-100 text-slate-600 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all uppercase tracking-wider">
+                                ยกเลิก
+                            </button>
+                            <button id="confirm-ok" style="flex: 1; padding: 14px 0; background-color: #dc2626; color: white; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-red-200 uppercase tracking-wider">
+                                ยืนยัน
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = document.getElementById('custom-confirm-modal');
+            const cancelBtn = document.getElementById('confirm-cancel');
+            const okBtn = document.getElementById('confirm-ok');
+            const closeModal = () => { modal.remove(); };
+            cancelBtn.addEventListener('click', closeModal);
+            okBtn.addEventListener('click', () => {
+                closeModal();
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+    </script>
+    @if(Session::has('massage') || Session::has('success') || Session::has('status'))
+        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #10b981; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
+            <i class="ri-checkbox-circle-fill" style="font-size: 20px;"></i>
+            <span>{{ Session::get('massage') ?? Session::get('success') ?? Session::get('status') }}</span>
+        </div>
+        <style>
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(100px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        </style>
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-notification');
+                if (toast) {
+                    toast.style.transform = 'translateY(20px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        </script>
+    @endif
 </body>
 </html>

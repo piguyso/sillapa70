@@ -71,10 +71,10 @@
             </div>
 
             <div class="group">
-                <form method="POST" action="{{url('dataempty')}}" class="h-full">
+                <form id="empty-form" method="POST" action="{{url('dataempty')}}" class="h-full">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="post">
-                    <button type="submit" onclick="return confirm('⚠️ ยืนยันลบข้อมูลผู้เข้าแข่งขันทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!');"
+                    <button type="button" id="btn-empty"
                             class="w-full h-full flex flex-col items-center justify-center p-8 bg-red-50 border-2 border-red-100 rounded-3xl hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl group">
                         <div class="w-16 h-16 rounded-2xl bg-white text-red-600 flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform group-hover:bg-white/20 group-hover:text-white">
                             <i class="ri-delete-bin-line text-3xl"></i>
@@ -106,21 +106,42 @@
 $(document).ready(function() {
     // --- ปุ่ม Transfer ---
     $('#btn-transfer').click(function() {
-        if(!confirm('ยืนยันการดึงข้อมูล?')) return;
-        runProcess(
-            "{{ secure_url(route('datatranfer.store', [], false)) }}",
-            "{{ secure_url(route('datatranfer.progress', [], false)) }}",
-            'กำลังดึงข้อมูลเข้าระบบ...'
+        showCustomConfirm(
+            'ยืนยันการดึงข้อมูล',
+            'คุณต้องการดึงข้อมูลล่าสุดใช่หรือไม่?',
+            function() {
+                runProcess(
+                    "{{ secure_url(route('datatranfer.store', [], false)) }}",
+                    "{{ secure_url(route('datatranfer.progress', [], false)) }}",
+                    'กำลังดึงข้อมูลเข้าระบบ...'
+                );
+            }
         );
     });
 
     // --- ปุ่ม Backup ---
     $('#btn-backup').click(function() {
-        if(!confirm('ยืนยันการ Backup ฐานข้อมูล? (อาจใช้เวลาสักครู่)')) return;
-        runProcess(
-            "{{ secure_url(route('databackup', [], false))}}",
-            "{{ secure_url(route('databackup.progress', [], false)) }}",
-            'กำลังสำรองข้อมูล (Database Backup)...'
+        showCustomConfirm(
+            'ยืนยันการสำรองข้อมูล',
+            'ยืนยันการ Backup ฐานข้อมูล? (อาจใช้เวลาสักครู่)',
+            function() {
+                runProcess(
+                    "{{ secure_url(route('databackup', [], false))}}",
+                    "{{ secure_url(route('databackup.progress', [], false)) }}",
+                    'กำลังสำรองข้อมูล (Database Backup)...'
+                );
+            }
+        );
+    });
+
+    // --- ปุ่ม Empty ---
+    $('#btn-empty').click(function() {
+        showCustomConfirm(
+            'ยืนยันการลบข้อมูลทั้งหมด',
+            '⚠️ ยืนยันลบข้อมูลผู้เข้าแข่งขันทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!',
+            function() {
+                $('#empty-form').submit();
+            }
         );
     });
 
