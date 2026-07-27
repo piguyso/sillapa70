@@ -15,6 +15,7 @@ use App\dayofsillapas;
 use App\systemactives;
 use App\addstudent;
 use App\titles;
+use Illuminate\Support\Facades\Storage;
 class CentersillapaController extends Controller
 {
     /**
@@ -305,20 +306,11 @@ public function updatestudentname(Request $request, $id)
 
         // ตั้งชื่อไฟล์ใหม่ (ใช้ ID + Timestamp เพื่อป้องกันชื่อซ้ำ)
         $fileName = "profile_center_" . $id . "_" . time() . '.' . $type;
-        $path = public_path('picture/' . $fileName);
-
-        // ตรวจสอบ/สร้างโฟลเดอร์ public/picture
-        if (!file_exists(public_path('picture'))) {
-            mkdir(public_path('picture'), 0777, true);
-        }
-
-        // บันทึกไฟล์รูปภาพจริงลงใน Server
-        file_put_contents($path, $data);
+        $year = $addstudent->year ?: active_year();
+        Storage::disk('public')->put(storage_year_path('picture', $fileName, $year), $data);
 
         // ลบรูปภาพเก่าทิ้ง (ถ้ามี) เพื่อประหยัดพื้นที่
-        if ($addstudent->student_image && file_exists(public_path('picture/' . $addstudent->student_image))) {
-            @unlink(public_path('picture/' . $addstudent->student_image));
-        }
+        delete_storage_file('picture', $addstudent->student_image, $year);
 
         // อัปเดตชื่อไฟล์รูปภาพลงในฐานข้อมูล
         $addstudent->student_image = $fileName;

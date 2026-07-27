@@ -127,7 +127,7 @@
                         </a>
                         <div class="w-32 h-32 rounded-2xl border-4 border-white shadow-md overflow-hidden bg-slate-100">
                             @if($person->student_image)
-                                <img src="{{ asset('picture/'.$person->student_image) }}" class="w-full h-full object-cover">
+                                <img src="{{ get_secure_file_url('picture', $person->student_image, $person->year) }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300"><i class="ri-user-line text-5xl"></i></div>
                             @endif

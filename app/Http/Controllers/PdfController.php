@@ -53,7 +53,7 @@ public function areaprinttest($id){
  
                  $pdf::AddPage('L','A4');
                 // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -65,7 +65,7 @@ if (file_exists($imagePath)) {
 
                  
 // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -147,7 +147,7 @@ if (file_exists($imagePath)) {
 
 
 // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -390,7 +390,7 @@ public function areaprintPDF2(request $request){
                $pdf::AddPage('L','A4');
              
               // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -594,7 +594,7 @@ for($i=0;$i< count($jows);$i++) {
   $pdf::AddPage('L','A4');
 
  // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -742,7 +742,7 @@ for($i=0;$i< count($jows);$i++) {
         //   $pdf::Image('imgs/bg.JPG', 0, 0, 300, 210, 'JPG', '', '', false, 300, '', false, false, 0, false, false, false); 
          //  }
         // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -881,7 +881,7 @@ public function areaprintjow2doccerf($id){
            $pdf::AddPage('L','A4');
          //  if($cerfiticatechk[0]->status==0){
          // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -1310,7 +1310,7 @@ for($i=0;$i< count($jows);$i++) {
   $pdf::AddPage('L','A4');
 
  // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -1553,7 +1553,7 @@ for($i=0;$i< count($jows);$i++) {
         //   $pdf::Image('imgs/bg.JPG', 0, 0, 300, 210, 'JPG', '', '', false, 300, '', false, false, 0, false, false, false); 
          //  }
         // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -1860,7 +1860,7 @@ public function printjow2doccerf($id){
            $pdf::AddPage('L','A4');
          //  if($cerfiticatechk[0]->status==0){
          // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')

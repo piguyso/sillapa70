@@ -8,6 +8,7 @@ use App\addstudent;
 use App\Activities;
 use App\titles;
 use Session;
+use Illuminate\Support\Facades\Storage;
 class AddstudentController extends Controller
 {
     /**
@@ -185,20 +186,11 @@ class AddstudentController extends Controller
 
         // ตั้งชื่อไฟล์ใหม่: ใช้ ID + เวลา เพื่อป้องกันชื่อซ้ำ
         $fileName = "stu_" . $id . "_" . time() . '.' . $type;
-        $path = public_path('picture/' . $fileName);
-
-        // ตรวจสอบว่าโฟลเดอร์ public/picture มีหรือยัง ถ้าไม่มีให้สร้าง
-        if (!file_exists(public_path('picture'))) {
-            mkdir(public_path('picture'), 0777, true);
-        }
-
-        // บันทึกไฟล์ลงใน public/picture
-        file_put_contents($path, $data);
+        $year = $addstudent->year ?: active_year();
+        Storage::disk('public')->put(storage_year_path('picture', $fileName, $year), $data);
 
         // ลบรูปเก่าทิ้ง (ถ้ามี) เพื่อประหยัดพื้นที่เซิร์ฟเวอร์
-        if ($addstudent->student_image && file_exists(public_path('picture/' . $addstudent->student_image))) {
-            @unlink(public_path('picture/' . $addstudent->student_image));
-        }
+        delete_storage_file('picture', $addstudent->student_image, $year);
 
         // เก็บชื่อไฟล์ใหม่ลงฐานข้อมูล
         $addstudent->student_image = $fileName;

@@ -70,7 +70,7 @@
                                     @if(!empty($l->files))
                                         <div class="flex flex-col gap-2">
                                             @foreach($l->files as $file)
-                                                <a href="{{ url('upload/' . $file) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[10px] font-bold border border-blue-100 break-all">
+                                                <a href="{{ get_secure_file_url('upload', $file, $l->year) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[10px] font-bold border border-blue-100 break-all">
                                                     <i class="ri-file-download-line text-sm shrink-0"></i>
                                                     <span class="truncate max-w-[150px]">{{ $file }}</span>
                                                 </a>

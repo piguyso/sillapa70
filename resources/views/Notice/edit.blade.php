@@ -74,7 +74,7 @@
                                     @php
                                         $filename = $l->notice_file ?? '';
                                         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                                        $filePath = !empty($filename) ? url('/upload/'.$filename) : '';
+                                        $filePath = !empty($filename) ? get_secure_file_url('upload', $filename, $l->year) : '';
                                         $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
                                     @endphp
                                     <img id="img_preview" src="{{ $isImage ? $filePath : '' }}" class="w-full h-full object-cover @if(!$isImage) hidden @endif">

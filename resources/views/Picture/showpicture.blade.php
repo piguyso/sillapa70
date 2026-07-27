@@ -34,7 +34,7 @@
                        <td><span class="glyphicon glyphicon-option-vertical"></span>{{Datethai6($l->updated_at)}}</td>
                        <td>{{$l->notice_text}}</td>
                        <td>{{$l->notice_detail}}</td>
-                       <td><a href="upload/{{$l->notice_file}}">
+                       <td><a href="{{ get_secure_file_url('upload', $l->notice_file, $l->year) }}">
                         {{$l->notice_file}}</a></td>
                  
                        <td>

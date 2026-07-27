@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Configs;
 use Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 class ConfigController extends Controller
 {
     /**
@@ -154,14 +155,14 @@ class ConfigController extends Controller
             'app_certificate' => 'mimes:JPG,jpg,jpeg,png|max:12048'
            
         ]);
+        $Configs = Configs::where('schoolgroup', Auth::user()->schoolgroup)->where('id', $id)->firstOrFail();
+        $storageYear = $Configs->app_year ?: active_year();
+
         $fileupload = $request->file('app_certificate');
         if($fileupload){
-
             $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
-            $fileupload_filepath = $fileupload->move(public_path("upload"), $fileupload_filename);
-          
-           // return($fileupload_filename.'=='.$fileupload_filepath);
-       }else{
+            $fileupload->storeAs(storage_year_path('upload', '', $storageYear), $fileupload_filename, 'public');
+        }else{
             $fileupload_filename='';
         }
 
@@ -170,11 +171,7 @@ class ConfigController extends Controller
             $image = str_replace('data:image/png;base64,', '', $image);
             $image = str_replace(' ', '+', $image);
             $imageName = time().'_logo.png';
-            \File::put(public_path(). '/upload/' . $imageName, base64_decode($image));
-            
-           // dd($imageName);
-            // อัปเดตชื่อไฟล์ลง Database
-          //  $Configs->app_logo = $imageName;
+            Storage::disk('public')->put(storage_year_path('upload', $imageName, $storageYear), base64_decode($image));
         }else{
             $imageName = "";
         }
@@ -184,14 +181,12 @@ class ConfigController extends Controller
             $imageQr = str_replace('data:image/png;base64,', '', $imageQr);
             $imageQr = str_replace(' ', '+', $imageQr);
             $imageQrName = time().'_qr.png';
-            \File::put(public_path(). '/upload/' . $imageQrName, base64_decode($imageQr));
+            Storage::disk('public')->put(storage_year_path('upload', $imageQrName, $storageYear), base64_decode($imageQr));
         }else{
             $imageQrName = "";
         }
 
         //dd($fileupload_filename);
-       // $Configs= Configs::find($id);
-        $Configs = Configs::where('schoolgroup', Auth::user()->schoolgroup)->where('id', $id)->firstOrFail();
         $Configs->app_name = $request->app_name;
         $Configs->app_slogan = $request->app_slogan;
         $Configs->app_group = $request->app_group;

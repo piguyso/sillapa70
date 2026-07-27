@@ -53,7 +53,7 @@
                         <div class="md:col-span-2 flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                             <div class="relative">
                                 <div class="w-24 h-24 bg-white rounded-xl border flex items-center justify-center overflow-hidden shadow-sm">
-                                    <img id="img_preview_logo" src="{{ $l->app_logo ? url('/upload/'.$l->app_logo) : 'https://ui-avatars.com/api/?name=LOGO&background=random' }}" class="max-w-full max-h-full object-contain">
+                                    <img id="img_preview_logo" src="{{ $l->app_logo ? get_secure_file_url('upload', $l->app_logo, $l->app_year) : 'https://ui-avatars.com/api/?name=LOGO&background=random' }}" class="max-w-full max-h-full object-contain">
                                 </div>
                             </div>
                             <div class="space-y-2">
@@ -128,7 +128,7 @@
                         <div class="md:col-span-2 flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                             <div class="relative">
                                 <div class="w-24 h-24 bg-white rounded-xl border flex items-center justify-center overflow-hidden shadow-sm flex-shrink-0">
-                                    <img id="img_preview_qr" src="{{ $l->survey_qr ? url('/upload/'.$l->survey_qr) : url('/imgs/qr-code.png') }}" class="max-w-full max-h-full object-contain">
+                                    <img id="img_preview_qr" src="{{ $l->survey_qr ? get_secure_file_url('upload', $l->survey_qr, $l->app_year) : url('/imgs/qr-code.png') }}" class="max-w-full max-h-full object-contain">
                                 </div>
                             </div>
                             <div class="space-y-2 w-full">
@@ -156,7 +156,7 @@
 
                     <div class="space-y-4">
                         <div class="relative group aspect-[1.414/1] w-full rounded-2xl overflow-hidden bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center">
-                            <img id="img_preview_cert" src="{{url('/')}}/upload/{{$l->app_certificate}}" class="w-full h-full object-contain">
+                            <img id="img_preview_cert" src="{{ get_secure_file_url('upload', $l->app_certificate, $l->app_year) }}" class="w-full h-full object-contain">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <i class="ri-upload-cloud-2-line text-white text-4xl"></i>
                             </div>
@@ -255,7 +255,7 @@
             @forelse($configarea as $m)
                 <div class="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-500/5 transition-all">
                     <div class="aspect-[1.414/1] bg-slate-50 relative overflow-hidden">
-                        <img src="{{url('/upload/'.$m->app_certificate)}}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Certificate">
+                        <img src="{{ get_secure_file_url('upload', $m->app_certificate, $m->app_year) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Certificate">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <div class="p-5">

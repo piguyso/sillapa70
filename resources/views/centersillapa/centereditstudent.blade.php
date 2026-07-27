@@ -72,7 +72,7 @@
                             <td class="px-4 py-3">
                                 <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border-2 border-white shadow-lg flex items-center justify-center">
                                     @if($l->student_image)
-                                        <img src="{{ asset('picture/'.$l->student_image) }}" class="w-full h-full object-cover">
+                                        <img src="{{ get_secure_file_url('picture', $l->student_image, $l->year) }}" class="w-full h-full object-cover">
                                     @else
                                         <i class="ri-user-smile-line text-4xl text-emerald-600/20"></i>
                                     @endif
@@ -133,7 +133,7 @@
                             <td class="px-4 py-3">
                                 <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border-2 border-white shadow-lg flex items-center justify-center">
                                     @if($l->student_image)
-                                        <img src="{{ asset('picture/'.$l->student_image) }}" class="w-full h-full object-cover">
+                                        <img src="{{ get_secure_file_url('picture', $l->student_image, $l->year) }}" class="w-full h-full object-cover">
                                     @else
                                         <i class="ri-user-star-line text-4xl text-blue-600/20"></i>
                                     @endif

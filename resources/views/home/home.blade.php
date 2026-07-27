@@ -43,7 +43,7 @@
         
         <?php if($config->first() && $config->first()->app_logo): ?>
         <div class="mb-6 transform transition duration-500 hover:scale-110">
-            <img src="upload/{{ $config->first()->app_logo }}" alt="Logo" class="h-24 sm:h-32 mx-auto drop-shadow-xl">
+            <img src="{{ get_secure_file_url('upload', $config->first()->app_logo, $config->first()->app_year) }}" alt="Logo" class="h-24 sm:h-32 mx-auto drop-shadow-xl">
         </div>
         <?php endif; ?>
         <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 drop-shadow-lg transform transition duration-500 hover:scale-105">
@@ -72,7 +72,7 @@
     $linkCriteria = ($firstConfig && $firstConfig->link_criteria) ? $firstConfig->link_criteria : 'https://drive.google.com/drive/folders/1xP0lMwMDzPHG3KEML2wmo2PT9MJx4gEU';
     $linkAi = ($firstConfig && $firstConfig->link_ai) ? $firstConfig->link_ai : 'https://notebooklm.google.com/notebook/4fa8bf0a-65f9-497f-97f6-ad382590d334';
     $linkSurvey = ($firstConfig && $firstConfig->link_survey) ? $firstConfig->link_survey : 'https://docs.google.com/forms/d/e/1FAIpQLSem-nWKQ3a9FjvS_8oklPsDs4VGZ3bIe6dPEOBTNtYqnu9qrg/viewform';
-    $surveyQr = ($firstConfig && $firstConfig->survey_qr) ? 'upload/' . $firstConfig->survey_qr : 'imgs/qr-code.png';
+    $surveyQr = ($firstConfig && $firstConfig->survey_qr) ? get_secure_file_url('upload', $firstConfig->survey_qr, $firstConfig->app_year) : 'imgs/qr-code.png';
 @endphp
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">

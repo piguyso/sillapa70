@@ -20,7 +20,7 @@
 
               <div class="panel-body">
               {{$l->notice_detail}}<br>
-              <a href="../upload/{{$l->notice_file}}" target="_blank">
+              <a href="{{ get_secure_file_url('upload', $l->notice_file, $l->year) }}" target="_blank">
               {{$l->notice_file}}</a>
 
   

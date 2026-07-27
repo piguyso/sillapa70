@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Notices;
 use Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 class NoticeController extends Controller
 {
     public function __construct()
@@ -25,9 +26,10 @@ class NoticeController extends Controller
 
             $file = $request->file('image');
             $filename = md5(uniqid(rand(), true)) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('upload'), $filename);
-            
-            echo 'upload/' . $filename;
+            $year = active_year();
+            $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
+
+            echo get_secure_file_url('upload', $filename, $year);
         } else {
             echo 'No file uploaded';
         }
@@ -123,15 +125,16 @@ class NoticeController extends Controller
         $uploadedFilenames = [];
         if ($request->hasFile('notice_file')) {
             $fileUploads = $request->file('notice_file');
+            $year = active_year();
             if (is_array($fileUploads)) {
                 foreach ($fileUploads as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path("upload"), $filename);
+                    $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                     $uploadedFilenames[] = $filename;
                 }
             } else {
                 $filename = time() . '_' . $fileUploads->getClientOriginalName();
-                $fileUploads->move(public_path("upload"), $filename);
+                $fileUploads->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                 $uploadedFilenames[] = $filename;
             }
         }
@@ -204,15 +207,16 @@ class NoticeController extends Controller
         if ($request->hasFile('notice_file')) {
             $fileUploads = $request->file('notice_file');
             $uploadedFilenames = [];
+            $year = active_year();
             if (is_array($fileUploads)) {
                 foreach ($fileUploads as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path("upload"), $filename);
+                    $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                     $uploadedFilenames[] = $filename;
                 }
             } else {
                 $filename = time() . '_' . $fileUploads->getClientOriginalName();
-                $fileUploads->move(public_path("upload"), $filename);
+                $fileUploads->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                 $uploadedFilenames[] = $filename;
             }
             $notice->notice_file = json_encode($uploadedFilenames, JSON_UNESCAPED_UNICODE);

@@ -75,7 +75,7 @@ public function printPDF(request $request){
                $pdf::AddPage('L','A4');
              
               // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
@@ -219,7 +219,7 @@ public function printstudent($id){
                 $pdf::AddPage('L','A4');
                           
                // ใช้พังก์ชั่น str_replace เปลี่ยน \ เป็น / เพื่อให้ Library อ่านง่ายขึ้น
-$imagePath = str_replace('\\', '/', public_path('upload/' . $pic[0]->app_certificate));
+$imagePath = storage_file_path('upload', $pic[0]->app_certificate, $pic[0]->app_year ?? active_year());
 
 if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')

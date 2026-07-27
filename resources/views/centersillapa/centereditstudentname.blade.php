@@ -53,7 +53,7 @@
                     <div id="preview-container" class="relative">
                         <div class="preview-box">
                             <img id="current-image" 
-                                 src="{{ $addstudent->student_image ? asset('picture/'.$addstudent->student_image) : 'https://ui-avatars.com/api/?name='.urlencode($addstudent->name).'&background=random' }}" 
+                                 src="{{ $addstudent->student_image ? get_secure_file_url('picture', $addstudent->student_image, $addstudent->year) : 'https://ui-avatars.com/api/?name='.urlencode($addstudent->name).'&background=random' }}" 
                                  class="w-full h-full object-cover">
                         </div>
                         <label for="upload" class="absolute -bottom-2 -right-2 w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center cursor-pointer hover:bg-slate-800 transition-all shadow-xl">

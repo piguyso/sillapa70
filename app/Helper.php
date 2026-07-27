@@ -630,6 +630,80 @@ if (!function_exists('active_year')) {
     }
 }
 
+if (!function_exists('storage_year_path')) {
+    function storage_year_path($subDir = '', $fileName = '', $year = null) {
+        $year = $year ?: active_year();
+        $parts = [trim($year, '/')];
+
+        if (!empty($subDir)) {
+            $parts[] = trim($subDir, '/');
+        }
+        if (!empty($fileName)) {
+            $parts[] = basename($fileName);
+        }
+
+        return implode('/', array_filter($parts));
+    }
+}
+
+if (!function_exists('storage_file_exists')) {
+    function storage_file_exists($subDir, $fileName, $year = null) {
+        if (empty($fileName)) {
+            return false;
+        }
+
+        $path = storage_year_path($subDir, $fileName, $year);
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            return true;
+        }
+
+        return file_exists(public_path(trim($subDir, '/') . '/' . basename($fileName)));
+    }
+}
+
+if (!function_exists('storage_file_path')) {
+    function storage_file_path($subDir, $fileName, $year = null) {
+        $path = storage_year_path($subDir, $fileName, $year);
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            return str_replace('\\', '/', \Illuminate\Support\Facades\Storage::disk('public')->path($path));
+        }
+
+        return str_replace('\\', '/', public_path(trim($subDir, '/') . '/' . basename($fileName)));
+    }
+}
+
+if (!function_exists('get_secure_file_url')) {
+    function get_secure_file_url($subDir, $fileName, $year = null) {
+        if (empty($fileName)) {
+            return null;
+        }
+
+        return route('secure.download', [
+            'year' => $year ?: active_year(),
+            'type' => trim($subDir, '/'),
+            'file' => basename($fileName),
+        ]);
+    }
+}
+
+if (!function_exists('delete_storage_file')) {
+    function delete_storage_file($subDir, $fileName, $year = null) {
+        if (empty($fileName)) {
+            return;
+        }
+
+        $path = storage_year_path($subDir, $fileName, $year);
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+        }
+
+        $legacyPath = public_path(trim($subDir, '/') . '/' . basename($fileName));
+        if (file_exists($legacyPath)) {
+            @unlink($legacyPath);
+        }
+    }
+}
+
 if (!function_exists('visitor_count')) {
     function visitor_count() {
         try {

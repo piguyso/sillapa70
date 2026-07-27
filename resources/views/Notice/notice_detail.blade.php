@@ -45,11 +45,11 @@
                 <div class="mt-8 pt-8 border-t border-gray-100 space-y-8">
                     @foreach($l->files as $fileName)
                         @php
-                            $filePath = asset('upload/' . $fileName);
+                            $filePath = get_secure_file_url('upload', $fileName, $l->year);
                             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                             $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                             $pdfExtensions = ['pdf'];
-                            $isFileAvailable = file_exists(public_path('upload/' . $fileName));
+                            $isFileAvailable = storage_file_exists('upload', $fileName, $l->year);
                         @endphp
 
                         @if ($isFileAvailable)

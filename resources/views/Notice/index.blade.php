@@ -83,7 +83,7 @@
                                         @foreach($l->files as $filename)
                                             @php
                                                 $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                                                $filePath = url('/upload/'.$filename);
+                                                $filePath = get_secure_file_url('upload', $filename, $l->year);
                                             @endphp
                                             @if($extension == 'pdf')
                                                 <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-600 hover:text-white transition-all shadow-sm">

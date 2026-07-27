@@ -43,7 +43,7 @@
                         <div class="space-y-4">
                             <div class="relative group bg-slate-100 rounded-3xl border-2 border-dashed border-slate-300 p-2 overflow-hidden aspect-[1.414/1] flex items-center justify-center shadow-inner">
                                 @if($config[0]->app_certificate != "")
-                                    <img id="app_certificate_preview" src="{{url('/')}}/upload/{{$config[0]->app_certificate}}" class="w-full h-full object-cover rounded-2xl shadow-md transition-all duration-300">
+                                    <img id="app_certificate_preview" src="{{ get_secure_file_url('upload', $config[0]->app_certificate, $config[0]->app_year) }}" class="w-full h-full object-cover rounded-2xl shadow-md transition-all duration-300">
                                     <div id="no_img_placeholder" class="hidden text-center text-slate-300">
                                         <i class="ri-image-add-line text-5xl"></i>
                                         <p class="text-[10px] font-black mt-2 uppercase italic text-slate-400">เลือกรูปพื้นหลัง</p>

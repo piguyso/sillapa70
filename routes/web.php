@@ -140,6 +140,12 @@ Route::resource('jow','jowController');
 Route::resource('report','ReportController');
 Route::resource('Notice','NoticeController');
 
+Route::get('secure-assets/{year}/{type}/{file}', 'FileDownloadController@download')
+    ->where('year', '[0-9]{4}')
+    ->where('type', 'picture|upload')
+    ->where('file', '[^/]+')
+    ->name('secure.download');
+
 //Route::post('noticeupload',[NoticeController::class,'noticeupload'])->name('noticeupload');
 Route::post('noticeupload','NoticeController@noticeupload')->middleware('auth')->name('noticeupload');
 Route::get('area/shownotice','NoticeController@shownoticearea')->middleware('auth');

@@ -30,17 +30,17 @@
               {
               ?>
                  
-              <img src="../upload/{{$l->notice_file}}" class="img-responsive img-rounded"><br>
+              <img src="{{ get_secure_file_url('upload', $l->notice_file, $l->year) }}" class="img-responsive img-rounded"><br>
               <?php
               }else
               {
                   // Is not image 
                   ?>
-                  <embed src="../upload/{{$l->notice_file}}" width="100%" height="600px" type="application/pdf"> 
+                  <embed src="{{ get_secure_file_url('upload', $l->notice_file, $l->year) }}" width="100%" height="600px" type="application/pdf">
                   <?php
               }
               ?>
-              <a href="../upload/{{$l->notice_file}}" target="_blank">
+              <a href="{{ get_secure_file_url('upload', $l->notice_file, $l->year) }}" target="_blank">
               {{$l->notice_file}}</a>
 
   
