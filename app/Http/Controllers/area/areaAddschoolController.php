@@ -192,7 +192,7 @@ class areaAddschoolController extends Controller
     {
         $addschool = addschools_areas::find($id);
         $addschool->delete();
-        addstudent::where('school',$id)->delete();
+        addstudents_areas::where('school',$id)->delete();
         Session::flash('massage','Data has been deleted..');
         return redirect(url()->previous());
 

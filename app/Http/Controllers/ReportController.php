@@ -39,8 +39,10 @@ class ReportController extends Controller
         $branch = branch::all();
         $area = Schoolgroup::where('id',$id)->get();
        
+        $activeYear = active_year();
         $activitycount = DB::table('Activities')
         ->select('activity_subject', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('activity_subject')
         ->pluck('total','activity_subject');
 
@@ -76,8 +78,10 @@ class ReportController extends Controller
     public function areajowviewactivity($id){
         //dd($id);
 
+        $activeYear = active_year();
         $schoolcountactivity = DB::table('addschools')
         ->select('school_activity', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('school_activity')
         ->pluck('total','school_activity');
 
@@ -116,8 +120,10 @@ class ReportController extends Controller
             $subjectgroup = subjectgroup::where('id','like','%')->orderby('in_dex','asc')->paginate(1000);
         $branch = branch::all();
        
+        $activeYear = active_year();
         $activitycount = DB::table('Activities')
         ->select('activity_subject', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('activity_subject')
         ->pluck('total','activity_subject');
 
@@ -145,8 +151,10 @@ class ReportController extends Controller
     public function jowviewactivity($id){
         //dd($id);
 
+        $activeYear = active_year();
         $schoolcountactivity = DB::table('addschools')
         ->select('school_activity', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('school_activity')
         ->pluck('total','school_activity');
 

@@ -64,9 +64,11 @@ class areaSubjectgroupController extends Controller
 
     public function showactivity($id){
 
- $schoolcountactivity = DB::table('addschools_areas')
+        $activeYear = active_year();
+        $schoolcountactivity = DB::table('addschools_areas')
         ->select('school_activity', DB::raw('count(*) as total'))
         ->where('school_schoolgroup',Auth::user()->schoolgroup)
+        ->where('year', $activeYear)
         ->groupBy('school_activity')
         ->pluck('total','school_activity');
 
