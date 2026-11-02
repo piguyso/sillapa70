@@ -43,7 +43,7 @@
                             <th class="px-6 py-2">กิจกรรมการแข่งขัน</th>
                             <th class="px-6 py-2">ช่วงชั้น</th>
                             <th class="px-6 py-2 text-center">ลงทะเบียน</th>
-                            <th class="px-6 py-2 text-right">จัดการผล</th>
+                            <th class="px-6 py-2 text-center">สถานะผล</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm font-bold italic text-slate-800">
@@ -72,30 +72,37 @@
                                     <i class="ri-team-line"></i> {{ $schoolcountactivity[$l->id] ?? 0 }} ทีม
                                 </span>
                             </td>
-                            <td class="px-6 py-6 text-right rounded-r-2xl">
-                                <div class="flex justify-end gap-2">
-                                    @if(Auth::user()->position == 5 || Auth::user()->position == 1)
-                                        @if(isset($schoolcountactivity[$l->id]))
-                                            <a href="{{url('area/centerviewactivityschool/'.$l->id)}}" class="px-4 py-2 bg-orange-600 text-white rounded-xl hover:bg-amber-900 transition-all text-[10px] font-black uppercase shadow-lg shadow-orange-100 flex items-center gap-2">
-                                                <i class="ri-shield-flash-line"></i> บันทึกผล
-                                            </a>
-                                        @endif
+                            <td class="px-6 py-6 text-center">
+                                @php $actStatus = $l->getactivitystatus->activity_status ?? 0; @endphp
+                                @if($actStatus == 1)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-checkbox-circle-fill text-emerald-500"></i> ประกาศผลแล้ว
+                                    </span>
+                                @elseif($actStatus == 98)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-close-circle-fill text-red-500"></i> ไม่มีการแข่งขัน
+                                    </span>
+                                @elseif($actStatus == 99)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-award-fill text-amber-500"></i> มอบเกียรติบัตร
+                                    </span>
+                                @elseif($actStatus == 2)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-slate-500 border border-slate-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-spam-2-fill"></i> ยกเลิกผล
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-50 text-slate-400 border border-slate-100 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-time-line"></i> รอประกาศ
+                                    </span>
+                                @endif
+                            <td class="px-6 py-6 text-center rounded-r-2xl">
+                                @if(Auth::user()->position == 5 || Auth::user()->position == 1)
+                                    @if(isset($schoolcountactivity[$l->id]))
+                                        <a href="{{url('area/centerviewactivityschool/'.$l->id)}}" class="px-4 py-2 bg-orange-600 text-white rounded-xl hover:bg-amber-900 transition-all text-[10px] font-black uppercase shadow-lg shadow-orange-100 flex items-center gap-2 w-fit">
+                                            <i class="ri-shield-flash-line"></i> บันทึกผล
+                                        </a>
                                     @endif
-                                    
-                                    <button type="button" 
-                                        class="btn-open-modal w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-xl hover:bg-orange-600 transition-all shadow-md"
-                                        data-name="{{$l->activity_name}}"
-                                        data-class="{{$l->getclass->class_name ?? '-'}}"
-                                        data-students="{{$l->activity_studennumber}}"
-                                        data-teachers="{{$l->activity_teachernumber}}"
-                                        data-quota="{{$l->activity_schoolteamnumber}}"
-                                        data-score="{{$l->activity_score}}"
-                                        data-status="{{ getactivitystatus($l->getactivitystatus->activity_status ?? '0') }}"
-                                        data-print="{{url('/area/printpointdoc/'.$l->id)}}"
-                                        data-reg="{{url('/area/studentregisterform/'.$l->id)}}">
-                                        <i class="ri-search-eye-line text-white"></i>
-                                    </button>
-                                </div>
+                                @endif
                             </td>
                         </tr>
                         @empty

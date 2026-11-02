@@ -76,39 +76,10 @@ class AreaController extends Controller
     ->groupBy('activity_subject')
     ->pluck('total','activity_subject');
 
-      $activityfinish = DB::table('Activities')
-    ->select('activity_subject', DB::raw('count(*) as total'))
-    ->where('activity_status','=','1')
-    ->where('year', $activeYear)
-    ->groupBy('activity_subject')
-    ->pluck('total','activity_subject');
-   /* $activityfinish = addschools_areas::where('activity_status', 1)
-    ->where('school_schoolgroup',session('area'))
-    ->get()
-    ->unique('school_activity')
-    ->values();*/
-   /* $activityfinish = addschools_areas::where('activity_status', 1)
-    ->select('school_activity', DB::raw('COUNT(*) as total'))
-    ->groupBy('school_activity')
-    ->get();*/
-
-$activityfinish = DB::table('addschools_areas')
-    ->join('activities', 'addschools_areas.school_activity', '=', 'activities.id')
-    ->where('addschools_areas.activity_status', 1)
-    ->where('addschools_areas.year', $activeYear)
-    ->groupBy('activities.activity_subject')
-    ->select(
-        'activities.activity_subject',
-        DB::raw('COUNT(DISTINCT activities.activity_subject) as total')
-    )
-    ->pluck('total','activity_subject');
-    //->get();
-
-
 $rows = DB::table('activities')
     ->join('addschools_areas', 'activities.id', '=', 'addschools_areas.school_activity')
-    ->where('addschools_areas.activity_status', 1)
-    ->where('addschools_areas.school_schoolgroup',$id)
+    ->whereIn('addschools_areas.activity_status', [1, 98, 99])
+    ->where('addschools_areas.school_schoolgroup', $id)
     ->where('addschools_areas.year', $activeYear)
     ->groupBy('activities.activity_subject')
     ->select(
@@ -117,16 +88,20 @@ $rows = DB::table('activities')
     )
     ->get();
 
+if ($rows->isEmpty()) {
+    $rows = DB::table('activities')
+        ->join('addschools_areas', 'activities.id', '=', 'addschools_areas.school_activity')
+        ->whereIn('addschools_areas.activity_status', [1, 98, 99])
+        ->where('addschools_areas.school_schoolgroup', $id)
+        ->groupBy('activities.activity_subject')
+        ->select(
+            'activities.activity_subject',
+            DB::raw('COUNT(DISTINCT activities.id) as total')
+        )
+        ->get();
+}
 
 $activityfinish = $rows->pluck('total', 'activity_subject')->toArray();
-
-
-
-
- //   dd($result);
-
-
-
 
     ////////////////////////
     $schoolgroupcount  = DB::table('schools')
@@ -155,13 +130,12 @@ $activityfinish = $rows->pluck('total', 'activity_subject')->toArray();
     (select count(activity_rank) from addschools_areas c where c.school_name = a.school_name and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
     (select count(activity_rank) from addschools_areas d where d.school_name = a.school_name  and d.student_score < 70 and d.student_score > 0 and d.year = ?) as Bronce
     FROM addschools_areas a 
-    where activity_status = 1 and school_schoolgroup = ? and a.year = ?
+    where activity_status IN (1, 98, 99) and school_schoolgroup = ? and a.year = ?
     group by school_name
     order by Gold desc,Silver desc, Bronce desc,activity_rank asc limit 10", [$activeYear, $activeYear, $activeYear, $id, $activeYear]);
 
-  // ผลการาแข่งขัีนล่าสุด
-  // $firstactivity = activities::where('id','like','%')->where('activity_status','=','1')->orderBy('updated_at','desc')->paginate(15);
-   $firstactivity = addschools_areas::where('activity_status', 1)
+  // ผลการแข่งขันล่าสุด
+   $firstactivity = addschools_areas::whereIn('activity_status', [1, 98, 99])
     ->where('school_schoolgroup',session('area'))
     ->orderBy('updated_at','desc')
     ->get()

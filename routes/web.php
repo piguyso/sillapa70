@@ -153,6 +153,9 @@ Route::get('area/shownotice','NoticeController@shownoticearea')->middleware('aut
 
 Route::post('config/years', 'ConfigController@addYear')->name('config.addYear')->middleware(['auth', 'centermiddleware']);
 Route::delete('config/years/{id}', 'ConfigController@deleteYear')->name('config.deleteYear')->middleware(['auth', 'centermiddleware']);
+Route::post('config/years/active/{id}', 'ConfigController@setActiveYear')->name('config.setActiveYear')->middleware(['auth', 'centermiddleware']);
+Route::post('config/years/active-value/{year}', 'ConfigController@setActiveYearByValue')->name('config.setActiveYearByValue')->middleware(['auth', 'centermiddleware']);
+Route::post('config/activities/copy', 'ConfigController@copyActivities')->name('config.copyActivities')->middleware(['auth', 'centermiddleware']);
 Route::resource('config','ConfigController')->middleware(['auth', 'centermiddleware']);
 
 Route::get('myreg','Auth\RegisterController@myreg')->name('myreg.form');

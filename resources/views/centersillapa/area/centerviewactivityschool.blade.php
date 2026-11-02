@@ -145,8 +145,26 @@
                                 </button>
                             @endif
 
-                            @elseif(in_array($status, [1, 98, 99]))
-                          
+                            @elseif(in_array($status, [1, 98, 99, 2]))
+                                <div class="flex flex-wrap items-center gap-4 w-full">
+                                    @if($status == 1)
+                                        <div class="px-6 py-3.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-2xl font-black text-sm uppercase italic tracking-wider flex items-center gap-2">
+                                            <i class="ri-checkbox-circle-fill text-lg text-emerald-500 animate-pulse"></i> ประกาศผลการแข่งขันเรียบร้อยแล้ว
+                                        </div>
+                                    @elseif($status == 98)
+                                        <div class="px-6 py-3.5 bg-red-50 text-red-700 border border-red-200 rounded-2xl font-black text-sm uppercase italic tracking-wider flex items-center gap-2">
+                                            <i class="ri-close-circle-fill text-lg text-red-500"></i> ประกาศผลแล้ว (ไม่มีการแข่งขัน - ไม่มอบเกียรติบัตร)
+                                        </div>
+                                    @elseif($status == 99)
+                                        <div class="px-6 py-3.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-2xl font-black text-sm uppercase italic tracking-wider flex items-center gap-2">
+                                            <i class="ri-award-fill text-lg text-amber-500"></i> ประกาศผลแล้ว (ไม่มีการแข่งขัน - มอบเกียรติบัตร)
+                                        </div>
+                                    @elseif($status == 2)
+                                        <div class="px-6 py-3.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-2xl font-black text-sm uppercase italic tracking-wider flex items-center gap-2">
+                                            <i class="ri-spam-2-fill text-lg text-slate-500"></i> ยกเลิกผลการแข่งขันแล้ว
+                                        </div>
+                                    @endif
+                                </div>
                             @endif
                     </div>
                 </div>

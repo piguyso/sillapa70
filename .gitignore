@@ -1,8 +1,14 @@
+# Laravel & System Logs
 *.log
 .DS_Store
+Thumbs.db
+
+# Environment Files
 .env
 .env.backup
 .env.production
+
+# IDEs & Editor Configuration
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -12,13 +18,37 @@
 /.vscode
 /.zed
 /auth.json
+Homestead.json
+Homestead.yaml
+
+# Dependencies & Build Files
 /node_modules
+/vendor
 /public/build
 /public/hot
 /public/storage
+
+# System Uploads (Exclude user uploaded files, keep web.config and .gitkeep)
+/public/upload/*
+!/public/upload/.gitkeep
+!/public/upload/web.config
+
+# Laravel Storage & Framework Cache
 /storage/*.key
 /storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
-Thumbs.db
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Database Backups & Temporary Scripts
+*.sql
+check_*.php

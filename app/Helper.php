@@ -626,7 +626,7 @@ function pricechk3($int1,$int2)
 
 if (!function_exists('active_year')) {
     function active_year() {
-        return session('year') ?: config('app.year') ?: env('APP_YEAR', '2570');
+        return config('app.year') ?: env('APP_YEAR', '2570');
     }
 }
 

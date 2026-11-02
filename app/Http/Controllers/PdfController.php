@@ -31,7 +31,8 @@ class PdfController extends Controller
      }
 
 public function areaprinttest($id){
-        $pic = Configs::where('schoolgroup',Session('area'))->get();
+        $pic = Configs::where('schoolgroup',Session('area'))->where('app_year', active_year())->get();
+        if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',Session('area'))->orderBy('app_year','desc')->get();
       // dd($pic[0]->app_certificate);
        $id = 1;
        $score = 80;
@@ -123,7 +124,8 @@ if (file_exists($imagePath)) {
 
 
      public function printtest(){
-      $pic = Configs::all();
+      $pic = Configs::where('app_year', active_year())->get();
+      if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
      //  dd($pic[0]->app_certificate);
        $id = 1;
        $score = 80;
@@ -205,8 +207,8 @@ if (file_exists($imagePath)) {
 //---------------------------- ปริ้นเกียรติบัตร รายกิจกรรม
 public function areaprintPDF(request $request){
   //dd($request);
- // $pic = Configs::all();
-  $pic = Configs::where('schoolgroup',Session('area'))->get();
+  $pic = Configs::where('schoolgroup',Session('area'))->where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',Session('area'))->orderBy('app_year','desc')->get();
  // dd($request);
   $id = $request->id;
   $score = $request->student_score;
@@ -339,7 +341,8 @@ for($i=0;$i< count($addstudent);$i++) {
 public function areaprintPDF2(request $request){
 
     // dd($request);
-  $pic = Configs::where('schoolgroup',Session('area'))->get();
+  $pic = Configs::where('schoolgroup',Session('area'))->where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',Session('area'))->orderBy('app_year','desc')->get();
  // dd($request);
   $id = $request->id;
   $score = $request->student_score;
@@ -485,7 +488,8 @@ public function areaprintjowcerf($id){
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudents_areas::where('school','=',$id)->paginate(65);
-  $pic = Configs::all();
+  $pic = Configs::where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
@@ -567,7 +571,8 @@ public function areaprintjowcerf_showbg($id){
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudent::where('school','=',$id)->paginate(65);
-  $pic = Configs::where('schoolgroup',Session('area'))->get();
+  $pic = Configs::where('schoolgroup',Session('area'))->where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',Session('area'))->orderBy('app_year','desc')->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
@@ -716,7 +721,8 @@ for($i=0;$i< count($jows);$i++) {
          //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
         // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
         // $addstudent = addstudent::where('school','=',$id)->paginate(65);
-       $pic = Configs::where('schoolgroup',Session('area'))->get();
+       $pic = Configs::where('schoolgroup',Session('area'))->where('app_year', active_year())->get();
+       if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',Session('area'))->orderBy('app_year','desc')->get();
         // dd($addschool[0]->getactivityname->activity_name);
          //dd(count($addstudent));
        
@@ -856,7 +862,8 @@ public function areaprintjow2doccerf($id){
            //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
           // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
           // $addstudent = addstudent::where('school','=',$id)->paginate(65);
-        $pic = Configs::where('schoolgroup',$id)->get();
+        $pic = Configs::where('schoolgroup',$id)->where('app_year', active_year())->get();
+        if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',$id)->orderBy('app_year','desc')->get();
           // dd($addschool[0]->getactivityname->activity_name);
            //dd(count($addstudent));
          $year = years::find(1)->get();
@@ -937,7 +944,8 @@ if (file_exists($imagePath)) {
 
 //---------------------------- ปริ้นเกียรติบัตร รายกิจกรรม
 public function printPDF(request $request){
-  $pic = Configs::all();
+  $pic = Configs::where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
   //dd($request);
 
 
@@ -1088,7 +1096,8 @@ public function printactivitycerf($id,$score,$inx){
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudent::where('school','=',$id)->paginate(55);
-  $pic = Configs::all();
+  $pic = Configs::where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
@@ -1205,7 +1214,8 @@ public function printjowcerf($id){
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudent::where('school','=',$id)->paginate(65);
-  $pic = Configs::all();
+  $pic = Configs::where('app_year', active_year())->get();
+  if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
@@ -1285,7 +1295,8 @@ public function printjowcerf_showbg($id){
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudent::where('school','=',$id)->paginate(65);
- $pic = Configs::all();
+ $pic = Configs::where('app_year', active_year())->get();
+if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
@@ -1527,7 +1538,8 @@ for($i=0;$i< count($jows);$i++) {
          //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
         // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
         // $addstudent = addstudent::where('school','=',$id)->paginate(65);
-       $pic = Configs::all();
+          $pic = Configs::where('app_year', active_year())->get();
+          if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
         // dd($addschool[0]->getactivityname->activity_name);
          //dd(count($addstudent));
        
@@ -1835,7 +1847,8 @@ public function printjow2doccerf($id){
            //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
           // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
           // $addstudent = addstudent::where('school','=',$id)->paginate(65);
-         $pic = Configs::all();
+         $pic = Configs::where('app_year', active_year())->get();
+        if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
           // dd($addschool[0]->getactivityname->activity_name);
            //dd(count($addstudent));
          $year = years::find(1)->get();

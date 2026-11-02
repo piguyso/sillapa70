@@ -15,13 +15,9 @@ class mymiddleware
      */
     public function handle($request, Closure $next)
     {
-      //  if (Auth::user()->position != '1') {
-            //return view('errors.notpermis');
-       //     return response()->view('errors.notpermis');
-       // }elseif (Auth::user()->position != '1'){
-
-      //  }
-
+      // position 1  = บันทึกคะแนน / ศูนย์
+      // position 5  = เครือข่ายสถานศึกษา (แก้ได้เฉพาะรูปเกียรติบัตรของตัวเอง)
+      // position 10 = ผู้ดูแลระบบ
 
       if (Auth::user()->position == '1')
       {
@@ -29,6 +25,11 @@ class mymiddleware
       }
       elseif (Auth::user()->position == '10')
       {
+        return $next($request);
+      }
+      elseif (Auth::user()->position == '5')
+      {
+        // อนุญาตเฉพาะ GET (ดูหน้า) และ PUT/PATCH (บันทึก) — ตรวจสอบละเอียดอีกครั้งใน Controller
         return $next($request);
       }
       else

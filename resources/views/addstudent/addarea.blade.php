@@ -95,7 +95,9 @@
                                                     <i class="ri-delete-bin-line text-xl"></i>
                                                 </button>
                                                 <form id="delform{{$l->id}}" method="post" action="{{ route('areaaddstudent.destroy',$l->id)}}" class="hidden">
-                                                    <input type="hidden" name="_method" value="DELETE"/> {!!csrf_field()!!}
+                                                    <input type="hidden" name="_method" value="DELETE"/>
+                                                    <input type="hidden" name="redirect_url" value="{{ url('area/addaddstudent/'.$addschool[0]->id) }}"/>
+                                                    {!!csrf_field()!!}
                                                 </form>
                                             @endif
                                         @endif
@@ -159,7 +161,9 @@
                                                     <i class="ri-delete-bin-line text-xl"></i>
                                                 </button>
                                                 <form id="delform{{$l->id}}" method="post" action="{{ route('areaaddstudent.destroy',$l->id)}}" class="hidden">
-                                                    <input type="hidden" name="_method" value="DELETE"/> {!!csrf_field()!!}
+                                                    <input type="hidden" name="_method" value="DELETE"/>
+                                                    <input type="hidden" name="redirect_url" value="{{ url('area/addaddstudent/'.$addschool[0]->id) }}"/>
+                                                    {!!csrf_field()!!}
                                                 </form>
                                             @endif
                                         @endif
@@ -239,9 +243,13 @@
 
 <script>
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบรายชื่อผู้เข้าร่วม? ข้อมูลนี้จะไม่สามารถกู้คืนได้ และจะส่งผลต่อการจัดทีมแข่งขัน')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบรายชื่อ',
+            '⚠️ คุณต้องการลบรายชื่อผู้เข้าร่วมนี้ออกจากระบบใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนี้จะไม่สามารถกู้คืนได้</span>',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
 </script>
 @endsection

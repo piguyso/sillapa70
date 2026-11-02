@@ -52,7 +52,6 @@
                             <th class="px-6 py-2">ช่วงชั้น</th>
                             <th class="px-6 py-2 text-center">จำนวนทีม</th>
                             <th class="px-6 py-2 text-center">สถานะ</th>
-                            <th class="px-6 py-2 text-right">ข้อมูล</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm font-bold italic text-slate-800">
@@ -62,7 +61,7 @@
                         @forelse($activity as $l)
                         @php $x++; @endphp
                         
-                        <tr class="group bg-white hover:bg-orange-50/30 transition-all border border-slate-100 shadow-sm rounded-2xl cursor-pointer main-row text-slate-800" data-target="detail-{{$l->id}}">
+                        <tr class="group bg-white hover:bg-orange-50/30 transition-all border border-slate-100 shadow-sm rounded-2xl text-slate-800">
                             <td class="px-6 py-6 text-center text-slate-300 italic rounded-l-2xl border-l-4 border-transparent group-hover:border-orange-500 text-slate-800">
                                 {{ $x }}.
                             </td>
@@ -79,42 +78,28 @@
                                 </span>
                             </td>
                             <td class="px-6 py-6 text-center text-slate-800">
-                                @php $status = $l->getactivitystatus->activity_status ?? '0'; @endphp
-                                <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase italic shadow-sm
-                                    @if($status == '1' || $status == '99') bg-emerald-100 text-emerald-600 
-                                    @else bg-slate-100 text-slate-400 @endif">
-                                    {{ getactivitystatus($status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-6 text-right rounded-r-2xl text-slate-800">
-                                <button class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 rounded-xl border border-slate-100 group-hover:bg-orange-500 group-hover:text-white transition-all text-white">
-                                    <i class="ri-information-line text-lg text-white"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr class="detail-row text-slate-800" id="detail-{{$l->id}}">
-                            <td colspan="6" class="px-10 py-8 border-x-8 border-orange-500 rounded-b-3xl shadow-inner text-slate-800">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-800">
-                                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-slate-800">
-                                        <h4 class="text-[10px] font-black text-orange-600 uppercase italic mb-4 tracking-widest leading-none">เกณฑ์การตัดสินและรายละเอียด</h4>
-                                        <div class="space-y-3 text-xs font-bold text-slate-700">
-                                            <div class="flex justify-between border-b border-slate-50 pb-2 italic text-slate-800"><span>กลุ่มสาระฯ:</span><span class="text-slate-900">{{$l->getactivitysubject->subjectgroup_name}}</span></div>
-                                            <div class="flex justify-between border-b border-slate-50 pb-2 italic text-slate-800"><span>ระดับชั้น:</span><span class="text-slate-900">{{$l->getclass->class_name}}</span></div>
-                                            <div class="flex justify-between border-b border-slate-50 pb-2 italic text-slate-800"><span>นักเรียน:</span><span class="text-slate-900">{{$l->activity_studennumber}} คน/ทีม</span></div>
-                                            <div class="flex justify-between border-b border-slate-50 pb-2 italic text-slate-800"><span>ครูผู้ควบคุม:</span><span class="text-slate-900">{{$l->activity_teachernumber}} คน/ทีม</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-col justify-center gap-4 text-slate-800">
-                                        <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 text-slate-800">
-                                            <p class="text-[10px] font-black text-orange-800 uppercase italic mb-1 text-slate-800 leading-none">คะแนนตัดสิน</p>
-                                            <p class="text-2xl font-black text-orange-600 text-slate-800">{{$l->activity_score}} คะแนน</p>
-                                        </div>
-                                        <a href="../viewactivitydetail/{{$l->id}}" class="w-full py-4 bg-amber-900 text-white rounded-2xl font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-center text-white">
-                                            <i class="ri-search-eye-line mr-1 text-white"></i> ดูผลประกาศคะแนนและอันดับ
-                                        </a>
-                                    </div>
-                                </div>
+                                @php $actStatus = $l->getactivitystatus->activity_status ?? 0; @endphp
+                                @if($actStatus == 1)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-checkbox-circle-fill text-emerald-500"></i> ประกาศผลแล้ว
+                                    </span>
+                                @elseif($actStatus == 98)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-close-circle-fill text-red-500"></i> ไม่มีการแข่งขัน
+                                    </span>
+                                @elseif($actStatus == 99)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-award-fill text-amber-500"></i> มอบเกียรติบัตร
+                                    </span>
+                                @elseif($actStatus == 2)
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-slate-500 border border-slate-200 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-spam-2-fill"></i> ยกเลิกผล
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-50 text-slate-400 border border-slate-100 rounded-xl text-[10px] font-black uppercase italic">
+                                        <i class="ri-time-line"></i> รอประกาศ
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                         @empty

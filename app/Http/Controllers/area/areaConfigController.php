@@ -17,13 +17,20 @@ class areaConfigController extends Controller
      */
     public function index()
     {
-        $dayofsillapa = dayofsillapas::where('schoolgroup',Auth::user()->schoolgroup)->get();
-        $config = Configs::where('schoolgroup',Auth::user()->schoolgroup)->get();
-        $systemactive = Systemactives::where('schoolgroup',Auth::user()->schoolgroup)->get();
+        $config = Configs::where('schoolgroup', Auth::user()->schoolgroup)
+                         ->where('app_year', active_year())
+                         ->get();
+        if ($config->isEmpty()) {
+            $config = Configs::where('schoolgroup', Auth::user()->schoolgroup)
+                             ->orderBy('app_year', 'desc')
+                             ->get();
+        }
+        $dayofsillapa = dayofsillapas::where('schoolgroup', Auth::user()->schoolgroup)->get();
+        $systemactive = Systemactives::where('schoolgroup', Auth::user()->schoolgroup)->get();
         $data = Array(
-            'config'=>$config,
+            'config' => $config,
             'systemactive' => $systemactive,
-             'dayofsillapa'=>$dayofsillapa,
+            'dayofsillapa' => $dayofsillapa,
         );
 
         return view('home.configarea',$data);

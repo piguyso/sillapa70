@@ -39,7 +39,8 @@ class HomeController extends Controller
             'showall1', 'viewall', 'printrandomz', 'printpointdoc',
             'viewactivitydetail', 'showschooldetail', 'switchYear'
         ]);
-        $activeYear = session('year') ?: config('app.year') ?: env('APP_YEAR', '2568');
+        $activeYearModel = \App\Years::where('active', 1)->first();
+        $activeYear = $activeYearModel ? $activeYearModel->years : '2568';
         $config = Configs::where('schoolgroup', 0)->where('app_year', $activeYear)->first();
         if (!$config) {
             $config = Configs::where('schoolgroup', 0)->first();

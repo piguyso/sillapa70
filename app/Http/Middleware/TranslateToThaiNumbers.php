@@ -9,6 +9,8 @@ class TranslateToThaiNumbers
 {
     /**
      * Handle an incoming request.
+     * แปลงเลขอารบิคเป็นเลขไทยเฉพาะหน้าพิมพ์เกียรติบัตร (URL มีคำว่า "print")
+     * หน้าเว็บทั่วไปใช้เลขอารบิคตามปกติ
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -17,6 +19,14 @@ class TranslateToThaiNumbers
     public function handle($request, Closure $next)
     {
         $response = $next($request);
+
+        // ตรวจสอบว่าเป็นหน้าพิมพ์เกียรติบัตร (URL ต้องมีคำว่า "print")
+        $isPrintPage = stripos($request->path(), 'print') !== false
+                    || stripos($request->path(), 'showall_print') !== false;
+
+        if (!$isPrintPage) {
+            return $response;
+        }
 
         // Process only successful HTML responses that contain a </body> tag
         if ($response instanceof Response) {

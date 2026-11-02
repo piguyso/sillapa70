@@ -105,13 +105,13 @@
                             <td class="px-4 py-6 text-center text-slate-800">
                                 @if($l->activity_status == "1" || $l->activity_status == "99")
                                     @php $medal = getmedel($l->student_score ?? ''); @endphp
-                                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm
-                                        @if($medal == 'เหรียญทอง') bg-yellow-400 text-yellow-900 
-                                        @elseif($medal == 'เหรียญเงิน') bg-slate-300 text-slate-800
-                                        @elseif($medal == 'เหรียญทองแดง') bg-orange-300 text-orange-900
-                                        @else bg-slate-100 text-slate-400 @endif">
-                                        {{ $medal }}
-                                    </span>
+                                    @if($medal == 'เหรียญทอง')
+                                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-yellow-400 text-yellow-900">{{ $medal }}</span>
+                                    @elseif($medal == 'เหรียญเงิน')
+                                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-slate-300 text-slate-800">{{ $medal }}</span>
+                                    @elseif($medal == 'เหรียญทองแดง')
+                                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-orange-300 text-orange-900">{{ $medal }}</span>
+                                    @endif
                                 @else
                                     <span class="text-slate-300 font-normal">-</span>
                                 @endif

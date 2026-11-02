@@ -36,7 +36,11 @@
                 </div>
 
                 <div class="p-8">
-                    <form method="POST" enctype="multipart/form-data" action="{{ Route('config.update', Auth::user()->schoolgroup) }}" class="space-y-6">
+                    @if(isset($config[0]))
+                    <form method="POST" enctype="multipart/form-data" action="{{ Route('config.update', $config[0]->id) }}" class="space-y-6">
+                    @else
+                    <form method="POST" enctype="multipart/form-data" action="#" class="space-y-6">
+                    @endif
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="put">
 

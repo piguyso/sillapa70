@@ -32,8 +32,10 @@ class ActivityController extends Controller
     {
         //dd($id);
 
+        $activeYear = active_year();
         $schoolcountactivity = DB::table('addschools')
         ->select('school_activity', DB::raw('count(*) as total'))
+        ->where('year', $activeYear)
         ->groupBy('school_activity')
         ->pluck('total','school_activity');
 

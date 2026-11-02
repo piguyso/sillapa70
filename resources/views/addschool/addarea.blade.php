@@ -103,11 +103,13 @@
                                                     <a href="{{url('area/addaddstudent/'.$l->id)}}" class="w-9 h-9 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                         <i class="ri-edit-2-line"></i>
                                                     </a>
-                                                    <button onclick="DelConfirm({{$l->id}})" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                                                    <button onclick="DelConfirm({{$l->id}}, '{{$addschool->currentPage()}}')" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm" title="ลบโรงเรียน">
                                                         <i class="ri-delete-bin-line"></i>
                                                     </button>
                                                     <form id="delform{{$l->id}}" method="post" action="{{ route('areaaddschool.destroy',$l->id)}}" class="hidden">
-                                                        <input type="hidden" name="_method" value="DELETE"/> {!!csrf_field()!!}
+                                                        <input type="hidden" name="_method" value="DELETE"/>
+                                                        <input type="hidden" name="redirect_url" value="{{ url('area/addaddschool/'.$activity->id) }}"/>
+                                                        {!!csrf_field()!!}
                                                     </form>
                                                 @endif
                                             @endif
@@ -187,9 +189,13 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบโรงเรียนนี้ออกจากรายการแข่งขัน? ข้อมูลนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย')) {
-            document.getElementById('delform' + id).submit();
-        }
+        showCustomConfirm(
+            'ยืนยันการลบโรงเรียน',
+            '⚠️ คุณต้องการลบโรงเรียนนี้ออกจากรายการแข่งขันใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย</span>',
+            function() {
+                document.getElementById('delform' + id).submit();
+            }
+        );
     }
     
     // Ajax สำหรับเลือกโรงเรียนตามเครือข่าย (ถ้าคุณมี API รองรับ)

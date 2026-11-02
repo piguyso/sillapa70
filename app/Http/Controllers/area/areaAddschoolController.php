@@ -190,11 +190,28 @@ class areaAddschoolController extends Controller
      */
     public function destroy($id)
     {
-        $addschool = addschools_areas::find($id);
-        $addschool->delete();
-        addstudents_areas::where('school',$id)->delete();
-        Session::flash('massage','Data has been deleted..');
-        return redirect(url()->previous());
+        // อ่าน school_activity จาก DB ก่อนลบ
+        $record = \Illuminate\Support\Facades\DB::table('addschools_areas')
+            ->where('id', $id)
+            ->first();
 
+        // ลบ students ก่อน
+        \Illuminate\Support\Facades\DB::table('addstudents_areas')
+            ->where('school', $id)
+            ->delete();
+
+        // ลบ school
+        \Illuminate\Support\Facades\DB::table('addschools_areas')
+            ->where('id', $id)
+            ->delete();
+
+        Session::flash('massage', 'ลบข้อมูลสำเร็จ');
+
+        // redirect กลับหน้า addaddschool ของ activity นั้นตรงๆ
+        $activityId = $record ? $record->school_activity : null;
+        if ($activityId) {
+            return redirect('area/addaddschool/' . $activityId);
+        }
+        return redirect()->back();
     }
 }

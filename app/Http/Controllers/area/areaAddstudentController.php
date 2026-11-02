@@ -237,6 +237,7 @@ class areaAddstudentController extends Controller
         $addstudent = addstudents_areas::find($id);
         $addstudent->delete();
         Session::flash('massage','ลบข้อมูลสำเร็จ..');
-        return redirect(url()->previous());
+        $redirectUrl = request()->input('redirect_url', url()->previous());
+        return redirect($redirectUrl);
     }
 }

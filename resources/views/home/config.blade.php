@@ -35,15 +35,32 @@
     </div>
 
     @forelse($config as $l)
-    <form method="POST" enctype="multipart/form-data" action="{{ Route('config.update',$l->id) }}" class="space-y-8 animate-fade-in">
+    <form method="POST" enctype="multipart/form-data" action="{{ Route('config.update',$l->id) }}" class="space-y-6 animate-fade-in">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="put">
         <input type="hidden" name="cropped_logo" id="cropped_logo">
         <input type="hidden" name="cropped_qr" id="cropped_qr">
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="lg:col-span-2 space-y-6">
+        <!-- Tab Buttons -->
+        <div class="flex flex-wrap border-b border-slate-100 mb-6 gap-2 bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
+            <button type="button" onclick="switchTab('general')" id="tab-btn-general" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-emerald-600 bg-emerald-50 transition-all flex items-center gap-2">
+                <i class="ri-settings-5-line text-lg"></i> ข้อมูลทั่วไป (General Settings)
+            </button>
+            <button type="button" onclick="switchTab('links')" id="tab-btn-links" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
+                <i class="ri-links-line text-lg"></i> ลิงก์และเอกสาร (Links & QR)
+            </button>
+            <button type="button" onclick="switchTab('certificate')" id="tab-btn-certificate" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
+                <i class="ri-file-shield-2-line text-lg"></i> เกียรติบัตร (Certificate template)
+            </button>
+            <button type="button" onclick="switchTab('activities')" id="tab-btn-activities" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
+                <i class="ri-folder-transfer-line text-lg"></i> ดึงข้อมูลกิจกรรม (Copy Activities)
+            </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="space-y-6">
+            <!-- Tab 1: General Settings -->
+            <div id="tab-content-general" class="tab-content block">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
                     <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
                         <i class="ri-edit-2-line text-emerald-500"></i> General Settings
@@ -96,14 +113,12 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Certificate Year</label>
-                            <input type="text" name="cerf_year" value="{{ $l->app_year }}" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
-                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Links & Documents Settings Card -->
+            <!-- Tab 2: Links & Documents Settings -->
+            <div id="tab-content-links" class="tab-content hidden">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
                     <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
                         <i class="ri-links-line text-emerald-500"></i> Links & Documents Settings (ลิงก์และเอกสารสำคัญ)
@@ -139,38 +154,175 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="flex justify-end">
-                    <button type="submit" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center gap-2 italic uppercase tracking-widest">
-                        <i class="ri-save-3-line text-xl"></i> Save Configuration
-                    </button>
-                </div>
             </div>
 
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                    <div class="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
-                        <h2 class="text-lg font-black text-gray-800 italic uppercase">Certificate Template</h2>
-                        <a href="{{url('/')}}/printtest" target="_blank" class="text-xs font-bold text-emerald-600 hover:underline"><i class="ri-eye-line"></i> Preview</a>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="relative group aspect-[1.414/1] w-full rounded-2xl overflow-hidden bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center">
-                            <img id="img_preview_cert" src="{{ get_secure_file_url('upload', $l->app_certificate, $l->app_year) }}" class="w-full h-full object-contain">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <i class="ri-upload-cloud-2-line text-white text-4xl"></i>
-                            </div>
-                        </div>
-
-                        <div class="relative">
-                            <input type="file" name="app_certificate" id="cert_input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewCert(event)">
-                            <div class="w-full py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs font-bold text-slate-500 group-hover:bg-slate-100 transition-all">
-                                <i class="ri-image-edit-line mr-1"></i> คลิกเพื่อเปลี่ยนไฟล์พื้นหลัง (.jpg, .png)
+            <!-- Tab 3: Certificate Template -->
+            <div id="tab-content-certificate" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                        <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
+                            <i class="ri-file-shield-2-line text-emerald-500"></i> Certificate template
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <p class="text-slate-500 text-sm">
+                                เลือกอัปโหลดไฟล์ภาพที่จะใช้เป็นพื้นหลังหลักของใบเกียรติบัตร ขนาดที่เหมาะสมและแนะนำคือ 1414 x 1000 พิกเซล (อัตราส่วนขนาดมาตรฐาน A4 แนวนอน) โดยจะต้องเป็นประเภทไฟล์ .jpg หรือ .png เท่านั้น
+                            </p>
+                            
+                            <div class="pt-2">
+                                <a href="{{url('/')}}/printtest" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-2xl font-black text-sm border border-emerald-200 transition-all shadow-sm">
+                                    <i class="ri-eye-line text-lg"></i> ทดสอบพิมพ์เกียรติบัตร (Preview Test)
+                                </a>
                             </div>
                         </div>
                     </div>
+
+                    <div class="lg:col-span-1 bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-4">
+                        <div class="flex items-center justify-between border-b border-gray-50 pb-4">
+                            <h3 class="text-sm font-black text-gray-800 italic uppercase">Preview / File</h3>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="relative group aspect-[1.414/1] w-full rounded-2xl overflow-hidden bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center">
+                                <img id="img_preview_cert" src="{{ get_secure_file_url('upload', $l->app_certificate, $l->app_year) }}" class="w-full h-full object-contain">
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i class="ri-upload-cloud-2-line text-white text-4xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <input type="file" name="app_certificate" id="cert_input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewCert(event)">
+                                <div class="w-full py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs font-bold text-slate-500 group-hover:bg-slate-100 transition-all">
+                                    <i class="ri-image-edit-line mr-1"></i> คลิกเพื่อเปลี่ยนไฟล์พื้นหลัง (.jpg, .png)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-10 border-slate-100">
+
+                <div class="space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <h3 class="text-2xl font-black text-slate-800 flex items-center gap-2 italic uppercase">
+                            <i class="ri-layout-grid-line text-emerald-500"></i> Area Certificates
+                        </h3>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-slate-500 font-medium">แสดงรูปพื้นหลังของ</span>
+                            <span class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-sm font-black">
+                                <i class="ri-calendar-line mr-1"></i>ปีการศึกษา {{ $selectedYear }}
+                            </span>
+                            <span class="text-xs text-slate-400 italic">เปลี่ยนปีได้จากหัวข้อ "ข้อมูลทั่วไป"</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        @forelse($configarea as $m)
+                            <div class="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-500/5 transition-all
+                                {{ Auth::user()->position == '5' && Auth::user()->schoolgroup != $m->schoolgroup ? 'opacity-50 pointer-events-none' : '' }}">
+                                <div class="aspect-[1.414/1] bg-slate-50 relative overflow-hidden">
+                                    <img src="{{ get_secure_file_url('upload', $m->app_certificate, $m->app_year) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Certificate">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="absolute top-2 right-2">
+                                        <span class="px-2 py-0.5 bg-black/60 text-white text-[10px] font-black rounded-lg backdrop-blur-sm">
+                                            {{ $m->app_year }}
+                                        </span>
+                                    </div>
+                                    {{-- ปุ่ม upload สำหรับ admin หรือ position=5 เฉพาะ schoolgroup ตัวเอง --}}
+                                    @if(Auth::user()->position != '5' || Auth::user()->schoolgroup == $m->schoolgroup)
+                                    <label for="cert_area_{{ $m->id }}" class="absolute inset-0 cursor-pointer opacity-0 group-hover:opacity-100 flex items-end justify-center pb-3 transition-opacity z-10">
+                                        <span class="px-3 py-1.5 bg-emerald-500 text-white text-xs font-black rounded-xl shadow-lg flex items-center gap-1">
+                                            <i class="ri-upload-cloud-2-line"></i> เปลี่ยนรูป
+                                        </span>
+                                    </label>
+                                    <form method="POST" action="{{ Route('config.update', $m->id) }}" enctype="multipart/form-data" class="hidden">
+                                        {{ csrf_field() }}
+                                        <input type="hidden" name="_method" value="put">
+                                        <input type="file" id="cert_area_{{ $m->id }}" name="app_certificate"
+                                               class="hidden" accept=".jpg,.jpeg,.png"
+                                               onchange="this.form.submit()">
+                                    </form>
+                                    @endif
+                                </div>
+                                <div class="p-5">
+                                    <p class="font-black text-gray-700 text-sm truncate uppercase italic tracking-tight">
+                                        {{$m->getschoolgroup->schoolgroup_name ?? 'ADMIN SETTING'}}
+                                    </p>
+                                    <p class="text-xs text-slate-400 mt-1">ปีการศึกษา {{ $m->app_year }}</p>
+                                    @if(Auth::user()->position == '5' && Auth::user()->schoolgroup == $m->schoolgroup)
+                                        <span class="inline-flex items-center gap-1 text-xs text-emerald-600 font-black mt-1">
+                                            <i class="ri-shield-check-line"></i> เครือข่ายของคุณ
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-span-4 py-12 text-center">
+                                <i class="ri-image-line text-4xl text-slate-300"></i>
+                                <p class="text-gray-400 italic text-sm mt-3">ยังไม่มีข้อมูลเกียรติบัตรสำหรับปีการศึกษา {{ $selectedYear }}</p>
+                                <p class="text-gray-300 text-xs mt-1">อัปโหลดรูปพื้นหลังในแต่ละพื้นที่ด้านบน</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
+
+            <!-- Tab 4: Copy Activities -->
+            <div id="tab-content-activities" class="tab-content hidden animate-fade-in">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                    <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
+                        <i class="ri-folder-transfer-line text-emerald-500"></i> คัดลอกข้อมูลกิจกรรมการแข่งขันไปยังปีปัจจุบัน
+                    </h2>
+                    
+                    <div class="p-6 bg-emerald-50/30 rounded-2xl border border-emerald-100/50 space-y-4">
+                        <h3 class="font-black text-emerald-800 text-base">คำชี้แจงในการดึงข้อมูลกิจกรรม:</h3>
+                        <p class="text-emerald-700 text-sm leading-relaxed">
+                            คุณสามารถดึงข้อมูลกิจกรรมการแข่งขัน (ตารางวิชาและกลุ่มกิจกรรม) จากปีการศึกษาเก่าที่มีอยู่ในระบบ มายังปีการศึกษาปัจจุบันได้โดยอัตโนมัติ เพื่อประหยัดเวลาในการสร้างกิจกรรมการแข่งขันใหม่ทีละรายการ
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ปีการศึกษาต้นทาง (Source Year)</label>
+                            <select id="source_year_select" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                                <option value="" disabled selected>-- เลือกปีการศึกษาต้นทาง --</option>
+                                @foreach($years as $y)
+                                    @if($y->years != active_year())
+                                        <option value="{{ $y->years }}">ปีการศึกษา {{ $y->years }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ปีการศึกษาปลายทาง (Target Year)</label>
+                            <input type="text" readonly value="ปีการศึกษา {{ active_year() }}" class="w-full px-4 py-3 rounded-2xl border border-gray-100 bg-slate-50 font-bold text-gray-500 shadow-inner text-center">
+                        </div>
+
+                        <div class="md:col-span-2 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="clear_existing_checkbox" name="clear_existing" class="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500">
+                                <label for="clear_existing_checkbox" class="text-sm font-bold text-gray-700 cursor-pointer">
+                                    ล้างข้อมูลกิจกรรมเดิมของปีปัจจุบัน ({{ active_year() }}) ก่อนคัดลอกข้อมูลใหม่
+                                </label>
+                            </div>
+                            <p class="text-xs text-red-500 font-bold mt-1 ml-8">* คำเตือน: ข้อมูลกิจกรรมทั้งหมดของปี {{ active_year() }} จะถูกลบออกถาวรก่อนจะคัดลอกใหม่ (หากเลือกข้อนี้)</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4">
+                        <button type="button" onclick="submitCopyActivities()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all flex items-center gap-2">
+                            <i class="ri-folder-transfer-line text-lg"></i> เริ่มดึงข้อมูลกิจกรรม
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Persistent Save Buttons -->
+        <div class="flex justify-end pt-4">
+            <button type="submit" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center gap-2 italic uppercase tracking-widest">
+                <i class="ri-save-3-line text-xl"></i> Save Configuration
+            </button>
         </div>
     </form>
     @empty
@@ -228,11 +380,23 @@
                     <label class="block text-xs font-black text-slate-400 uppercase tracking-widest italic leading-none">ปีการศึกษาทั้งหมดในระบบ</label>
                     <div class="max-h-48 overflow-y-auto pr-1 space-y-2" id="years_list_container">
                         @foreach($years as $y)
-                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:bg-slate-100/50 transition-all" id="year_row_{{ $y->id }}">
-                                <span class="font-bold text-sm text-slate-700">{{ $y->years }}</span>
-                                <button type="button" onclick="deleteYear({{ $y->id }}, '{{ $y->years }}')" class="w-8 h-8 inline-flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm">
-                                    <i class="ri-delete-bin-line"></i>
-                                </button>
+                            <div class="flex items-center justify-between p-3 {{ $y->active == 1 ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100' }} rounded-xl border group hover:bg-slate-100/50 transition-all" id="year_row_{{ $y->id }}">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-slate-700">{{ $y->years }}</span>
+                                    @if($y->active == 1)
+                                        <span class="px-2 py-0.5 bg-emerald-600 text-white text-[9px] font-black uppercase italic rounded-full shadow-sm">Active</span>
+                                    @endif
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    @if($y->active == 0)
+                                        <button type="button" onclick="setActiveYear({{ $y->id }}, '{{ $y->years }}')" class="px-3 py-1.5 bg-white text-slate-500 rounded-lg hover:bg-emerald-600 hover:text-white transition-all text-xs font-bold border border-slate-200 shadow-sm">
+                                            ตั้งเป็นปีหลัก
+                                        </button>
+                                    @endif
+                                    <button type="button" onclick="deleteYear({{ $y->id }}, '{{ $y->years }}')" class="w-8 h-8 inline-flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -245,30 +409,7 @@
         </div>
     </div>
 
-    <hr class="my-12 border-gray-100">
 
-    <div class="space-y-6">
-        <h3 class="text-2xl font-black text-slate-800 flex items-center gap-2 italic uppercase">
-            <i class="ri-layout-grid-line text-emerald-500"></i> Area Certificates
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @forelse($configarea as $m)
-                <div class="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-500/5 transition-all">
-                    <div class="aspect-[1.414/1] bg-slate-50 relative overflow-hidden">
-                        <img src="{{ get_secure_file_url('upload', $m->app_certificate, $m->app_year) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Certificate">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div class="p-5">
-                        <p class="font-black text-gray-700 text-sm truncate uppercase italic tracking-tight">
-                            {{$m->getschoolgroup->schoolgroup_name ?? 'ADMIN SETTING'}}
-                        </p>
-                    </div>
-                </div>
-            @empty
-                <p class="text-gray-400 italic text-sm">ยังไม่มีข้อมูลเกียรติบัตรรายพื้นที่</p>
-            @endforelse
-        </div>
-    </div>
 </div>
 
 <script>
@@ -436,12 +577,56 @@
         );
     }
 
+    function setActiveYear(id, yearVal) {
+        showCustomConfirm(
+            'ตั้งค่าปีหลักของระบบ',
+            `ยืนยันการตั้งค่าปีการศึกษา ${yearVal} เป็นปีการศึกษาหลักของระบบใช่หรือไม่?`,
+            function() {
+                fetch(`{{ url('config/years/active') }}/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    }
+                });
+            }
+        );
+    }
+
     // Listen to year select change to reload page with the selected year's config
     const yearSelect = document.querySelector('select[name="app_year"]');
     if (yearSelect) {
         yearSelect.addEventListener('change', function() {
             const yearVal = this.value;
-            window.location.href = "{{ route('config.index') }}?year=" + yearVal;
+            showCustomConfirm(
+                'สลับปีการศึกษาและข้อมูลระบบ',
+                `ยืนยันการตั้งค่าและสลับระบบทั้งหมดเป็นปีการศึกษา ${yearVal} ใช่หรือไม่?`,
+                function() {
+                    fetch(`{{ url('config/years/active-value') }}/${yearVal}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = "{{ route('config.index') }}?year=" + yearVal;
+                        } else {
+                            alert("ไม่สามารถเปลี่ยนปีการศึกษาหลักได้");
+                        }
+                    });
+                },
+                function() {
+                    // Reset to the previous selected value by reloading
+                    window.location.reload();
+                }
+            );
         });
     }
 
@@ -467,5 +652,87 @@
             });
         }
     });
+
+    function switchTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Show selected tab content
+        const activeContent = document.getElementById('tab-content-' + tabId);
+        if (activeContent) {
+            activeContent.classList.remove('hidden');
+            activeContent.classList.add('block');
+        }
+        
+        // Reset all tab button styles
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('text-emerald-600', 'bg-emerald-50');
+            btn.classList.add('text-slate-500', 'hover:text-slate-700');
+        });
+        
+        // Apply active styles to clicked button
+        const activeBtn = document.getElementById('tab-btn-' + tabId);
+        if (activeBtn) {
+            activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700');
+            activeBtn.classList.add('text-emerald-600', 'bg-emerald-50');
+        }
+    }
+
+    function submitCopyActivities() {
+        const sourceYear = document.getElementById('source_year_select').value;
+        const clearExisting = document.getElementById('clear_existing_checkbox').checked ? '1' : '0';
+
+        if (!sourceYear) {
+            alert('กรุณาเลือกปีการศึกษาต้นทาง');
+            return;
+        }
+
+        showCustomConfirm(
+            'ยืนยันการดึงข้อมูลกิจกรรม',
+            `คุณแน่ใจหรือไม่ว่าต้องการคัดลอกข้อมูลกิจกรรมการแข่งขันจากปี ${sourceYear} มายังปีปัจจุบัน?`,
+            function() {
+                const btn = document.querySelector('button[onclick="submitCopyActivities()"]');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="ri-loader-4-line animate-spin text-lg"></i> กำลังคัดลอกข้อมูล...';
+
+                fetch('{{ route("config.copyActivities") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        source_year: sourceYear,
+                        clear_existing: clearExisting
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    if (data.success) {
+                        alert(
+                            "คัดลอกข้อมูลเสร็จสมบูรณ์!\n\n" +
+                            `- กลุ่มสาระการแข่งขัน (subjectgroups): ${data.subjectgroups_count} รายการ\n` +
+                            `- สถานที่แข่งขัน (branches): ${data.branches_count} รายการ\n` +
+                            `- กิจกรรมการแข่งขัน (activities): ${data.activities_count} รายการ`
+                        );
+                        window.location.href = "{{ route('config.index') }}";
+                    } else {
+                        alert(data.message || 'เกิดข้อผิดพลาดในการคัดลอกข้อมูล');
+                    }
+                })
+                .catch(err => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+                });
+            }
+        );
+    }
 </script>
 @endsection
