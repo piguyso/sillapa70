@@ -66,6 +66,10 @@ class RegisterController extends Controller
     public function myreg(){
         abort(403, 'Public registration is disabled.');
     }
+    public function showRegistrationForm()
+    {
+        abort(403, 'Public registration is disabled.');
+    }
     // AJAX: ดึงข้อมูลโรงเรียนตามกลุ่มที่เลือก
     public function getSchoolsByGroup(Request $request)
     {

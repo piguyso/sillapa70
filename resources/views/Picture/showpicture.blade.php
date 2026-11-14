@@ -45,7 +45,7 @@
                             {!!csrf_field()!!}
                            </form>
                            <!--
-                           <a href="{{'jow/'.$l->id.'/edit'}}" class="btn btn-info btn-md">
+                           <a href="{{ url('jow/'.$l->id.'/edit') }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-pencil"></span>
                          </a>
 -->

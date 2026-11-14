@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="../" class="btn btn-info btn-md" onclick="">
+              <div class="panel-heading"><a href="{{ url('area/'.session('area')) }}" class="btn btn-info btn-md" onclick="">
                 <span class="glyphicon glyphicon-backward"></span>
                 </a> 
            
@@ -115,7 +115,7 @@
                           echo $x.'.';
                           ?>
                       </td>
-                       <td><a href="../viewactivitydetail/{{$l->id}}">{{$l->activity_name}}</a></td>
+                       <td><a href="{{ url('area/viewactivitydetail/'.$l->id) }}">{{$l->activity_name}}</a></td>
                        <td>{{$l->getclass->class_name}}</td>
                        <td>
                         

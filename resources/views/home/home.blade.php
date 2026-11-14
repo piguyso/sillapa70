@@ -33,7 +33,7 @@
 </style>
 
 
- <div class="relative bg-gradient-to-r from-primary via-emerald-600 to-primary bg-[length:200%_200%] animate-[gradient_8s_ease_infinite] rounded-3xl shadow-2xl mb-12 overflow-hidden transform transition-all duration-700 hover:shadow-emerald-500/20">
+ <div class="relative bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_200%] animate-[gradient_8s_ease_infinite] rounded-3xl shadow-2xl mb-12 overflow-hidden transform transition-all duration-700 hover:shadow-primary/20">
     
     <div class="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-white opacity-10 animate-float"></div>
     <div class="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 rounded-full bg-yellow-300 opacity-10 animate-float-delayed"></div>
@@ -72,7 +72,7 @@
     $linkCriteria = ($firstConfig && $firstConfig->link_criteria) ? $firstConfig->link_criteria : 'https://drive.google.com/drive/folders/1xP0lMwMDzPHG3KEML2wmo2PT9MJx4gEU';
     $linkAi = ($firstConfig && $firstConfig->link_ai) ? $firstConfig->link_ai : 'https://notebooklm.google.com/notebook/4fa8bf0a-65f9-497f-97f6-ad382590d334';
     $linkSurvey = ($firstConfig && $firstConfig->link_survey) ? $firstConfig->link_survey : 'https://docs.google.com/forms/d/e/1FAIpQLSem-nWKQ3a9FjvS_8oklPsDs4VGZ3bIe6dPEOBTNtYqnu9qrg/viewform';
-    $surveyQr = ($firstConfig && $firstConfig->survey_qr) ? get_secure_file_url('upload', $firstConfig->survey_qr, $firstConfig->app_year) : 'imgs/qr-code.png';
+    $surveyQr = ($firstConfig && $firstConfig->survey_qr) ? get_secure_file_url('upload', $firstConfig->survey_qr, $firstConfig->app_year) : asset('imgs/qr-code.png');
 @endphp
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
@@ -150,7 +150,7 @@
                                     <span class="bg-primary text-white text-xs px-2 py-1 rounded">{{$b->notice_owner}}</span>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <a href="notice_detail/{{$b->id}}" class="text-gray-800 hover:text-secondary font-medium">
+                                    <a href="{{ url('notice_detail/'.$b->id) }}" class="text-gray-800 hover:text-secondary font-medium">
                                         {{$b->notice_text}}
                                     </a>
                                     @php
@@ -192,7 +192,7 @@
                                     <span class="bg-secondary text-white text-xs px-2 py-1 rounded">{{$b->notice_owner}}</span>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <a href="notice_detail/{{$b->id}}" class="text-gray-800 hover:text-primary font-medium">
+                                    <a href="{{ url('notice_detail/'.$b->id) }}" class="text-gray-800 hover:text-primary font-medium">
                                         {{$b->notice_text}}
                                     </a>
                                     @php
@@ -224,7 +224,7 @@
                 @forelse($firstactivity as $b)
                     <div class="flex items-center text-sm">
                         <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                        <a href="viewactivitydetail/{{$b->id}}" class="text-gray-700 hover:text-secondary hover:underline truncate">
+                        <a href="{{ url('viewactivitydetail/'.$b->id) }}" class="text-gray-700 hover:text-secondary hover:underline truncate">
                             {{$b->activity_name??''}} {{$b->getclass->class_name ??''}} 
                             <span class="text-gray-400 mx-1">|</span> 
                             <span class="text-gray-500">{{$b->getactivitysubject->subjectgroup_name ?? ''}} </span>
@@ -249,7 +249,7 @@
     <div class="bg-white rounded-xl shadow-lg mb-8 overflow-hidden">
         <div class="px-6 py-5 bg-gray-800 text-white flex justify-between items-center">
             <h3 class="font-bold text-lg"><i class="fas fa-medal text-yellow-400 mr-2"></i> สรุปเหรียญรางวัล TOP 10</h3>
-            <a href="./viewall" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white transition">ดูทั้งหมด</a>
+            <a href="{{ url('viewall') }}" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white transition">ดูทั้งหมด</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left" id="table1">
@@ -269,7 +269,7 @@
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-center font-bold text-gray-500">{{$num1}}</td>
                             <td class="px-6 py-4 font-medium text-gray-900">
-                                <a href="showschooldetail/{{$l->school_name}}/0" class="hover:text-primary hover:underline">
+                                <a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}" class="hover:text-primary hover:underline">
                                     {{$selectschool[$l->school_name]}}
                                 </a>
                             </td>
@@ -306,7 +306,7 @@
                     <tbody class="divide-y divide-gray-50">
                         @forelse($subjectgroup as $l)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2"><a href="./viewactivity/{{$l->id}}" class="text-gray-700 hover:text-primary">{{$l->subjectgroup_name}}</a></td>
+                            <td class="px-4 py-2"><a href="{{ url('viewactivity/'.$l->id) }}" class="text-gray-700 hover:text-primary">{{$l->subjectgroup_name}}</a></td>
                             <td class="px-4 py-2 text-center text-gray-400">{{ isset($activitycount[$l->id]) ? $activitycount[$l->id] : 0 }}</td>
                             <td class="px-4 py-2 text-center text-gray-400">{{ $subjectTeamCount[$l->id] ?? 0 }} ({{ $studentBySubject[$l->id] ?? 0 }} คน)</td>
                             <td class="px-4 py-2 text-center font-bold text-green-600">{{ isset($activityfinish[$l->id]) ? $activityfinish[$l->id] : 0 }}</td>
@@ -334,7 +334,7 @@
                     <tbody class="divide-y divide-gray-50">
                         @forelse($schoolgroup as $l)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2"><a href="showschool/{{$l->id}}" class="text-gray-700 hover:text-secondary">เครือข่าย{{$l->schoolgroup_name}}</a></td>
+                            <td class="px-4 py-2"><a href="{{ url('showschool/'.$l->id) }}" class="text-gray-700 hover:text-secondary">เครือข่าย{{$l->schoolgroup_name}}</a></td>
                             <td class="px-4 py-2 text-center font-bold text-gray-600">{{ isset($schoolgroupcount[$l->id]) ? $schoolgroupcount[$l->id] : 0 }} โรงเรียน ({{ $activityBySchoolGroup[$l->id] ?? 0 }} กิจกรรม)</td>
                         </tr>
                         @empty
@@ -356,7 +356,7 @@
     <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         @forelse($Branch as $l)
             <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-3 hover:border-blue-400 hover:shadow-md transition-all group">
-                <a href="viewbranch/{{$l->id}}" class="text-sm font-bold text-gray-800 mb-2 truncate group-hover:text-blue-600 transition-colors">
+                <a href="{{ url('viewbranch/'.$l->id) }}" class="text-sm font-bold text-gray-800 mb-2 truncate group-hover:text-blue-600 transition-colors">
                     {{$l->branch_name ?? 'N/A'}}
                 </a>
 

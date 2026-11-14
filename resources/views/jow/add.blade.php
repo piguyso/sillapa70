@@ -45,7 +45,7 @@
                                 {{ sprintf("%02d", $x++) }}
                             </td>
                             <td class="px-6 py-6">
-                                <a href="jowviewactivity/{{$l[0]->activity_subject}}" class="font-black text-gray-800 hover:text-secondary transition-colors block text-lg leading-tight uppercase tracking-tight">
+                                <a href="{{ url('jowviewactivity/'.$l[0]->activity_subject) }}" class="font-black text-gray-800 hover:text-secondary transition-colors block text-lg leading-tight uppercase tracking-tight">
                                     {{$l[0]->getactivitysubject->subjectgroup_name}}
                                 </a>
                             </td>
@@ -56,7 +56,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-6 text-center">
-                                <a href="jowviewactivity/{{$l[0]->activity_subject}}" class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                <a href="{{ url('jowviewactivity/'.$l[0]->activity_subject) }}" class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                     <i class="ri-information-line text-xl"></i>
                                 </a>
                             </td>

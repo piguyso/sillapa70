@@ -48,17 +48,17 @@
             <div class="p-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100 text-slate-800">
-                        <img src="{{ url('imgs/gold.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Gold">
+                        <img src="{{ asset('imgs/gold.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Gold">
                         <div class="text-xs text-yellow-600 font-bold uppercase">ทอง</div>
                         <div class="text-2xl font-black text-yellow-700">{{ $golds }}</div>
                     </div>
                     <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                        <img src="{{ url('imgs/silver.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Silver">
+                        <img src="{{ asset('imgs/silver.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Silver">
                         <div class="text-xs text-slate-500 font-bold uppercase">เงิน</div>
                         <div class="text-2xl font-black text-slate-600">{{ $silvers }}</div>
                     </div>
                     <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                        <img src="{{ url('imgs/bronze.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Bronze">
+                        <img src="{{ asset('imgs/bronze.png') }}" class="w-8 h-8 mx-auto mb-2" alt="Bronze">
                         <div class="text-xs text-orange-600 font-bold uppercase">ทองแดง</div>
                         <div class="text-2xl font-black text-orange-700">{{ $bronzes }}</div>
                     </div>
@@ -74,7 +74,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-slate-800">
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="{{ ($schoolgroup == 0) ? '../../' : '../../showschool/'.$schoolgroup }}" 
+                <a href="{{ ($schoolgroup == 0) ? url('/') : url('showschool/'.$schoolgroup) }}" 
                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                     <i class="ri-arrow-left-line text-xl"></i>
                 </a>

@@ -19,6 +19,13 @@ class FileDownloadController extends Controller
             return response()->file(Storage::disk('public')->path($relativePath));
         }
 
+        foreach (Storage::disk('public')->directories() as $dir) {
+            $altPath = trim($dir, '/') . '/' . $type . '/' . basename($file);
+            if (Storage::disk('public')->exists($altPath)) {
+                return response()->file(Storage::disk('public')->path($altPath));
+            }
+        }
+
         $legacyPath = public_path($type . '/' . basename($file));
         if (file_exists($legacyPath)) {
             return response()->file($legacyPath);

@@ -26,7 +26,7 @@
         <div class="lg:col-span-2 space-y-8">
             
             <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
-                <a href="../addaddschool/{{$addschool[0]->school_activity}}" class="w-12 h-12 flex items-center justify-center bg-orange-100 text-orange-600 rounded-2xl hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
+                <a href="{{ url('area/addaddschool/'.$addschool[0]->school_activity) }}" class="w-12 h-12 flex items-center justify-center bg-orange-100 text-orange-600 rounded-2xl hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                     <i class="ri-arrow-left-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </a>
                 <div class="italic">

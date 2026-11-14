@@ -34,7 +34,7 @@
        
         <div class="bg-gray-50/50 px-8 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="../centersillapa" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
+                <a href="{{ url('centersillapa') }}" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </a>
                
@@ -73,7 +73,7 @@
                                 @php $x++; echo sprintf("%02d", $x); @endphp
                             </td>
                             <td class="px-4 py-6">
-                                <a href="../centerviewactivityschool/{{$l->id}}" class="font-black text-gray-800 hover:text-primary transition-colors block text-base leading-tight mb-2 uppercase">
+                                <a href="{{ url('centerviewactivityschool/'.$l->id) }}" class="font-black text-gray-800 hover:text-primary transition-colors block text-base leading-tight mb-2 uppercase">
                                     {{$l->activity_name}}
                                 </a>
                                 <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black tracking-wider uppercase border border-blue-100">
@@ -114,7 +114,7 @@
                                     <button @click="openModal = true" class="col-span-1 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-800 hover:text-white transition-all text-[10px] font-black flex items-center justify-center gap-1">
                                         <i class="ri-eye-line text-xs"></i> ดูข้อมูล
                                     </button>
-                                    <a href="{{'../centereditactiviy/'.$l->id}}" class="col-span-1 py-2 bg-amber-500 text-white rounded-xl hover:shadow-lg hover:shadow-amber-200 transition-all text-[10px] font-black flex items-center justify-center gap-1">
+                                    <a href="{{ url('centereditactiviy/'.$l->id) }}" class="col-span-1 py-2 bg-amber-500 text-white rounded-xl hover:shadow-lg hover:shadow-amber-200 transition-all text-[10px] font-black flex items-center justify-center gap-1">
                                         <i class="ri-edit-2-line text-xs"></i> แก้ไขรายการ
                                     </a>
                                     
@@ -122,22 +122,22 @@
                                         <a href="{{url('/')}}/showprintpointdoc/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-edit-box-line"></i> ใบบันทึกคะแนน
                                         </a>
-                                        <a href="../studentregisterform/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
+                                        <a href="{{ url('studentregisterform/'.$l->id) }}" target="_blank" class="p-2 bg-white border border-gray-200 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-group-line"></i> ใบรายงานตัว นร.
                                         </a>
-                                        <a href="../teacherregisterform/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
+                                        <a href="{{ url('teacherregisterform/'.$l->id) }}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-id-card-line"></i> ใบลงเวลาครู
                                         </a>
-                                        <a href="../jowregisterform/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
+                                        <a href="{{ url('jowregisterform/'.$l->id) }}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-user-shield-line"></i> ใบลงเวลากรรมการ
                                         </a>
-                                        <a href="../printtop/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
+                                        <a href="{{ url('printtop/'.$l->id) }}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-user-shield-line"></i> ใบปะหน้าซอง
                                         </a>
-                                        <a href="../printspeedmath/{{$l->id}}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
+                                        <a href="{{ url('printspeedmath/'.$l->id) }}" target="_blank" class="p-2 bg-white border border-gray-200 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all text-[9px] font-bold flex items-center gap-2">
                                             <i class="ri-user-shield-line"></i> (เฉพาะคิดเลขเร็ว)
                                         </a>
-                                        <a href="../printjow_showbg/{{$l->id}}" target="_blank" class="col-span-2 p-2 bg-emerald-600 text-white rounded-lg hover:shadow-lg hover:shadow-emerald-200 transition-all text-[9px] font-bold flex items-center justify-center gap-2">
+                                        <a href="{{ url('printjow_showbg/'.$l->id) }}" target="_blank" class="col-span-2 p-2 bg-emerald-600 text-white rounded-lg hover:shadow-lg hover:shadow-emerald-200 transition-all text-[9px] font-bold flex items-center justify-center gap-2">
                                             <i class="ri-medal-2-line text-xs"></i> พิมพ์เกียรติบัตรกรรมการ
                                         </a>
                                     </div>

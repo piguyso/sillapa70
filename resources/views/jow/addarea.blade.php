@@ -50,7 +50,7 @@
                                 {{ $x++ }}.
                             </td>
                             <td class="px-6 py-6">
-                                <a href="area/jowviewactivity/{{$l[0]->activity_subject}}" class="font-black text-slate-800 text-base leading-tight hover:text-orange-600 transition-colors uppercase italic tracking-tight">
+                                <a href="{{ url('area/jowviewactivity/'.$l[0]->activity_subject) }}" class="font-black text-slate-800 text-base leading-tight hover:text-orange-600 transition-colors uppercase italic tracking-tight">
                                     {{$l[0]->getactivitysubject->subjectgroup_name}}
                                 </a>
                                 <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest leading-none">Click to manage judges</p>

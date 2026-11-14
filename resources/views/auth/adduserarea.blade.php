@@ -79,7 +79,7 @@
                             </td>
                             <td class="px-4 py-5 text-center rounded-r-2xl text-slate-800">
                                 <div class="flex justify-center gap-2">
-                                    <a href="{{'myuser/'.$l->id.'/edit?action=edit'}}" class="w-9 h-9 flex items-center justify-center bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm">
+                                    <a href="{{ url('area/myuser/'.$l->id.'/edit?action=edit') }}" class="w-9 h-9 flex items-center justify-center bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm">
                                         <i class="ri-pencil-line"></i>
                                     </a>
                                 </div>

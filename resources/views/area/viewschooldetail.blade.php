@@ -39,17 +39,17 @@
                     @php $golds = 0; $silvers = 0; $bronzes = 0; foreach($dbrank as $l) { $golds += $l->Gold; $silvers += $l->Silver; $bronzes += $l->Bronce; } @endphp
                     
                     <div class="text-center p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                        <img src='{{ url("imgs/gold.png")}}' class="w-8 h-8 mx-auto mb-2">
+                        <img src='{{ asset("imgs/gold.png")}}' class="w-8 h-8 mx-auto mb-2">
                         <div class="text-2xl font-black text-amber-600">{{ $golds }}</div>
                         <div class="text-[10px] font-bold text-amber-800 uppercase italic">Gold</div>
                     </div>
                     <div class="text-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <img src='{{ url("imgs/silver.png")}}' class="w-8 h-8 mx-auto mb-2">
+                        <img src='{{ asset("imgs/silver.png")}}' class="w-8 h-8 mx-auto mb-2">
                         <div class="text-2xl font-black text-slate-600">{{ $silvers }}</div>
                         <div class="text-[10px] font-bold text-slate-500 uppercase italic">Silver</div>
                     </div>
                     <div class="text-center p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                        <img src='{{ url("imgs/bronze.png")}}' class="w-8 h-8 mx-auto mb-2">
+                        <img src='{{ asset("imgs/bronze.png")}}' class="w-8 h-8 mx-auto mb-2">
                         <div class="text-2xl font-black text-orange-600">{{ $bronzes }}</div>
                         <div class="text-[10px] font-bold text-orange-800 uppercase italic">Bronze</div>
                     </div>
@@ -69,7 +69,7 @@
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden">
         <div class="bg-slate-50 px-8 py-5 border-b border-slate-100 flex justify-between items-center text-slate-800">
             <div class="flex items-center gap-4 text-slate-800">
-                <a href="{{ $schoolgroup == 0 ? url('../../') : url('../../showschool/'.$schoolgroup) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
+                <a href="{{ $schoolgroup == 0 ? url('area/'.session('area')) : url('area/showschool/'.$schoolgroup) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform text-white"></i>
                 </a>
                 <h2 class="text-base font-black text-slate-800 uppercase italic tracking-wide text-slate-800 leading-none">Detailed Competition Results</h2>
@@ -98,7 +98,7 @@
                                 {{ $x }}
                             </td>
                             <td class="px-4 py-6 text-slate-800">
-                                <a href="../../viewactivitydetail/{{$l->school_activity}}" target="_blank" class="text-slate-800 font-black uppercase hover:text-orange-600 transition-colors text-slate-800">
+                                <a href="{{ url('area/viewactivitydetail/'.$l->school_activity) }}" target="_blank" class="text-slate-800 font-black uppercase hover:text-orange-600 transition-colors text-slate-800">
                                     {{$l->getactivityname->activity_name}}
                                 </a>
                                 <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-tighter">{{$l->getactivityname->getclass->class_name}}</p>

@@ -16,7 +16,7 @@
           @endif
           <div class="panel panel-default">
               <div class="panel-heading">
-                <a href="../centerviewactivityschool/{{$addschool[0]->school_activity}}" class="btn btn-info btn-md" onclick="">
+                <a href="{{ url('area/centerviewactivityschool/'.$addschool[0]->school_activity) }}" class="btn btn-info btn-md" onclick="">
                 <span class="glyphicon glyphicon-backward"></span>
                 </a> {{$addschool[0]->getschoolname->school_name}}->{{$addschool[0]->getactivityname->activity_name}}</div>
           
@@ -51,7 +51,7 @@
                             <input type="hidden" name="_method" value="DELETE"/>
                             {!!csrf_field()!!}
                            </form>
-                           <a href="{{'../centereditstudentname/'.$l->id}}" class="btn btn-info btn-md">
+                           <a href="{{ url('area/centereditstudentname/'.$l->id) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-pencil"></span>
                          </a>
                           
@@ -99,7 +99,7 @@
                             <input type="hidden" name="_method" value="DELETE"/>
                             {!!csrf_field()!!}
                            </form>
-                           <a href="{{'../centereditstudentname/'.$l->id}}" class="btn btn-info btn-md">
+                           <a href="{{ url('area/centereditstudentname/'.$l->id) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-pencil"></span>
                          </a>
                           

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Configs;
+use App\Event;
 use Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 class ConfigController extends Controller
@@ -21,10 +23,12 @@ class ConfigController extends Controller
      }
     public function index(Request $request)
     {
-        $selectedYear = $request->query('year') ?: active_year();
+        $currentEvent = active_event();
+        abort_unless($currentEvent, 404);
+        $selectedYear = $currentEvent->academic_year;
         
         $config = Configs::where('schoolgroup', 0)
-                         ->where('app_year', $selectedYear)
+                         ->where('event_id', $currentEvent->id)
                          ->get();
                          
         if ($config->isEmpty()) {
@@ -32,6 +36,7 @@ class ConfigController extends Controller
             $latestConfig = Configs::where('schoolgroup', 0)->orderBy('app_year', 'desc')->first();
             
             $newConfig = new Configs();
+            $newConfig->event_id = $currentEvent->id;
             $newConfig->schoolgroup = 0;
             $newConfig->app_year = $selectedYear;
             
@@ -46,8 +51,12 @@ class ConfigController extends Controller
                 $newConfig->link_ai = $latestConfig->link_ai;
                 $newConfig->link_survey = $latestConfig->link_survey;
                 $newConfig->survey_qr = $latestConfig->survey_qr;
+                $newConfig->theme_primary = $latestConfig->theme_primary ?: '#059669';
+                $newConfig->theme_secondary = $latestConfig->theme_secondary ?: '#0f172a';
             } else {
                 $newConfig->app_name = "งานศิลปหัตถกรรมนักเรียน";
+                $newConfig->theme_primary = '#059669';
+                $newConfig->theme_secondary = '#0f172a';
             }
             $newConfig->save();
 
@@ -83,12 +92,12 @@ class ConfigController extends Controller
             }
             
             $config = Configs::where('schoolgroup', 0)
-                             ->where('app_year', $selectedYear)
+                             ->where('event_id', $currentEvent->id)
                              ->get();
         }
 
 
-        $configarea = Configs::where('app_year', $selectedYear)->get();
+        $configarea = Configs::where('event_id', $currentEvent->id)->get();
         $allyears = \App\Years::orderBy('years', 'desc')->get();
         $years = \App\Years::orderBy('years', 'desc')->get();
         $data = Array(
@@ -97,9 +106,112 @@ class ConfigController extends Controller
             'years' => $years,
             'allyears' => $allyears,
             'selectedYear' => $selectedYear,
+            'events' => Event::orderByDesc('event_number')->get(),
+            'currentEvent' => $currentEvent,
+            'readOnly' => ! $currentEvent->is_active,
         );
     
         return view('Home.config', $data);
+    }
+
+    public function storeEvent(Request $request)
+    {
+        $data = $request->validate([
+            'event_number' => 'required|integer|min:1|unique:events,event_number',
+            'academic_year' => 'required|integer|digits:4|unique:events,academic_year',
+            'name' => 'nullable|string|max:255',
+        ]);
+
+        $sourceConfig = Configs::where('event_id', active_event_id())->where('schoolgroup', 0)->first();
+
+        $event = DB::transaction(function () use ($data, $sourceConfig) {
+            $event = Event::create([
+                'event_number' => $data['event_number'],
+                'academic_year' => $data['academic_year'],
+                'name' => $data['name'] ?: 'การแข่งขันครั้งที่ '.$data['event_number'],
+                'status' => 'draft',
+                'is_active' => false,
+            ]);
+
+            $config = $sourceConfig ? $sourceConfig->replicate() : new Configs();
+            $config->event_id = $event->id;
+            $config->schoolgroup = 0;
+            $config->app_year = $event->academic_year;
+            $config->app_name = $data['name'] ?: ($sourceConfig->app_name ?? 'งานศิลปหัตถกรรมนักเรียน');
+            $config->save();
+
+            return $event;
+        });
+
+        return redirect(event_url('config', $event->event_number))->with('massage', 'เพิ่มครั้งการแข่งขันแล้ว');
+    }
+
+    public function updateEvent(Request $request, Event $event)
+    {
+        $data = $request->validate([
+            'event_number' => 'required|integer|min:1|unique:events,event_number,'.$event->id,
+            'academic_year' => 'required|integer|digits:4|unique:events,academic_year,'.$event->id,
+            'name' => 'nullable|string|max:255',
+        ]);
+
+        $event->update($data);
+        Configs::where('event_id', $event->id)->update(['app_year' => $event->academic_year]);
+
+        return redirect(event_url('config', $event->event_number))->with('massage', 'บันทึกข้อมูลครั้งการแข่งขันแล้ว');
+    }
+
+    public function activateEvent(Event $event)
+    {
+        DB::transaction(function () use ($event) {
+            Event::query()->update(['is_active' => false, 'status' => 'archived']);
+            Event::whereKey($event->getKey())->update(['is_active' => true, 'status' => 'active']);
+        });
+
+        return redirect(event_url('config', $event->event_number))->with('massage', 'ตั้งเป็นครั้งที่ใช้งานปัจจุบันแล้ว');
+    }
+
+    public function destroyEvent(Event $event)
+    {
+        if ($event->is_active) {
+            return redirect()->back()->with('error', 'ไม่สามารถลบครั้งที่กำลังเปิดใช้งานปัจจุบันได้ กรุณาสลับไปใช้งานครั้งอื่นก่อนทำการลบ');
+        }
+
+        $eventTables = [
+            'configs',
+            'subjectgroups',
+            'activities',
+            'activities_areas',
+            'branches',
+            'dayofsillapas',
+            'notices',
+            'pictures',
+            'addschools',
+            'addstudents',
+            'jows',
+            'schoolranks',
+            'addschools_areas',
+            'addstudents_areas',
+            'jows_areas',
+        ];
+
+        $deletedEventNumber = $event->event_number;
+
+        DB::transaction(function () use ($event, $eventTables) {
+            $eventId = $event->id;
+
+            foreach ($eventTables as $table) {
+                if (\Illuminate\Support\Facades\Schema::hasTable($table) && \Illuminate\Support\Facades\Schema::hasColumn($table, 'event_id')) {
+                    DB::table($table)->where('event_id', $eventId)->delete();
+                }
+            }
+
+            $event->delete();
+        });
+
+        $fallback = Event::where('is_active', true)->first() ?: Event::orderByDesc('event_number')->first();
+        $targetNumber = $fallback ? $fallback->event_number : 74;
+
+        return redirect(event_url('config', $targetNumber))->with('massage', 'ลบการแข่งขันครั้งที่ ' . $deletedEventNumber . ' เรียบร้อยแล้ว');
     }
 
     public function addYear(Request $request)
@@ -369,7 +481,11 @@ class ConfigController extends Controller
         }
 
         // position=1, 10 (admin) — แก้ไขได้ทั้งหมด
-        $Configs = Configs::where('schoolgroup', $user->schoolgroup)->where('id', $id)->firstOrFail();
+        if ($user->position == '10' || $user->position == '1') {
+            $Configs = Configs::findOrFail($id);
+        } else {
+            $Configs = Configs::where('schoolgroup', $user->schoolgroup)->where('id', $id)->firstOrFail();
+        }
         $storageYear = $Configs->app_year ?: active_year();
 
         $fileupload = $request->file('app_certificate');
@@ -400,16 +516,42 @@ class ConfigController extends Controller
             $imageQrName = "";
         }
 
-        //dd($fileupload_filename);
-        $Configs->app_name = $request->app_name;
-        $Configs->app_slogan = $request->app_slogan;
-        $Configs->app_group = $request->app_group;
-        $Configs->app_area = $request->app_area;
-        $Configs->app_year = $request->app_year;
-        
-        $Configs->link_criteria = $request->link_criteria;
-        $Configs->link_ai = $request->link_ai;
-        $Configs->link_survey = $request->link_survey;
+        if ($request->has('app_name')) {
+            $Configs->app_name = $request->app_name;
+        }
+        if ($request->has('app_slogan')) {
+            $Configs->app_slogan = $request->app_slogan;
+        }
+        if ($request->has('theme_primary')) {
+            $validatedTheme = $request->validate([
+                'theme_primary' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+                'theme_secondary' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            ]);
+            if (!empty($validatedTheme['theme_primary'])) {
+                $Configs->theme_primary = $validatedTheme['theme_primary'];
+            }
+            if (!empty($validatedTheme['theme_secondary'])) {
+                $Configs->theme_secondary = $validatedTheme['theme_secondary'];
+            }
+        }
+        if ($request->has('app_group')) {
+            $Configs->app_group = $request->app_group;
+        }
+        if ($request->has('app_area')) {
+            $Configs->app_area = $request->app_area;
+        }
+        if ($request->has('app_year')) {
+            $Configs->app_year = $request->app_year;
+        }
+        if ($request->has('link_criteria')) {
+            $Configs->link_criteria = $request->link_criteria;
+        }
+        if ($request->has('link_ai')) {
+            $Configs->link_ai = $request->link_ai;
+        }
+        if ($request->has('link_survey')) {
+            $Configs->link_survey = $request->link_survey;
+        }
 
         if($fileupload_filename != ""){
             $Configs->app_certificate = $fileupload_filename;
@@ -424,6 +566,20 @@ class ConfigController extends Controller
 
    
         $Configs->save();
+
+        if ($Configs->event_id) {
+            $event = Event::find($Configs->event_id);
+            if ($event) {
+                if ($request->filled('app_year')) {
+                    $event->academic_year = $request->app_year;
+                    Configs::where('event_id', $event->id)->update(['app_year' => $request->app_year]);
+                }
+                if ($request->filled('app_name')) {
+                    $event->name = $request->app_name;
+                }
+                $event->save();
+            }
+        }
         
         session([
             'app_name'  => $Configs->app_name,
@@ -431,12 +587,13 @@ class ConfigController extends Controller
             'app_area'  => $Configs->app_area,
             'app_year'  => $Configs->app_year,
             'year'      => $Configs->app_year,
+            'theme_primary' => $Configs->theme_primary,
+            'theme_secondary' => $Configs->theme_secondary,
         ]);
         session()->forget('manual_year');
 
-        Session::flash('massage','Data was update successfull!!');
-        // return redirect('config');
-        return redirect()->back();
+        Session::flash('massage', 'บันทึกการตั้งค่าเรียบร้อยแล้ว');
+        return redirect(event_url('config', active_event_number()));
     }
 
 

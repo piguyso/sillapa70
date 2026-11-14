@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('configs')) {
+            return;
+        }
+
         Schema::table('configs', function (Blueprint $table) {
-            $table->text('app_slogan')->nullable()->after('app_name');
+            if (! Schema::hasColumn('configs', 'app_slogan')) {
+                $table->text('app_slogan')->nullable()->after('app_name');
+            }
         });
     }
 
@@ -21,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('configs', function (Blueprint $table) {
-            $table->dropColumn('app_slogan');
-        });
+        // Do not drop columns containing existing configuration data
     }
 };

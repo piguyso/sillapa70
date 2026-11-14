@@ -108,7 +108,7 @@
                                         {{ ++$index }}
                                     </td>
                                     <td class="px-6 py-6">
-                                        <a href="addactivity/{{$l->id}}" class="font-black text-gray-800 text-base leading-tight uppercase italic tracking-tight group-hover:text-emerald-700 transition-colors">
+                                        <a href="{{ url('addactivity/'.$l->id) }}" class="font-black text-gray-800 text-base leading-tight uppercase italic tracking-tight group-hover:text-emerald-700 transition-colors">
                                             {{$l->subjectgroup_name}}
                                         </a>
                                     </td>
@@ -129,10 +129,10 @@
                                     <td class="px-6 py-6 text-center">
                                         @if(adminchk())
                                         <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                            <a href="addactivity/{{$l->id}}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="เพิ่มกิจกรรม">
+                                            <a href="{{ url('addactivity/'.$l->id) }}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="เพิ่มกิจกรรม">
                                                 <i class="ri-add-line text-lg"></i>
                                             </a>
-                                            <a href="{{'subjectgroup/'.$l->id.'/edit?action=edit'}}" class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm" title="แก้ไข">
+                                            <a href="{{ url('subjectgroup/'.$l->id.'/edit?action=edit') }}" class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm" title="แก้ไข">
                                                 <i class="ri-edit-2-line text-lg"></i>
                                             </a>
                                             <form id="delform{{$l->id}}" method="post" action="{{ route('subjectgroup.destroy',$l->id)}}" class="hidden">

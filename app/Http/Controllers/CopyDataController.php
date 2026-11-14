@@ -11,6 +11,7 @@ use App\Addschool;
 use App\dayofsillapas;
 use Session;
 use DB;
+use Illuminate\Support\Facades\Log;
 class CopyDataController extends Controller
 {
     public function index()
@@ -40,6 +41,13 @@ class CopyDataController extends Controller
         }
 
         $sourceData = DB::connection($sourceDb)->table('addschool')->get();
+
+        Log::notice('System administrator started school data copy', [
+            'user_id' => $request->user()->id,
+            'source_connection' => $sourceDb,
+            'target_connection' => $targetDb,
+            'ip' => $request->ip(),
+        ]);
 
         foreach ($sourceData as $data) {
             $exists = DB::connection($targetDb)

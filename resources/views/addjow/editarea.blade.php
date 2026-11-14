@@ -24,7 +24,7 @@
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden">
         <div class="bg-slate-50 px-8 py-6 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="../../addjow/{{$jows->jow_activity}}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
+                <a href="{{ url('area/addjow/'.$jows->jow_activity) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </a>
                 <h3 class="text-base font-black text-slate-800 uppercase italic tracking-widest leading-none">Edit Judge Info</h3>
@@ -77,7 +77,7 @@
                     <button type="submit" class="flex-1 py-4 bg-orange-600 text-white rounded-2xl font-black text-base hover:bg-orange-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-white">
                         <i class="ri-save-line mr-1 text-white"></i> อัปเดตข้อมูลกรรมการ
                     </button>
-                    <a href="../../addjow/{{$jows->jow_activity}}" class="inline-flex items-center justify-center px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black hover:bg-slate-200 transition-all uppercase italic text-xs tracking-widest text-slate-500">
+                    <a href="{{ url('area/addjow/'.$jows->jow_activity) }}" class="inline-flex items-center justify-center px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black hover:bg-slate-200 transition-all uppercase italic text-xs tracking-widest text-slate-500">
                         ยกเลิก
                     </a>
                 </div>

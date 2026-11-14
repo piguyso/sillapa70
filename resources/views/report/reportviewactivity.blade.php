@@ -19,7 +19,7 @@
         
         <div class="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="../report" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-indigo-600 border border-gray-200 hover:bg-indigo-700 hover:text-white transition-all shadow-sm">
+                <a href="{{ url('report') }}" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-indigo-600 border border-gray-200 hover:bg-indigo-700 hover:text-white transition-all shadow-sm">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </a>
                 <div>
@@ -74,10 +74,10 @@
                             </td>
                             <td class="px-6 py-8 text-center">
                                 <div class="flex flex-col gap-2 min-w-[140px]">
-                                    <a href="../printjow/{{$l->id}}" target="_blank" class="flex items-center justify-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-md">
+                                    <a href="{{ url('printjow/'.$l->id) }}" target="_blank" class="flex items-center justify-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-md">
                                         <i class="ri-printer-line"></i> ไม่มีพื้นหลัง
                                     </a>
-                                    <a href="../printjow_showbg/{{$l->id}}" target="_blank" class="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-800 transition-all shadow-md shadow-indigo-100">
+                                    <a href="{{ url('printjow_showbg/'.$l->id) }}" target="_blank" class="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-800 transition-all shadow-md shadow-indigo-100">
                                         <i class="ri-image-line"></i> มีพื้นหลัง
                                     </a>
                                 </div>

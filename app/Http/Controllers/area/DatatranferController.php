@@ -22,6 +22,7 @@ use App\Jows_areas;
 use Session;
 use Auth;
 use DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache; // ** เพิ่มบรรทัดนี้
 class DatatranferController extends Controller
 {
@@ -48,6 +49,7 @@ class DatatranferController extends Controller
 
     public function store(Request $request)
     {
+        $this->audit($request, 'data_transfer_started');
         // ตั้งค่าเริ่มต้น Progress เป็น 0
         Cache::put('transfer_progress', 0);
 
@@ -138,6 +140,7 @@ class DatatranferController extends Controller
     }
         public function dataempty(Request $request)
     {
+        $this->audit($request, 'data_empty_started');
         // 1. เริ่มต้น Transaction เพื่อความปลอดภัยในการลบข้อมูลที่เชื่อมโยง
         DB::beginTransaction();
 
@@ -183,6 +186,7 @@ class DatatranferController extends Controller
 
   public function databackup(Request $request)
     {
+        $this->audit($request, 'database_backup_started');
         set_time_limit(0); 
         ini_set('memory_limit', '-1');
 
@@ -247,5 +251,13 @@ class DatatranferController extends Controller
 
 
 
+    private function audit(Request $request, string $action): void
+    {
+        Log::notice('System administrator operation', [
+            'action' => $action,
+            'user_id' => $request->user()->id,
+            'ip' => $request->ip(),
+        ]);
+    }
 }
 

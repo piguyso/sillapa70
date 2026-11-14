@@ -71,8 +71,8 @@
                             </td>
                             <td class="px-6 py-6 text-center">
                                 <div class="flex justify-center gap-2">
-                                    <a href="../printreportjow/{{$l->id}}" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-800 hover:text-white transition-all">ไม่มีพื้นหลัง</a>
-                                    <a href="../printreportjow_showbg/{{$l->id}}" target="_blank" class="px-4 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-xs font-bold hover:bg-orange-500 hover:text-white transition-all">มีพื้นหลัง</a>
+                                    <a href="{{ url('printreportjow/'.$l->id) }}" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-800 hover:text-white transition-all">ไม่มีพื้นหลัง</a>
+                                    <a href="{{ url('printreportjow_showbg/'.$l->id) }}" target="_blank" class="px-4 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-xs font-bold hover:bg-orange-500 hover:text-white transition-all">มีพื้นหลัง</a>
                                 </div>
                             </td>
                         </tr>

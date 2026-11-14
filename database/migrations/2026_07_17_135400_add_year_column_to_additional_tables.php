@@ -36,15 +36,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        foreach ($this->tables as $tableName) {
-            if (Schema::hasTable($tableName)) {
-                Schema::table($tableName, function (Blueprint $table) use ($tableName) {
-                    if (Schema::hasColumn($tableName, 'year')) {
-                        $table->dropIndex(['year']);
-                        $table->dropColumn('year');
-                    }
-                });
-            }
-        }
+        // Do not drop year columns to preserve existing data
     }
 };

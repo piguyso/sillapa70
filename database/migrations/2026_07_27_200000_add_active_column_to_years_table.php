@@ -11,8 +11,14 @@ class AddActiveColumnToYearsTable extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('years')) {
+            return;
+        }
+
         Schema::table('years', function (Blueprint $table) {
-            $table->tinyInteger('active')->default(0);
+            if (! Schema::hasColumn('years', 'active')) {
+                $table->tinyInteger('active')->default(0);
+            }
         });
     }
 
@@ -21,8 +27,6 @@ class AddActiveColumnToYearsTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('years', function (Blueprint $table) {
-            $table->dropColumn('active');
-        });
+        // Do not drop column containing existing active year state
     }
 }

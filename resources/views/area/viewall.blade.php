@@ -23,9 +23,9 @@
                        
                        
                                 
-                       <th style="text-align: center"><img src='./imgs/gold.png' width='20px'> เหรียญทอง</th>
-                       <th style="text-align: center"><img src='./imgs/silver.png' width='20px'> เหรียญเงิน</th>
-                       <th style="text-align: center"><img src='./imgs/bronze.png' width='20px'> เหรียญทองแดง</th>
+                       <th style="text-align: center"><img src="{{ asset('imgs/gold.png') }}" width='20px'> เหรียญทอง</th>
+                       <th style="text-align: center"><img src="{{ asset('imgs/silver.png') }}" width='20px'> เหรียญเงิน</th>
+                       <th style="text-align: center"><img src="{{ asset('imgs/bronze.png') }}" width='20px'> เหรียญทองแดง</th>
                        <th>รวม</th>
                      </tr>
                    </thead>
@@ -34,7 +34,7 @@
                     @forelse($dbrank as $l)
                      <tr>
                        <td>{{$num1}}</td>
-                       <td><a href="showschooldetail/{{$l->school_name}}/0" target="_blank">{{$selectschool[$l->school_name]}}</a></td>
+                       <td><a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}" target="_blank">{{$selectschool[$l->school_name]}}</a></td>
                        <td style="text-align: center">
                        
                        {{$l->Gold}}
@@ -66,7 +66,7 @@
                  
               </div>
                <div class="panel-footer">
-                <a href="./" class="btn btn-info btn-md">
+                <a href="{{ url('area/'.session('area')) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-info-sign"> กลับไปหน้าแรก</span>
                          </a></div>
           </div>

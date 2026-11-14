@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="../addactivity/{{$activity->activity_subject}}" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject->subjectgroup_name}}->{{$activity->activity_name}} จำนวนนักเรียน {{$activity->activity_studennumber}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber}} ทีม</div>
+              <div class="panel-heading"><a href="{{ url('addactivity/'.$activity->activity_subject) }}" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject->subjectgroup_name}}->{{$activity->activity_name}} จำนวนนักเรียน {{$activity->activity_studennumber}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber}} ทีม</div>
 
               <div class="panel-body">
                   @if (session('status'))
@@ -93,7 +93,7 @@
                           <input type="hidden" name="_method" value="DELETE"/>
                           {!!csrf_field()!!}
                          </form>
-                         <a href="../addaddstudent/{{$l->id}}" class="btn btn-info btn-md">
+                         <a href="{{ url('addaddstudent/'.$l->id) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-plus"></span>
                          </a>
                         

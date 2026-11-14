@@ -12,21 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('visitor_logs')) {
+            return;
+        }
+
         Schema::table('visitor_logs', function (Blueprint $table) {
-            // เพิ่ม visitor_id — UUID ที่เก็บใน cookie ถาวร ไม่เปลี่ยนตาม session
-            if (!Schema::hasColumn('visitor_logs', 'visitor_id')) {
+            if (! Schema::hasColumn('visitor_logs', 'visitor_id')) {
                 $table->string('visitor_id', 64)->nullable()->index()->after('session_id');
             }
         });
-
-        // ลบข้อมูลเก่า > 30 นาที ออกจากตาราง ก่อน migrate
-        try {
-            \DB::table('visitor_logs')
-                ->where('last_activity', '<', now()->subMinutes(30))
-                ->delete();
-        } catch (\Exception $e) {
-            // ignore
-        }
     }
 
     /**
@@ -34,11 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('visitor_logs', function (Blueprint $table) {
-            if (Schema::hasColumn('visitor_logs', 'visitor_id')) {
-                $table->dropColumn('visitor_id');
-            }
-        });
+        // Do not drop column
     }
 };
-

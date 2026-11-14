@@ -11,7 +11,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center gap-4">
-            <a href="../" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
+            <a href="{{ url('/') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                 <i class="ri-arrow-left-line text-xl"></i>
             </a>
             <h2 class="text-xl font-bold text-gray-800">
@@ -52,7 +52,7 @@
                                     <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm">
                                         <i class="ri-school-line text-xl"></i>
                                     </div>
-                                    <a href="../showschooldetail/{{$l->id}}/{{$l->school_group}}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg">
+                                    <a href="{{ url('showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg">
                                         {{$l->school_name}}
                                     </a>
                                 </div>
@@ -67,7 +67,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <a href="../showschooldetail/{{$l->id}}/{{$l->school_group}}" 
+                                <a href="{{ url('showschooldetail/'.$l->id.'/'.$l->school_group) }}" 
                                    class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl text-sm font-bold hover:bg-secondary hover:text-white hover:border-secondary transition-all shadow-sm">
                                     ดูข้อมูล
                                 </a>

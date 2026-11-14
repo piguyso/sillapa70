@@ -12,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->append(\App\Http\Middleware\SetEventContext::class);
+        $middleware->web(append: [
+            \App\Http\Middleware\SetEventContext::class,
+        ]);
+        $middleware->append(\App\Http\Middleware\EnsureActiveEventForWrites::class);
         $middleware->append(\App\Http\Middleware\TranslateToThaiNumbers::class);
         $middleware->append(\App\Http\Middleware\TrackVisitors::class);
         $middleware->alias([
@@ -20,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.area' => \App\Http\Middleware\CheckAreaSession::class,
             'areaschoolmiddleware' => \App\Http\Middleware\areaschoolmiddleware::class,
             'areaweb' => \App\Http\Middleware\areaweb::class,
+            'systemadmin' => \App\Http\Middleware\SystemAdminMiddleware::class,
+            'strip.event.parameter' => \App\Http\Middleware\StripEventRouteParameter::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

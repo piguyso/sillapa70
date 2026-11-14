@@ -19,7 +19,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl">
             
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center gap-4">
-                <a href="../" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-colors shadow-sm">
+                <a href="{{ url('/') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-colors shadow-sm">
                     <i class="ri-arrow-left-line text-xl"></i>
                 </a>
                 <h3 class="text-lg md:text-xl font-bold text-gray-800 leading-tight">

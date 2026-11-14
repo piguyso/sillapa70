@@ -13,6 +13,11 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Event-prefixed static files (exclude secure-assets so FileDownloadController handles them)
+    RewriteCond %{REQUEST_URI} !/secure-assets/ [NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(?:cpn1/)?[0-9]+/((?!secure-assets/).+\.(?:css|js|png|jpe?g|gif|svg|ico|woff2?|ttf|map|pdf|rar))$ $1 [L,NC]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

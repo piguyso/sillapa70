@@ -28,7 +28,7 @@
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden text-slate-800">
         <div class="bg-slate-50 px-8 py-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-800">
             <div class="flex items-center gap-4 text-slate-800">
-                <a href="../{{session('area')}}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
+                <a href="{{ url('area/'.session('area')) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </a>
                 <h2 class="text-base font-black text-slate-800 uppercase italic tracking-wide text-slate-800 leading-none">Activity Result List</h2>
@@ -66,7 +66,7 @@
                                 {{ $x }}.
                             </td>
                             <td class="px-6 py-6 text-slate-800">
-                                <a href="../viewactivitydetail/{{$l->id}}" class="font-black text-slate-800 text-base leading-tight group-hover:text-orange-600 transition-colors uppercase italic tracking-tight text-slate-800">
+                                <a href="{{ url('area/viewactivitydetail/'.$l->id) }}" class="font-black text-slate-800 text-base leading-tight group-hover:text-orange-600 transition-colors uppercase italic tracking-tight text-slate-800">
                                     {{$l->activity_name}}
                                 </a>
                                 <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-widest leading-none text-slate-800">Click to view results</p>

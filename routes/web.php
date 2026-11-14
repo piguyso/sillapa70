@@ -14,14 +14,26 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+use App\Event;
 use App\Http\Controllers\CopyDataController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::namespace('App\\Http\\Controllers')->group(function () {
+Route::get('/', function () {
+    return view('event-selector', [
+        'events' => Event::orderByDesc('event_number')->get(),
+    ]);
+})->name('event.select');
 
+Route::get('/cpn1', function () {
+    return view('event-selector', [
+        'events' => Event::orderByDesc('event_number')->get(),
+    ]);
+});
+
+$registerRoutes = function (bool $isEventGroup = true) {
 Auth::routes();
 // area route
 Route::get('/area/{id}','area\AreaController@index')->where('id', '[0-9]+');
@@ -64,7 +76,7 @@ route::get('area/reportviewjow/{id}','ReportController@areareportviewjow');
 
 Route::get('area/jow2registerform/{id}','newpdfController@areaexportjow2');
 
-Route::post('dataempty','area\DatatranferController@dataempty')->middleware(['auth', 'centermiddleware']);
+Route::post('dataempty','area\DatatranferController@dataempty')->middleware(['auth', 'systemadmin']);
 
 
 
@@ -118,10 +130,10 @@ Route::get('area/printjow2_showbg/{id}','PdfController@areaprintjow2doccerf_show
 // end area route
 
 // เพิ่ม route สำหรับเช็ค progress
-Route::get('datatranfer/progress', 'area\DatatranferController@checkProgress')->middleware(['auth', 'centermiddleware'])->name('datatranfer.progress');
-Route::get('databackup/progress', 'area\DatatranferController@checkBackupProgress')->middleware(['auth', 'centermiddleware'])->name('databackup.progress');
-Route::resource('datatranfer','area\DatatranferController')->middleware(['auth', 'centermiddleware']);
-Route::post('databackup', 'area\DatatranferController@databackup')->middleware(['auth', 'centermiddleware'])->name('databackup');
+Route::get('datatranfer/progress', 'area\DatatranferController@checkProgress')->middleware(['auth', 'systemadmin'])->name('datatranfer.progress');
+Route::get('databackup/progress', 'area\DatatranferController@checkBackupProgress')->middleware(['auth', 'systemadmin'])->name('databackup.progress');
+Route::resource('datatranfer','area\DatatranferController')->middleware(['auth', 'systemadmin']);
+Route::post('databackup', 'area\DatatranferController@databackup')->middleware(['auth', 'systemadmin'])->name('databackup');
 
 Route::resource('myuser','MyUserController');
 Route::resource('branch','BranchController');
@@ -156,6 +168,10 @@ Route::delete('config/years/{id}', 'ConfigController@deleteYear')->name('config.
 Route::post('config/years/active/{id}', 'ConfigController@setActiveYear')->name('config.setActiveYear')->middleware(['auth', 'centermiddleware']);
 Route::post('config/years/active-value/{year}', 'ConfigController@setActiveYearByValue')->name('config.setActiveYearByValue')->middleware(['auth', 'centermiddleware']);
 Route::post('config/activities/copy', 'ConfigController@copyActivities')->name('config.copyActivities')->middleware(['auth', 'centermiddleware']);
+Route::post('config/events', 'ConfigController@storeEvent')->name('config.events.store')->middleware(['auth', 'systemadmin']);
+Route::put('config/events/{event}', 'ConfigController@updateEvent')->name('config.events.update')->middleware(['auth', 'systemadmin']);
+Route::post('config/events/{event}/activate', 'ConfigController@activateEvent')->name('config.events.activate')->middleware(['auth', 'systemadmin']);
+Route::delete('config/events/{event}', 'ConfigController@destroyEvent')->name('config.events.destroy')->middleware(['auth', 'systemadmin']);
 Route::resource('config','ConfigController')->middleware(['auth', 'centermiddleware']);
 
 Route::get('myreg','Auth\RegisterController@myreg')->name('myreg.form');
@@ -229,7 +245,9 @@ Route::get('/addaddstudent/{id}','AddstudentController@addaddstudent');
 //getschoolname js script
 Route::get('/addaddschool/getschool/{id}','AddschoolController@getschool');
 
-Route::get('/','HomeController@index');
+if ($isEventGroup) {
+    Route::get('/','HomeController@index');
+}
 Route::get('/home','HomeController@index2');
 
 
@@ -278,6 +296,23 @@ Route::get('/printspeedmath/{id}','newpdfController@printspeedmath'); // print �
 
 
 
-Route::get('/copy-data', [CopyDataController::class, 'index'])->middleware(['auth', 'centermiddleware'])->name('copydata.index');
-Route::post('/copy-data/process', [CopyDataController::class, 'copyData'])->middleware(['auth', 'centermiddleware'])->name('copydata.process');
-});
+Route::get('/copy-data', [CopyDataController::class, 'index'])->middleware(['auth', 'systemadmin'])->name('copydata.index');
+Route::post('/copy-data/process', [CopyDataController::class, 'copyData'])->middleware(['auth', 'systemadmin'])->name('copydata.process');
+};
+
+Route::prefix('cpn1/{eventNumber}')
+    ->as('cpn1.')
+    ->where(['eventNumber' => '[0-9]+'])
+    ->middleware('strip.event.parameter')
+    ->namespace('App\\Http\\Controllers')
+    ->group(function () use ($registerRoutes) {
+        $registerRoutes(true);
+    });
+
+Route::prefix('{eventNumber}')
+    ->where(['eventNumber' => '[0-9]+'])
+    ->middleware('strip.event.parameter')
+    ->namespace('App\\Http\\Controllers')
+    ->group(function () use ($registerRoutes) {
+        $registerRoutes(true);
+    });

@@ -81,7 +81,7 @@ if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
     $pdf::Image($imagePath, 0, 0, 300, 210, '', '', '', false, 300, '', false, false, 0, false, false, false);
 } else {
-    dd("หาไฟล์ไม่พบที่: " . $imagePath);
+    abort(404, 'ไม่พบไฟล์พื้นหลังเกียรติบัตร');
 } 
                if($addstudent[$i]->type == 1){
                  if($xscore=='เข้าร่วม'){
@@ -225,7 +225,7 @@ if (file_exists($imagePath)) {
     // ระบุนามสกุลไฟล์ให้ชัดเจนในพารามิเตอร์ที่ 7 (เช่น 'PNG' หรือ 'JPG')
     $pdf::Image($imagePath, 0, 0, 300, 210, '', '', '', false, 300, '', false, false, 0, false, false, false);
 } else {
-    dd("หาไฟล์ไม่พบที่: " . $imagePath);
+    abort(404, 'ไม่พบไฟล์พื้นหลังเกียรติบัตร');
 } 
                 if($addstudent[$i]->type == 1){
                   if($xscore=='เข้าร่วม'){

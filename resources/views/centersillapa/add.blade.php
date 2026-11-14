@@ -46,7 +46,7 @@
                                 {{ $x++ }}
                             </td>
                             <td class="px-6 py-4">
-                                <a href="centerviewactivity/{{$l[0]->activity_subject}}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg flex items-center gap-2">
+                                <a href="{{ url('centerviewactivity/'.$l[0]->activity_subject) }}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg flex items-center gap-2">
                                     <i class="ri-folder-open-line text-primary opacity-50 group-hover:opacity-100 transition-opacity"></i>
                                     {{$l[0]->getactivitysubject->subjectgroup_name}}
                                 </a>
@@ -68,7 +68,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <a href="centerviewactivity/{{$l[0]->activity_subject}}" 
+                                <a href="{{ url('centerviewactivity/'.$l[0]->activity_subject) }}" 
                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white border border-gray-200 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
                                     <i class="ri-search-eye-line text-xl"></i>
                                 </a>

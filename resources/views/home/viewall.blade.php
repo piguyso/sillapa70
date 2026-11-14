@@ -35,7 +35,7 @@
         
         <div class="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="./" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
+                <a href="{{ url('/') }}" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                     <i class="ri-home-4-line text-2xl"></i>
                 </a>
                 <div>
@@ -75,7 +75,7 @@
                             </td>
 
                             <td class="px-6 py-6 font-black text-gray-800 italic uppercase">
-                                <a href="showschooldetail/{{$l->school_name}}/0" target="_blank" class="hover:text-primary hover:underline transition-all">
+                                <a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}" target="_blank" class="hover:text-primary hover:underline transition-all">
                                     {{$selectschool[$l->school_name]}}
                                 </a>
                             </td>

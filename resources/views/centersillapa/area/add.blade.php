@@ -35,7 +35,7 @@
                             $x++;
                         ?>
                        </td>
-                       <td><a href="centerviewactivity/{{$l[0]->activity_subject}}">{{$l[0]->getactivitysubject->subjectgroup_name}}</a></td>
+                       <td><a href="{{ url('area/centerviewactivity/'.$l[0]->activity_subject) }}">{{$l[0]->getactivitysubject->subjectgroup_name}}</a></td>
                        <td>
                         
                        

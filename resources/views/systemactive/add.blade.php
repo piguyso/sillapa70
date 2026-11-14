@@ -82,7 +82,7 @@
                             <td class="px-6 py-6 text-center">
                                 @if(officerchk())
                                 <div class="flex justify-center gap-2">
-                                    <a href="{{'systemactive/'.$l->id.'/edit?action=edit'}}" 
+                                    <a href="{{ url('systemactive/'.$l->id.'/edit?action=edit') }}" 
                                        class="w-12 h-12 flex items-center justify-center bg-white text-slate-400 border border-slate-200 rounded-2xl hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all shadow-sm group/btn">
                                         <i class="ri-settings-4-line text-2xl group-hover/btn:rotate-90 transition-transform duration-500"></i>
                                     </a>

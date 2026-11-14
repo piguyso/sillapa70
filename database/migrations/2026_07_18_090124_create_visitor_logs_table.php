@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visitor_logs', function (Blueprint $table) {
-            $table->id();
-            $table->string('ip_address', 45);
-            $table->string('session_id', 191)->index();
-            $table->string('url')->nullable();
-            $table->timestamp('last_activity')->useCurrent()->useCurrentOnUpdate();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('visitor_logs')) {
+            Schema::create('visitor_logs', function (Blueprint $table) {
+                $table->id();
+                $table->string('ip_address', 45);
+                $table->string('session_id', 191)->index();
+                $table->string('visitor_id', 64)->nullable()->index();
+                $table->string('url')->nullable();
+                $table->timestamp('last_activity')->useCurrent()->useCurrentOnUpdate();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visitor_logs');
+        // Do not drop existing visitor_logs table
     }
 };

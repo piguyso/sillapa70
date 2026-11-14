@@ -32,7 +32,7 @@
                     <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-lg uppercase tracking-tighter italic shadow-sm">
                         {{$b->notice_owner}}
                     </span>
-                    <a href="notice_detail/{{$b->id}}" class="text-slate-700 hover:text-orange-600 transition-colors italic">
+                    <a href="{{ url('area/notice_detail/'.$b->id) }}" class="text-slate-700 hover:text-orange-600 transition-colors italic">
                         <span class="text-slate-400 text-xs mr-1">[{{Datethai6($b->created_at)}}]</span> {{$b->notice_text}}
                     </a>
                     @php
@@ -57,7 +57,7 @@
             @forelse($firstactivity as $b)
                 <div class="flex items-center gap-2 text-sm p-3 bg-slate-50 rounded-xl hover:bg-orange-50 transition-all border border-transparent hover:border-orange-100">
                     <i class="ri-checkbox-circle-line text-orange-500"></i>
-                    <a href="viewactivitydetail/{{$b->school_activity}}" class="text-slate-700 hover:text-orange-700 truncate">
+                    <a href="{{ url('area/viewactivitydetail/'.$b->school_activity) }}" class="text-slate-700 hover:text-orange-700 truncate">
                         {{$b->getactivityname->activity_name}} <span class="text-slate-400 text-xs">({{$b->getactivityname->getclass->class_name}})</span>
                     </a>
                     @php
@@ -77,7 +77,7 @@
     <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-8">
         <div class="bg-orange-600 px-8 py-5 text-white flex justify-between items-center text-white">
             <h3 class="font-black italic uppercase tracking-widest text-white"><i class="ri-medal-line text-white"></i> สรุปเหรียญการแข่งขันรายโรงเรียน TOP 10</h3>
-            <a href="./viewall" class="text-[10px] bg-white/20 hover:bg-white/40 px-3 py-1 rounded-lg text-white transition backdrop-blur-sm uppercase italic">View All</a>
+            <a href="{{ url('area/showall_print/'.session('area')) }}" class="text-[10px] bg-white/20 hover:bg-white/40 px-3 py-1 rounded-lg text-white transition backdrop-blur-sm uppercase italic">View All</a>
         </div>
         <div class="overflow-x-auto p-4">
             <table class="w-full text-left border-separate border-spacing-y-2">
@@ -97,7 +97,7 @@
                         <tr class="bg-white hover:bg-slate-50 transition-all border border-slate-100 shadow-sm rounded-2xl group">
                             <td class="px-6 py-4 text-center text-slate-400 border-l-4 border-transparent group-hover:border-orange-500 rounded-l-2xl">{{$num1}}</td>
                             <td class="px-6 py-4 text-slate-800 uppercase tracking-tight">
-                                <a href="showschooldetail/{{$l->school_name}}/0" class="hover:text-orange-600 transition-colors">
+                                <a href="{{ url('area/showschooldetail/'.$l->school_name.'/0') }}" class="hover:text-orange-600 transition-colors">
                                     {{$selectschool[$l->school_name] ?? ''}}
                                 </a>
                             </td>
@@ -146,7 +146,7 @@
                     <tbody class="divide-y divide-slate-50 text-slate-600 text-slate-800">
                         @foreach($subjectgroup as $l)
                         <tr class="hover:bg-orange-50/30 text-slate-800">
-                            <td class="px-6 py-3 text-slate-800"><a href="./viewactivity/{{$l->id}}" class="hover:text-orange-600">{{$l->subjectgroup_name}}</a></td>
+                            <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/viewactivity/'.$l->id) }}" class="hover:text-orange-600">{{$l->subjectgroup_name}}</a></td>
                             <td class="px-6 py-3 text-right text-slate-800">
                                 <span class="bg-slate-100 px-2 py-0.5 rounded italic shadow-inner text-slate-800">
                                     {{$activitycount[$l->id] ?? 0}} / {{ $activityfinish[$l->id] ?? 0 }}
@@ -165,7 +165,7 @@
                     <tbody class="divide-y divide-slate-50 text-slate-600 text-slate-800">
                         @foreach($schoolgroup as $l)
                         <tr class="hover:bg-amber-50/30 text-slate-800">
-                            <td class="px-6 py-3 text-slate-800"><a href="showschool/{{$l->id}}" class="hover:text-amber-700">เครือข่าย{{$l->schoolgroup_name}}</a></td>
+                            <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/showschool/'.$l->id) }}" class="hover:text-amber-700">เครือข่าย{{$l->schoolgroup_name}}</a></td>
                             <td class="px-6 py-3 text-right text-amber-900 font-black italic text-slate-800">{{$schoolgroupcount[$l->id] ?? 0}} โรงเรียน</td>
                         </tr>
                         @endforeach

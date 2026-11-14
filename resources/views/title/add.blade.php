@@ -79,7 +79,7 @@
                                     <td class="px-6 py-6 text-center">
                                         @if(officerchk())
                                         <div class="flex justify-center gap-2">
-                                            <a href="{{'title/'.$l->id.'/edit?action=edit'}}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                            <a href="{{ url('title/'.$l->id.'/edit?action=edit') }}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-pencil-line text-lg"></i>
                                             </a>
                                             <form id="delform{{$l->id}}" method="post" action="{{ route('title.destroy',$l->id)}}" class="hidden">

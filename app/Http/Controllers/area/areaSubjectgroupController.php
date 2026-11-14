@@ -83,7 +83,6 @@ class areaSubjectgroupController extends Controller
             'area' =>$schoolgroup,
           );
           return view('activity.addactivityarea',$data);
-          dd($data);
     }
 
     /**

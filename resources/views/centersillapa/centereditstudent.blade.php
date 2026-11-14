@@ -13,7 +13,7 @@
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
     <div class="bg-gradient-to-r from-emerald-700 to-green-500 px-8 py-6 flex flex-col md:flex-row md:items-center gap-4 text-white">
         
-        <a href="../centerviewactivityschool/{{$addschool[0]->school_activity}}" 
+        <a href="{{ url('centerviewactivityschool/'.$addschool[0]->school_activity) }}" 
            class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/20 text-white border border-white/30 hover:bg-white hover:text-emerald-700 transition-all shadow-sm group shrink-0">
             <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform text-white"></i>
         </a>
@@ -87,7 +87,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center rounded-r-2xl">
-                                <a href="{{'../centereditstudentname/'.$l->id}}" 
+                                <a href="{{ url('centereditstudentname/'.$l->id) }}" 
                                    class="inline-flex items-center justify-center p-2.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                     <i class="ri-edit-2-line text-lg"></i>
                                 </a>
@@ -148,7 +148,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center rounded-r-2xl">
-                                <a href="{{'../centereditstudentname/'.$l->id}}" 
+                                <a href="{{ url('centereditstudentname/'.$l->id) }}" 
                                    class="inline-flex items-center justify-center p-2.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                     <i class="ri-edit-2-line text-lg"></i>
                                 </a>

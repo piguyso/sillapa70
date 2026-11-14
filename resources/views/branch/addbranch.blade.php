@@ -113,7 +113,7 @@
                                     <td class="px-6 py-6 text-center">
                                         @if(officerchk())
                                         <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                            <a href="{{'branch/'.$l->id.'/edit?action=edit'}}" 
+                                            <a href="{{ url('branch/'.$l->id.'/edit?action=edit') }}" 
                                                class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm"
                                                title="แก้ไข">
                                                 <i class="ri-edit-2-line text-lg"></i>

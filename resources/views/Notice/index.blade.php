@@ -111,7 +111,7 @@
                             </td>
                             <td class="px-6 py-6 text-center">
                                 <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{'Notice/'.$l->id.'/edit'}}" class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                    <a href="{{ url('Notice/'.$l->id.'/edit') }}" class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                         <i class="ri-edit-2-line text-lg"></i>
                                     </a>
                                     <form id="delform{{$l->id}}" method="post" action="{{ route('Notice.destroy',$l->id)}}" class="hidden">

@@ -125,7 +125,7 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                <a href="../centersillapa" class="px-6 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all shadow-sm">
+                <a href="{{ url('centersillapa') }}" class="px-6 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all shadow-sm">
                     ยกเลิก
                 </a>
                 <button type="submit" class="px-10 py-3 bg-primary text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-md shadow-emerald-200">

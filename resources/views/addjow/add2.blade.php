@@ -119,13 +119,13 @@
                                     </td>
                                     <td class="px-6 py-5 text-center text-slate-800">
                                         <div class="flex justify-center gap-1 text-slate-800">
-                                            <a href="./printreportjow/{{$l->id}}" target="_blank" class="px-2 py-1 bg-slate-100 text-slate-500 rounded-md hover:bg-slate-800 hover:text-white transition-all text-[9px] text-slate-800">No BG</a>
-                                            <a href="./printreportjow_showbg/{{$l->id}}" target="_blank" class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded-md hover:bg-emerald-600 hover:text-white transition-all text-[9px] text-slate-800 text-white">Show BG</a>
+                                            <a href="{{ url('printreportjow/'.$l->id) }}" target="_blank" class="px-2 py-1 bg-slate-100 text-slate-500 rounded-md hover:bg-slate-800 hover:text-white transition-all text-[9px] text-slate-800">No BG</a>
+                                            <a href="{{ url('printreportjow_showbg/'.$l->id) }}" target="_blank" class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded-md hover:bg-emerald-600 hover:text-white transition-all text-[9px] text-slate-800 text-white">Show BG</a>
                                         </div>
                                     </td>
                                     <td class="px-6 py-5 text-right rounded-r-2xl text-slate-800">
                                         <div class="flex justify-end gap-2 text-slate-800">
-                                            <a href="{{'jow2/'.$l->id.'/edit'}}" class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                            <a href="{{ url('jow2/'.$l->id.'/edit') }}" class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-pencil-line"></i>
                                             </a>
                                             

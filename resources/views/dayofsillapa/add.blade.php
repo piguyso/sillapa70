@@ -82,7 +82,7 @@
                                 <td class="px-6 py-4 text-center rounded-r-2xl">
                                     <div class="flex justify-center gap-2">
                                         @if(officerchk())
-                                            <a href="{{'dayofsillapa/'.$l->id.'/edit?action=edit'}}" 
+                                            <a href="{{ url('dayofsillapa/'.$l->id.'/edit?action=edit') }}" 
                                                class="w-9 h-9 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-edit-2-line"></i>
                                             </a>

@@ -77,13 +77,13 @@
                                 </td>
                                 <td class="px-4 py-4 text-center">
                                     <div class="flex justify-center gap-1">
-                                        <a href="./printreportjow/{{$l->id}}" class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-[8px] font-black uppercase italic" target="_blank">NO BG</a>
-                                        <a href="./printreportjow_showbg/{{$l->id}}" class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-600 hover:text-white transition-all text-[8px] font-black uppercase italic" target="_blank">WITH BG</a>
+                                        <a href="{{ url('area/printreportjow/'.$l->id) }}" class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-[8px] font-black uppercase italic" target="_blank">NO BG</a>
+                                        <a href="{{ url('area/printreportjow_showbg/'.$l->id) }}" class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-600 hover:text-white transition-all text-[8px] font-black uppercase italic" target="_blank">WITH BG</a>
                                     </div>
                                 </td>
                                 <td class="px-4 py-4 text-right rounded-r-2xl">
                                     <div class="flex justify-end gap-2">
-                                        <a href="{{'areajow2/'.$l->id.'/edit'}}" class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all">
+                                        <a href="{{ url('area/areajow2/'.$l->id.'/edit') }}" class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all">
                                             <i class="ri-edit-2-line"></i>
                                         </a>
                                         <button onclick="DelConfirm({{$l->id}})" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all">

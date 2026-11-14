@@ -27,7 +27,7 @@
               <div class="panel-heading"></div>
               <div class="panel-body">
                 <div class="container"><a href="https://www.obec.go.th/wp-content/uploads/2024/09/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%82%E0%B9%88%E0%B8%87%E0%B8%82%E0%B8%B1%E0%B8%99%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%A8%E0%B8%B4%E0%B8%A5%E0%B8%9B%E0%B8%AB%E0%B8%B1%E0%B8%95%E0%B8%96%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99-%E0%B8%84%E0%B8%A3%E0%B8%B1%E0%B9%89%E0%B8%87%E0%B8%97%E0%B8%B5%E0%B9%88-72-1.pdf" target="_blank">
-              <img src="imgs/banner_top.png" class="img-responsive img-rounded" width="95%"></a>
+              <img src="{{ asset('imgs/banner_top.png') }}" class="img-responsive img-rounded" width="95%"></a>
                 </div>
             </div> 
           </div>
@@ -41,13 +41,13 @@
               <div class="panel-body">
   
               @forelse($notice_1 as $b)
-          <br><div class="btn btn-success btn-md">{{$b->notice_owner}}</div> <a href="notice_detail/{{$b->id}}"> [{{Datethai6($b->created_at)}}] {{$b->notice_text}}</a> 
+          <br><div class="btn btn-success btn-md">{{$b->notice_owner}}</div> <a href="{{ url('notice_detail/'.$b->id) }}"> [{{Datethai6($b->created_at)}}] {{$b->notice_text}}</a> 
           <?php 
           $to_time = strtotime(now());
           $from_time = strtotime($b->created_at);
         //  echo $to_time.' '.$b->updates_at;
          if(round(abs($to_time - $from_time) / 60,2)<= 180){
-          echo "<img src='imgs/New2.gif' width='25px'>";
+          echo "<img src='".asset('imgs/New2.gif')."' width='25px'>";
          };
           ?>
             @empty
@@ -66,13 +66,13 @@
               <div class="panel-heading">ประกาศจากศูนย์การแข่งขัน</div>
               <div class="panel-body">
               @forelse($notice_2 as $b)
-          <br><div class="btn btn-primary btn-xs">{{$b->notice_owner}}</div> <a href="notice_detail/{{$b->id}}">[{{Datethai6($b->created_at)}}] {{$b->notice_text}}</a> 
+          <br><div class="btn btn-primary btn-xs">{{$b->notice_owner}}</div> <a href="{{ url('notice_detail/'.$b->id) }}">[{{Datethai6($b->created_at)}}] {{$b->notice_text}}</a> 
           <?php 
           $to_time = strtotime(now());
           $from_time = strtotime($b->create_at);
         //  echo $to_time.' '.$b->updates_at;
          if(round(abs($to_time - $from_time) / 60,2)<= 180){
-          echo "<img src='imgs/New2.gif' width='25px'>";
+          echo "<img src='".asset('imgs/New2.gif')."' width='25px'>";
          };
           ?>
             @empty
@@ -100,25 +100,25 @@
              
              
              <hr>
-             <a href="downloads/allarea.rar" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> สรุปผลตัวแทนระดับภาครายเครือข่ายไฟล์ excel </a></a><img src="imgs/New2.gif" width='40px'><br>
+             <a href="{{ asset('downloads/allarea.rar') }}" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> สรุปผลตัวแทนระดับภาครายเครือข่ายไฟล์ excel </a></a><img src="{{ asset('imgs/New2.gif') }}" width='40px'><br>
               
-             <a href="downloads/cpn1_pla.pdf" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> แผนผังสนามแข่งขันสำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑ </a></a><img src="imgs/New2.gif" width='40px'><br>
+             <a href="{{ asset('downloads/cpn1_pla.pdf') }}" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> แผนผังสนามแข่งขันสำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑ </a></a><img src="{{ asset('imgs/New2.gif') }}" width='40px'><br>
               
              
-             <a href="downloads/watsuban_pla.JPG" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> แผนผังสนามแข่งขันโรงเรียนอนุบาลเมืองชุมพร วัดสุบรรณนิมิตร </a><img src="imgs/New2.gif" width='40px'><br>
-             <a href="downloads/watsuban_com_os.pdf" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> ประกาศข้อมูล Spec Computer สำหรับใช้ในการแข่งขัน โรงเรียนอนุบาลเมืองชุมพร วัดสุบรรณนิมิตร </a></a><img src="imgs/New2.gif" width='40px'><br>
+             <a href="{{ asset('downloads/watsuban_pla.JPG') }}" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> แผนผังสนามแข่งขันโรงเรียนอนุบาลเมืองชุมพร วัดสุบรรณนิมิตร </a><img src="{{ asset('imgs/New2.gif') }}" width='40px'><br>
+             <a href="{{ asset('downloads/watsuban_com_os.pdf') }}" target="_blank"> <span class="glyphicon glyphicon-circle-arrow-right"></span> ประกาศข้อมูล Spec Computer สำหรับใช้ในการแข่งขัน โรงเรียนอนุบาลเมืองชุมพร วัดสุบรรณนิมิตร </a></a><img src="{{ asset('imgs/New2.gif') }}" width='40px'><br>
               
             <hr>
 -->
           
             @forelse($firstactivity as $b)
-          <br> - <a href="viewactivitydetail/{{$b->id}}">{{$b->activity_name}} {{$b->getactivitysubject->subjectgroup_name}} -> {{$b->getactivitybranch->branch_name}}</a>
+          <br> - <a href="{{ url('viewactivitydetail/'.$b->id) }}">{{$b->activity_name}} {{$b->getactivitysubject->subjectgroup_name}} -> {{$b->getactivitybranch->branch_name}}</a>
           <?php 
           $to_time = strtotime(now());
           $from_time = strtotime($b->updated_at);
         //  echo $to_time.' '.$b->updates_at;
          if(round(abs($to_time - $from_time) / 60,2)<= 10){
-          echo "<img src='imgs/New2.gif' width='25px'>";
+          echo "<img src='".asset('imgs/New2.gif')."' width='25px'>";
          };
           ?>
             @empty
@@ -159,7 +159,7 @@
                     @forelse($dbrank as $l)
                      <tr>
                        <td>{{$num1}}</td>
-                       <td><a href="showschooldetail/{{$l->school_name}}/0">{{$selectschool[$l->school_name]}}</a></td>
+                       <td><a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}">{{$selectschool[$l->school_name]}}</a></td>
                        <td style="text-align: center">
                        
                        {{$l->Gold}}
@@ -187,7 +187,7 @@
                  
               </div>
                <div class="panel-footer">
-                <a href="./viewall" class="btn btn-info btn-md">
+                <a href="{{ url('viewall') }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-info-sign"> ลำดับผลการแข่งขันทั้งหมด</span>
                          </a></div>
           </div>
@@ -220,7 +220,7 @@
                     @forelse($subjectgroup as $l)
                      <tr>
                        <td>{{$num1}}</td>
-                       <td><a href="./viewactivity/{{$l->id}}">{{$l->subjectgroup_name}}</a></td>
+                       <td><a href="{{ url('viewactivity/'.$l->id) }}">{{$l->subjectgroup_name}}</a></td>
                        <td>
                         
                        
@@ -297,7 +297,7 @@
                     @forelse($schoolgroup as $l)
                      <tr>
                        <td>{{$num}}</td>
-                       <td><a href="showschool/{{$l->id}}">เครือข่ายสถานศึกษา{{$l->schoolgroup_name}}</a></td>
+                       <td><a href="{{ url('showschool/'.$l->id) }}">เครือข่ายสถานศึกษา{{$l->schoolgroup_name}}</a></td>
                        <td>
                         
                        
@@ -381,7 +381,7 @@
                     @forelse($Branch as $l)
                      <tr>
                        <td>{{$num}}</td>
-                       <td><a href="viewbranch/{{$l->id}}">{{$l->branch_name}}</a></td>
+                       <td><a href="{{ url('viewbranch/'.$l->id) }}">{{$l->branch_name}}</a></td>
                        <td>
                         
                        

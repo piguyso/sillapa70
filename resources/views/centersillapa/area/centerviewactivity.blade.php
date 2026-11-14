@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-12 col-lg-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="../centersillapa" class="btn btn-info btn-md" onclick="">
+              <div class="panel-heading"><a href="{{ url('area/centersillapa') }}" class="btn btn-info btn-md" onclick="">
                 <span class="glyphicon glyphicon-backward"></span>
                 </a> บันทึกข้อมูลการแข่งขัน {{$subjectgroup->subjectgroup_name}} {{Auth::user()->name.' '.Auth::user()->lastname}}</div>
 
@@ -104,7 +104,7 @@
                           echo $x.'.';
                           ?>
                       </td>
-                       <td><a href="../centerviewactivityschool/{{$l->id}}">{{$l->activity_name}}</a></td>
+                       <td><a href="{{ url('area/centerviewactivityschool/'.$l->id) }}">{{$l->activity_name}}</a></td>
                        <td>{{$l->getclass->class_name}}</td>
                        <td>
                         
@@ -131,22 +131,22 @@
                          <a href="#" data-toggle="modal" data-target="#myModal{{$l->id}}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-info-sign"></span>
                          </a>
-                         <a href="{{'../centereditactiviy/'.$l->id}}" class="btn btn-info btn-md">
+                         <a href="{{ url('area/centereditactiviy/'.$l->id) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-pencil"> แก้ไข</span>
                          </a>
                          <a href="{{url('/')}}/showprintpointdoc/{{$l->id}}" class="btn btn-info btn-md" target="_blank">
                            <span class="glyphicon glyphicon-print"> ใบบันทึกคะแนน</span>
                         </a> 
-                         <a href="../studentregisterform/{{$l->id}}" class="btn btn-info btn-md" target="_blank">
+                         <a href="{{ url('area/studentregisterform/'.$l->id) }}" class="btn btn-info btn-md" target="_blank">
                            <span class="glyphicon glyphicon-print"> ใบรายงานตัวนักเรียน</span>
                          </a> 
-                         <a href="../teacherregisterform/{{$l->id}}" class="btn btn-info btn-md" target="_blank">
+                         <a href="{{ url('area/teacherregisterform/'.$l->id) }}" class="btn btn-info btn-md" target="_blank">
                            <span class="glyphicon glyphicon-print"> ใบลงเวลาครู</span>
                          </a>
-                         <a href="../jowregisterform/{{$l->id}}" class="btn btn-info btn-md" target="_blank">
+                         <a href="{{ url('area/jowregisterform/'.$l->id) }}" class="btn btn-info btn-md" target="_blank">
                            <span class="glyphicon glyphicon-print"> ใบลงเวลากรรมการ</span>
                          </a>
-                         <a href="../printjow_showbg/{{$l->id}}" class="btn btn-info btn-md" target="_blank">
+                         <a href="{{ url('area/printjow_showbg/'.$l->id) }}" class="btn btn-info btn-md" target="_blank">
                            <span class="glyphicon glyphicon-print"> เกียรติบัตรกรรมการ</span>
                          </a>
                         </td>

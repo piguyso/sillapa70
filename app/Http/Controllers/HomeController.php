@@ -39,17 +39,35 @@ class HomeController extends Controller
             'showall1', 'viewall', 'printrandomz', 'printpointdoc',
             'viewactivitydetail', 'showschooldetail', 'switchYear'
         ]);
-        $activeYearModel = \App\Years::where('active', 1)->first();
-        $activeYear = $activeYearModel ? $activeYearModel->years : '2568';
-        $config = Configs::where('schoolgroup', 0)->where('app_year', $activeYear)->first();
+        $activeYear = active_year();
+        $eventId = active_event_id();
+        $configQuery = Configs::where('schoolgroup', 0);
+        if ($eventId) {
+            $config = (clone $configQuery)->where('event_id', $eventId)->first();
+        } else {
+            $config = null;
+        }
         if (!$config) {
-            $config = Configs::where('schoolgroup', 0)->first();
+            $config = (clone $configQuery)->where('app_year', $activeYear)->first()
+                ?: $configQuery->first();
         }
         if ($config) {
-            Session::put('app_name',$config->app_name);
-            Session::put('app_group',$config->app_group);
-            Session::put('app_area',$config->app_area);
-            Session::put('app_year',$config->app_year);
+            $themePrimary = !empty($config->theme_primary) ? $config->theme_primary : '#059669';
+            $themeSecondary = !empty($config->theme_secondary) ? $config->theme_secondary : '#0f172a';
+            config([
+                'app.name' => $config->app_name ?: config('app.name'),
+                'app.group' => $config->app_group,
+                'app.area' => $config->app_area,
+                'app.year' => $config->app_year,
+                'app.theme_primary' => $themePrimary,
+                'app.theme_secondary' => $themeSecondary,
+            ]);
+            Session::put('app_name', $config->app_name);
+            Session::put('app_group', $config->app_group);
+            Session::put('app_area', $config->app_area);
+            Session::put('app_year', $config->app_year);
+            Session::put('theme_primary', $themePrimary);
+            Session::put('theme_secondary', $themeSecondary);
             if (!session()->has('year')) {
                 session(['year' => $config->app_year]);
             }
@@ -64,7 +82,14 @@ class HomeController extends Controller
     public function index()
     {
       $activeYear = active_year();
-      $config = Configs::where('schoolgroup', 0)->where('app_year', $activeYear)->get();
+      $eventId = active_event_id();
+      $config = collect();
+      if ($eventId) {
+          $config = Configs::where('schoolgroup', 0)->where('event_id', $eventId)->get();
+      }
+      if ($config->isEmpty()) {
+          $config = Configs::where('schoolgroup', 0)->where('app_year', $activeYear)->get();
+      }
       if ($config->isEmpty()) {
           $config = Configs::where('schoolgroup', 0)->take(1)->get();
       }

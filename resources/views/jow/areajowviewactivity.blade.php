@@ -63,7 +63,7 @@
                                 {{ $x }}.
                             </td>
                             <td class="px-6 py-6">
-                                <a href="../addjow/{{$l->id}}" class="text-slate-800 hover:text-orange-600 font-black text-base uppercase tracking-tight transition-colors block leading-tight">
+                                <a href="{{ url('area/addjow/'.$l->id) }}" class="text-slate-800 hover:text-orange-600 font-black text-base uppercase tracking-tight transition-colors block leading-tight">
                                     {{$l->activity_name}}
                                 </a>
                                 <span class="text-[10px] text-slate-400 italic">{{$l->getclass->class_name}}</span>
@@ -82,8 +82,8 @@
                             </td>
                             <td class="px-6 py-6 text-right rounded-r-2xl">
                                 <div class="flex justify-end gap-2">
-                                    <a href="../printjow/{{$l->id}}" target="_blank" class="px-3 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-800 hover:text-white transition-all text-[10px] font-black uppercase italic shadow-sm">No BG</a>
-                                    <a href="../printjow_showbg/{{$l->id}}" target="_blank" class="px-3 py-2 bg-orange-100 text-orange-700 rounded-xl hover:bg-orange-600 hover:text-white transition-all text-[10px] font-black uppercase italic shadow-sm">With BG</a>
+                                    <a href="{{ url('area/printjow/'.$l->id) }}" target="_blank" class="px-3 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-800 hover:text-white transition-all text-[10px] font-black uppercase italic shadow-sm">No BG</a>
+                                    <a href="{{ url('area/printjow_showbg/'.$l->id) }}" target="_blank" class="px-3 py-2 bg-orange-100 text-orange-700 rounded-xl hover:bg-orange-600 hover:text-white transition-all text-[10px] font-black uppercase italic shadow-sm">With BG</a>
                                     <button class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 rounded-xl border border-slate-100 hover:bg-orange-500 hover:text-white transition-all">
                                         <i class="ri-information-line text-lg"></i>
                                     </button>
@@ -104,7 +104,7 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-center">
-                                        <a href="../addjow/{{$l->id}}" class="px-8 py-4 bg-amber-900 text-white rounded-2xl font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-white">
+                                        <a href="{{ url('area/addjow/'.$l->id) }}" class="px-8 py-4 bg-amber-900 text-white rounded-2xl font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-100 uppercase italic tracking-widest text-white">
                                             <i class="ri-user-settings-line mr-1 text-white"></i> จัดการรายชื่อกรรมการกิจกรรมนี้
                                         </a>
                                     </div>

@@ -5,7 +5,7 @@
     
     <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
         <div class="flex items-center gap-4">
-            <a href="../../addjow/{{$jows->jow_activity}}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
+            <a href="{{ url('addjow/'.$jows->jow_activity) }}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
                 <i class="ri-arrow-left-line text-2xl text-white"></i>
             </a>
             <div>
@@ -81,7 +81,7 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                <a href="../../addjow/{{$jows->jow_activity}}" 
+                <a href="{{ url('addjow/'.$jows->jow_activity) }}" 
                     class="px-6 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all shadow-sm uppercase tracking-widest text-xs">
                     ยกเลิก
                 </a>

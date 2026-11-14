@@ -630,6 +630,85 @@ if (!function_exists('active_year')) {
     }
 }
 
+if (!function_exists('active_event_number')) {
+    function active_event_number(): int {
+        if (config('app.event_number')) {
+            return (int) config('app.event_number');
+        }
+
+        $req = request();
+        if ($req) {
+            $baseUrl = $req->getBaseUrl();
+            if (preg_match('~/([0-9]+)$~', rtrim($baseUrl, '/'), $matches)) {
+                return (int) $matches[1];
+            }
+
+            $requestPath = '/' . ltrim($req->path(), '/');
+            if (preg_match('~^/?(?:cpn1/)?([0-9]+)(?:/|$)~', $requestPath, $matches)) {
+                return (int) $matches[1];
+            }
+
+            $uri = $req->getRequestUri();
+            if (preg_match('~/(?:cpn1/)?([0-9]+)(?:/|$)~', $uri, $matches)) {
+                return (int) $matches[1];
+            }
+        }
+
+        try {
+            $activeNum = \App\Event::where('is_active', true)->value('event_number');
+            if ($activeNum) {
+                return (int) $activeNum;
+            }
+        } catch (\Throwable $e) {}
+
+        return 74;
+    }
+}
+
+if (!function_exists('active_event')) {
+    function active_event(): ?\App\Event {
+        static $events = [];
+        $eventNumber = active_event_number();
+
+        if (!array_key_exists($eventNumber, $events)) {
+            try {
+                $events[$eventNumber] = \App\Event::where('event_number', $eventNumber)->first();
+            } catch (\Throwable $exception) {
+                $events[$eventNumber] = null;
+            }
+        }
+
+        return $events[$eventNumber];
+    }
+}
+
+if (!function_exists('active_event_id')) {
+    function active_event_id(): ?int {
+        return active_event()?->id;
+    }
+}
+
+if (!function_exists('event_url')) {
+    function event_url(string $path = '', ?int $eventNumber = null): string {
+        $eventNumber = $eventNumber ?: active_event_number();
+        $req = request();
+        $host = $req ? $req->getSchemeAndHttpHost() : config('app.url');
+
+        $isCpn1 = true;
+        if ($req) {
+            $uri = $req->getRequestUri();
+            $baseUrl = $req->getBaseUrl();
+            if (!str_contains($uri, '/cpn1') && !str_contains($baseUrl, '/cpn1') && $req->segment(1) !== 'cpn1') {
+                $isCpn1 = false;
+            }
+        }
+
+        $prefix = ($isCpn1 ? '/cpn1/' : '/') . $eventNumber;
+        $path = ltrim($path, '/');
+        return rtrim($host, '/') . $prefix . ($path !== '' ? '/' . $path : '');
+    }
+}
+
 if (!function_exists('storage_year_path')) {
     function storage_year_path($subDir = '', $fileName = '', $year = null) {
         $year = $year ?: active_year();
@@ -652,23 +731,41 @@ if (!function_exists('storage_file_exists')) {
             return false;
         }
 
-        $path = storage_year_path($subDir, $fileName, $year);
+        $subDir = trim($subDir, '/');
+        $baseName = basename($fileName);
+        $path = storage_year_path($subDir, $baseName, $year);
         if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
             return true;
         }
 
-        return file_exists(public_path(trim($subDir, '/') . '/' . basename($fileName)));
+        foreach (\Illuminate\Support\Facades\Storage::disk('public')->directories() as $dir) {
+            $altPath = trim($dir, '/') . '/' . $subDir . '/' . $baseName;
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($altPath)) {
+                return true;
+            }
+        }
+
+        return file_exists(public_path($subDir . '/' . $baseName));
     }
 }
 
 if (!function_exists('storage_file_path')) {
     function storage_file_path($subDir, $fileName, $year = null) {
-        $path = storage_year_path($subDir, $fileName, $year);
+        $subDir = trim($subDir, '/');
+        $baseName = basename($fileName);
+        $path = storage_year_path($subDir, $baseName, $year);
         if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
             return str_replace('\\', '/', \Illuminate\Support\Facades\Storage::disk('public')->path($path));
         }
 
-        return str_replace('\\', '/', public_path(trim($subDir, '/') . '/' . basename($fileName)));
+        foreach (\Illuminate\Support\Facades\Storage::disk('public')->directories() as $dir) {
+            $altPath = trim($dir, '/') . '/' . $subDir . '/' . $baseName;
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($altPath)) {
+                return str_replace('\\', '/', \Illuminate\Support\Facades\Storage::disk('public')->path($altPath));
+            }
+        }
+
+        return str_replace('\\', '/', public_path($subDir . '/' . $baseName));
     }
 }
 

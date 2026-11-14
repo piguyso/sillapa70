@@ -12,7 +12,7 @@
           <div class="panel panel-default">
               <div class="panel-heading">
                
-                <a href="../../" class="btn btn-info btn-md" onclick="">
+                <a href="{{ url('area/'.session('area')) }}" class="btn btn-info btn-md" onclick="">
                 
                 <span class="glyphicon glyphicon-backward"></span>
                 </a> รายการแข่งขันที่มีทีมไม่เกิน 3 ทีม (ไม่มีการแข่งขัน)

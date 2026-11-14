@@ -68,7 +68,7 @@ class AreaController extends Controller
       $notice_2 = Notices::where('notice_type','=',5)->where('schoolgroup','=',$id)->orderBy('updated_at','desc')->paginate(1000);
       $Branch = Branch::where('id','like','%')->paginate(1000);
 
-      session()->put('schoolgroup',$schoolgroup[0]->schoolgroup_name);
+      session()->put('schoolgroup',$schoolgroup[0]->schoolgroup_name ?? '');
       
         $activitycount = DB::table('Activities')
     ->select('activity_subject', DB::raw('count(*) as total'))

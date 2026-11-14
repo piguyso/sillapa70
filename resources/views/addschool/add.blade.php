@@ -6,7 +6,7 @@
     <div class="bg-gradient-to-r from-slate-800 to-emerald-900 rounded-3xl shadow-xl p-8 md:p-10 mb-8 text-white relative overflow-hidden border-b-8 border-emerald-500">
         <div class="relative z-10">
             <div class="flex items-center gap-4 mb-4">
-                <a href="../addactivity/{{$activity->activity_subject}}" 
+                <a href="{{ url('addactivity/'.$activity->activity_subject) }}" 
                    class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md">
                     <i class="ri-arrow-left-s-line text-2xl"></i>
                 </a>
@@ -61,7 +61,7 @@
                             <tr class="bg-white hover:shadow-md transition-shadow border border-gray-100 rounded-2xl group">
                                 <td class="px-6 py-6 text-center text-slate-300 italic align-top">{{ $y++ }}.</td>
                                 <td class="px-6 py-6 align-top">
-                                    <a href="../addaddstudent/{{$l->id}}" class="text-emerald-700 hover:text-emerald-900 transition-colors uppercase italic font-black text-base">
+                                    <a href="{{ url('addaddstudent/'.$l->id) }}" class="text-emerald-700 hover:text-emerald-900 transition-colors uppercase italic font-black text-base">
                                         {{$l->getschoolname->school_name}}
                                     </a>
                                     <div class="text-[10px] text-slate-400 mt-1 uppercase italic font-bold">
@@ -90,7 +90,7 @@
                                 </td>
                                 <td class="px-6 py-6 text-center align-top">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="../addaddstudent/{{$l->id}}" class="w-10 h-10 flex items-center justify-center bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="เพิ่มนักเรียน/ครู">
+                                        <a href="{{ url('addaddstudent/'.$l->id) }}" class="w-10 h-10 flex items-center justify-center bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="เพิ่มนักเรียน/ครู">
                                             <i class="ri-user-add-line text-lg"></i>
                                         </a>
                                         @if(adminchk() || ($l->school_schoolgroup == Auth::user()->schoolgroup && $activity->activity_status == 0))

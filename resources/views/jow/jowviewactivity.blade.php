@@ -6,7 +6,7 @@
     <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="../jow" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
+                <a href="{{ url('jow') }}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
                     <i class="ri-arrow-left-line text-2xl text-white"></i>
                 </a>
                 <div>
@@ -57,7 +57,7 @@
                                 @php $x++; echo sprintf("%02d", $x); @endphp
                             </td>
                             <td class="px-6 py-6">
-                                <a href="../addjow/{{$l->id}}" class="font-black text-gray-800 hover:text-primary transition-colors block text-base leading-tight uppercase">
+                                <a href="{{ url('addjow/'.$l->id) }}" class="font-black text-gray-800 hover:text-primary transition-colors block text-base leading-tight uppercase">
                                     {{$l->activity_name}}
                                 </a>
                             </td>
@@ -95,10 +95,10 @@
                             <td class="px-6 py-6">
                                 <div class="flex flex-col gap-2">
                                     <div class="grid grid-cols-2 gap-2">
-                                        <a href="../printjow/{{$l->id}}" target="_blank" class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-xl transition text-[9px] font-black border border-blue-100 text-center uppercase tracking-tighter">
+                                        <a href="{{ url('printjow/'.$l->id) }}" target="_blank" class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-xl transition text-[9px] font-black border border-blue-100 text-center uppercase tracking-tighter">
                                             <i class="ri-printer-line"></i> ไม่มีพื้นหลัง
                                         </a>
-                                        <a href="../printjow_showbg/{{$l->id}}" target="_blank" class="bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2 py-2 rounded-xl transition text-[9px] font-black border border-emerald-100 text-center uppercase tracking-tighter">
+                                        <a href="{{ url('printjow_showbg/'.$l->id) }}" target="_blank" class="bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2 py-2 rounded-xl transition text-[9px] font-black border border-emerald-100 text-center uppercase tracking-tighter">
                                             <i class="ri-landscape-line"></i> มีพื้นหลัง
                                         </a>
                                     </div>

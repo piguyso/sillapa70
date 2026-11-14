@@ -6,7 +6,7 @@
     <div class="bg-gradient-to-r from-slate-800 to-emerald-900 rounded-3xl shadow-xl p-8 md:p-10 mb-8 text-white relative overflow-hidden border-b-8 border-emerald-500">
         <div class="relative z-10">
             <div class="flex items-center gap-4 mb-4">
-                <a href="../addaddschool/{{$addschool[0]->school_activity}}" 
+                <a href="{{ url('addaddschool/'.$addschool[0]->school_activity) }}" 
                    class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md">
                     <i class="ri-arrow-left-s-line text-2xl text-white"></i>
                 </a>
@@ -71,7 +71,7 @@
                                 <td class="px-6 py-4 text-center rounded-r-2xl">
                                     <div class="flex justify-center gap-2">
                                         @if($addschool[0]->school_schoolgroup==Auth::user()->schoolgroup or Auth::user()->position == '10')
-                                            <a href="{{'../addstudent/'.$l->id.'/edit?action=edit'}}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                            <a href="{{ url('addstudent/'.$l->id.'/edit?action=edit') }}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-edit-2-line text-xl"></i>
                                             </a>
                                             @if($addschool[0]->getactivityname->activity_status == 0)
@@ -131,7 +131,7 @@
                                 <td class="px-6 py-4 text-center rounded-r-2xl">
                                     <div class="flex justify-center gap-2">
                                         @if($addschool[0]->school_schoolgroup==Auth::user()->schoolgroup or Auth::user()->position == '10')
-                                            <a href="{{'../addstudent/'.$l->id.'/edit?action=edit'}}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                            <a href="{{ url('addstudent/'.$l->id.'/edit?action=edit') }}" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-edit-2-line text-xl"></i>
                                             </a>
                                             @if($addschool[0]->getactivityname->activity_status == 0)

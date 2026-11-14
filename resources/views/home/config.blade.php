@@ -34,17 +34,107 @@
         <i class="ri-terminal-box-line absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12"></i>
     </div>
 
+    {{-- Event Selection & Status Bar --}}
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            
+            {{-- Left: Event Selector --}}
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center font-black">
+                        <i class="ri-calendar-event-line text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-slate-400 uppercase tracking-wider">ครั้งที่จัดการแข่งขัน</div>
+                        <div class="text-sm font-bold text-slate-700">เลือกครั้งที่ต้องการดู/จัดการข้อมูล</div>
+                    </div>
+                </div>
+
+                <div class="relative min-w-[280px]">
+                    <select onchange="if(this.value) window.location.href = this.value;" class="w-full pl-4 pr-10 py-3 rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-emerald-500 font-bold text-slate-800 transition-all cursor-pointer shadow-sm">
+                        @foreach($events as $event)
+                            <option value="{{ event_url('config', $event->event_number) }}" {{ $event->id === $currentEvent->id ? 'selected' : '' }}>
+                                ครั้งที่ {{ $event->event_number }} (ปีการศึกษา {{ $event->academic_year }}) {{ $event->is_active ? '— [ใช้งานปัจจุบัน]' : '— [ข้อมูลย้อนหลัง]' }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Status Badge --}}
+                <div>
+                    @if($currentEvent->is_active)
+                        <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-emerald-100 text-emerald-700">
+                            <i class="ri-checkbox-circle-fill text-sm"></i> ACTIVE (ระบบปัจจุบัน)
+                        </span>
+                    @else
+                        <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-amber-100 text-amber-800">
+                            <i class="ri-lock-line text-sm"></i> READ ONLY (ข้อมูลย้อนหลัง)
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Right: Actions (Activate button if inactive, Delete button, and Add New Event button) --}}
+            <div class="flex flex-wrap items-center gap-3">
+                @if(Auth::user()->position == 10 && !$currentEvent->is_active)
+                    <form id="activateEventForm" method="POST" action="{{ event_url('config/events/' . $currentEvent->id . '/activate', $currentEvent->event_number) }}">
+                        @csrf
+                        <button type="button" onclick="confirmActivateEvent()" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-sm transition-all shadow-md flex items-center gap-2">
+                            <i class="ri-check-double-line text-base"></i> ตั้งครั้งนี้เป็น Active
+                        </button>
+                    </form>
+
+                    <form id="deleteEventForm" method="POST" action="{{ event_url('config/events/' . $currentEvent->id, $currentEvent->event_number) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" onclick="confirmDeleteEvent()" class="px-5 py-3 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 rounded-2xl font-black text-sm transition-all shadow-sm flex items-center gap-2">
+                            <i class="ri-delete-bin-2-line text-base"></i> ลบครั้งที่ {{ $currentEvent->event_number }}
+                        </button>
+                    </form>
+                @endif
+
+                @if(Auth::user()->position == 10)
+                    <button type="button" onclick="openNewEventModal()" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-sm transition-all shadow-md flex items-center gap-2">
+                        <i class="ri-add-circle-line text-base"></i> + เพิ่มครั้งการแข่งขันใหม่
+                    </button>
+                @endif
+            </div>
+
+        </div>
+    </div>
+
+    @if($readOnly)
+        <div class="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center justify-between gap-3 shadow-sm animate-fade-in">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                    <i class="ri-lock-line"></i>
+                </div>
+                <div>
+                    <p class="font-black text-base">กำลังดูข้อมูลย้อนหลัง: ครั้งที่ {{ $currentEvent->event_number }} (ปีการศึกษา {{ $currentEvent->academic_year }})</p>
+                    <p class="text-xs text-amber-700">คุณสามารถเปิดดูรายละเอียดทุกแท็บได้ตามปกติ แต่ไม่สามารถแก้ไขข้อมูลได้</p>
+                </div>
+            </div>
+            @if(Auth::user()->position == 10)
+                <span class="text-xs text-amber-700 italic hidden sm:inline-block">กดปุ่ม "ตั้งครั้งนี้เป็น Active" ด้านบนหากต้องการเปิดใช้งานครั้งนี้</span>
+            @endif
+        </div>
+    @endif
+
     @forelse($config as $l)
-    <form method="POST" enctype="multipart/form-data" action="{{ Route('config.update',$l->id) }}" class="space-y-6 animate-fade-in">
+    <form id="mainConfigForm" method="POST" enctype="multipart/form-data" action="{{ event_url('config/' . $l->id, $currentEvent->event_number) }}" class="space-y-6 animate-fade-in">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="put">
         <input type="hidden" name="cropped_logo" id="cropped_logo">
         <input type="hidden" name="cropped_qr" id="cropped_qr">
+        <fieldset {{ $readOnly ? 'disabled' : '' }}>
 
         <!-- Tab Buttons -->
         <div class="flex flex-wrap border-b border-slate-100 mb-6 gap-2 bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
             <button type="button" onclick="switchTab('general')" id="tab-btn-general" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-emerald-600 bg-emerald-50 transition-all flex items-center gap-2">
                 <i class="ri-settings-5-line text-lg"></i> ข้อมูลทั่วไป (General Settings)
+            </button>
+            <button type="button" onclick="switchTab('colors')" id="tab-btn-colors" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
+                <i class="ri-palette-line text-lg"></i> ตั้งค่าสีเว็บไซต์ (Theme Colors)
             </button>
             <button type="button" onclick="switchTab('links')" id="tab-btn-links" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
                 <i class="ri-links-line text-lg"></i> ลิงก์และเอกสาร (Links & QR)
@@ -101,16 +191,93 @@
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Year (พ.ศ.)</label>
-                            <div class="flex gap-2">
-                                <select name="app_year" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
-                                    @foreach($years as $y)
-                                        <option value="{{ $y->years }}" {{ $l->app_year == $y->years ? 'selected' : '' }}>{{ $y->years }}</option>
-                                    @endforeach
-                                </select>
-                                <button type="button" onclick="openYearModal()" class="px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-2xl font-black text-xs border border-emerald-200 transition-all flex items-center gap-1 shadow-sm whitespace-nowrap">
-                                    <i class="ri-calendar-event-line"></i> จัดการปี
-                                </button>
+                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Year (พ.ศ. / ปีการศึกษา)</label>
+                            <input type="text" name="app_year" value="{{ $l->app_year ?: $currentEvent->academic_year }}" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner text-center">
+                            <p class="text-xs text-slate-400">ปีการศึกษาสำหรับการแข่งขันครั้งที่ {{ $currentEvent->event_number }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Theme Colors Settings -->
+            <div id="tab-content-colors" class="tab-content hidden">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b border-gray-50 pb-4">
+                        <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 italic uppercase">
+                            <i class="ri-palette-line text-emerald-500"></i> ตั้งค่าสีเว็บไซต์ (Theme Colors) — แยกตามครั้งที่ {{ $currentEvent->event_number }}
+                        </h2>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                            <i class="ri-information-line"></i> สีที่ตั้งค่าจะแสดงเฉพาะในการแข่งขันครั้งที่ {{ $currentEvent->event_number }} (ปีการศึกษา {{ $currentEvent->academic_year }})
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <label class="block text-sm font-black text-slate-700 uppercase tracking-widest italic">สีหลักของเว็บไซต์ (Primary Color)</label>
+                            <p class="text-xs text-slate-500">ใช้สำหรับแถบเมนูด้านบน (Navbar), ปุ่มหลัก, แถบหัวข้อ และขอบเน้น</p>
+                            <div class="flex gap-3 items-center pt-1">
+                                <input type="color" id="theme_primary_picker" name="theme_primary" value="{{ $l->theme_primary ?: '#059669' }}" oninput="syncThemeColor('primary', this.value)" class="w-16 h-12 rounded-xl border border-gray-200 p-1 cursor-pointer bg-white shadow-sm">
+                                <input type="text" id="theme_primary_hex" value="{{ $l->theme_primary ?: '#059669' }}" maxlength="7" oninput="if(/^#[0-9A-Fa-f]{6}$/.test(this.value)) syncThemeColor('primary', this.value)" class="w-36 px-4 py-2.5 rounded-xl border border-gray-200 font-mono text-sm font-bold text-slate-700 uppercase bg-white">
+                            </div>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <label class="block text-sm font-black text-slate-700 uppercase tracking-widest italic">สีรองของเว็บไซต์ (Secondary Color)</label>
+                            <p class="text-xs text-slate-500">ใช้สำหรับไล่เฉดสีแบนเนอร์หน้าแรก (Hero Gradient), ปุ่มรอง และไอคอนเน้น</p>
+                            <div class="flex gap-3 items-center pt-1">
+                                <input type="color" id="theme_secondary_picker" name="theme_secondary" value="{{ $l->theme_secondary ?: '#0f172a' }}" oninput="syncThemeColor('secondary', this.value)" class="w-16 h-12 rounded-xl border border-gray-200 p-1 cursor-pointer bg-white shadow-sm">
+                                <input type="text" id="theme_secondary_hex" value="{{ $l->theme_secondary ?: '#0f172a' }}" maxlength="7" oninput="if(/^#[0-9A-Fa-f]{6}$/.test(this.value)) syncThemeColor('secondary', this.value)" class="w-36 px-4 py-2.5 rounded-xl border border-gray-200 font-mono text-sm font-bold text-slate-700 uppercase bg-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest italic">ชุดสีสำเร็จรูปแนะนำ (คลิกเพื่อเลือกใช้)</label>
+                        <div class="flex flex-wrap gap-3">
+                            <button type="button" onclick="applyThemePreset('#059669', '#0f172a')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #059669;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #0f172a;"></span>
+                                เขียวมรกต (ค่าเริ่มต้น)
+                            </button>
+                            <button type="button" onclick="applyThemePreset('#b30584', '#0f172a')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #b30584;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #0f172a;"></span>
+                                ชมพูบานเย็น
+                            </button>
+                            <button type="button" onclick="applyThemePreset('#1d4ed8', '#0f172a')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #1d4ed8;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #0f172a;"></span>
+                                น้ำเงินรอยัลบลู
+                            </button>
+                            <button type="button" onclick="applyThemePreset('#7c3aed', '#1e1b4b')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #7c3aed;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #1e1b4b;"></span>
+                                ม่วงไวโอเล็ต
+                            </button>
+                            <button type="button" onclick="applyThemePreset('#be123c', '#1e293b')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #be123c;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #1e293b;"></span>
+                                แดงทับทิม
+                            </button>
+                            <button type="button" onclick="applyThemePreset('#d97706', '#451a03')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+                                <span class="w-4 h-4 rounded-full border border-black/10" style="background-color: #d97706;"></span>
+                                <span class="w-4 h-4 rounded-full border border-black/10 -ml-2" style="background-color: #451a03;"></span>
+                                ทองอำพัน
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="space-y-2 pt-2">
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest italic">ตัวอย่างการแสดงผลสีธีม (ครั้งที่ {{ $currentEvent->event_number }})</label>
+                        <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                            <div id="theme_preview_navbar" class="px-5 py-3 text-white flex items-center justify-between" style="background-color: {{ $l->theme_primary ?: '#059669' }};">
+                                <span class="font-bold text-sm">{{ $l->app_name }} {{ $l->app_group }} {{ $l->app_year ?: $currentEvent->academic_year }}</span>
+                                <span id="theme_preview_badge" class="px-3 py-1 rounded-full text-xs font-bold text-white" style="background-color: {{ $l->theme_secondary ?: '#0f172a' }};">ครั้งที่ {{ $currentEvent->event_number }}</span>
+                            </div>
+                            <div id="theme_preview_banner" class="p-6 text-center text-white" style="background: linear-gradient(to right, {{ $l->theme_primary ?: '#059669' }}, {{ $l->theme_secondary ?: '#0f172a' }}, {{ $l->theme_primary ?: '#059669' }});">
+                                <div class="font-black text-lg">งานศิลปหัตถกรรมนักเรียน ครั้งที่ {{ $currentEvent->event_number }}</div>
+                                <div class="text-xs opacity-80 mt-1">ปีการศึกษา {{ $l->app_year ?: $currentEvent->academic_year }} • {{ $l->app_area }}</div>
                             </div>
                         </div>
                     </div>
@@ -143,7 +310,7 @@
                         <div class="md:col-span-2 flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                             <div class="relative">
                                 <div class="w-24 h-24 bg-white rounded-xl border flex items-center justify-center overflow-hidden shadow-sm flex-shrink-0">
-                                    <img id="img_preview_qr" src="{{ $l->survey_qr ? get_secure_file_url('upload', $l->survey_qr, $l->app_year) : url('/imgs/qr-code.png') }}" class="max-w-full max-h-full object-contain">
+                                    <img id="img_preview_qr" src="{{ $l->survey_qr ? get_secure_file_url('upload', $l->survey_qr, $l->app_year) : asset('imgs/qr-code.png') }}" class="max-w-full max-h-full object-contain">
                                 </div>
                             </div>
                             <div class="space-y-2 w-full">
@@ -228,19 +395,15 @@
                                         </span>
                                     </div>
                                     {{-- ปุ่ม upload สำหรับ admin หรือ position=5 เฉพาะ schoolgroup ตัวเอง --}}
-                                    @if(Auth::user()->position != '5' || Auth::user()->schoolgroup == $m->schoolgroup)
+                                    @if(!$readOnly && (Auth::user()->position != '5' || Auth::user()->schoolgroup == $m->schoolgroup))
                                     <label for="cert_area_{{ $m->id }}" class="absolute inset-0 cursor-pointer opacity-0 group-hover:opacity-100 flex items-end justify-center pb-3 transition-opacity z-10">
                                         <span class="px-3 py-1.5 bg-emerald-500 text-white text-xs font-black rounded-xl shadow-lg flex items-center gap-1">
                                             <i class="ri-upload-cloud-2-line"></i> เปลี่ยนรูป
                                         </span>
                                     </label>
-                                    <form method="POST" action="{{ Route('config.update', $m->id) }}" enctype="multipart/form-data" class="hidden">
-                                        {{ csrf_field() }}
-                                        <input type="hidden" name="_method" value="put">
-                                        <input type="file" id="cert_area_{{ $m->id }}" name="app_certificate"
-                                               class="hidden" accept=".jpg,.jpeg,.png"
-                                               onchange="this.form.submit()">
-                                    </form>
+                                    <input type="file" id="cert_area_{{ $m->id }}"
+                                           class="hidden" accept=".jpg,.jpeg,.png"
+                                           onchange="submitAreaCert('{{ event_url('config/' . $m->id, $currentEvent->event_number) }}', this)">
                                     @endif
                                 </div>
                                 <div class="p-5">
@@ -309,20 +472,33 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4">
-                        <button type="button" onclick="submitCopyActivities()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all flex items-center gap-2">
-                            <i class="ri-folder-transfer-line text-lg"></i> เริ่มดึงข้อมูลกิจกรรม
-                        </button>
-                    </div>
+                    @if($readOnly)
+                        <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800 text-sm font-bold flex items-center gap-2">
+                            <i class="ri-information-line text-lg"></i> ครั้งนี้เป็นข้อมูลย้อนหลัง ไม่สามารถคัดลอกกิจกรรมลงในครั้งนี้ได้
+                        </div>
+                    @else
+                        <div class="flex justify-end pt-4">
+                            <button type="button" onclick="submitCopyActivities()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all flex items-center gap-2">
+                                <i class="ri-folder-transfer-line text-lg"></i> เริ่มดึงข้อมูลกิจกรรม
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
+        </fieldset>
         <!-- Persistent Save Buttons -->
         <div class="flex justify-end pt-4">
-            <button type="submit" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center gap-2 italic uppercase tracking-widest">
-                <i class="ri-save-3-line text-xl"></i> Save Configuration
-            </button>
+            @if($readOnly)
+                <div class="px-8 py-3.5 bg-slate-100 border border-slate-200 text-slate-400 font-black rounded-2xl flex items-center gap-2 cursor-not-allowed">
+                    <i class="ri-lock-line text-lg"></i> ข้อมูลย้อนหลัง (ปิดการแก้ไข)
+                </div>
+            @else
+                <button type="button" onclick="confirmSaveConfig()" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center gap-2 italic uppercase tracking-widest">
+                    <i class="ri-save-3-line text-xl"></i> Save Configuration
+                </button>
+            @endif
         </div>
     </form>
     @empty
@@ -406,6 +582,44 @@
             <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
                 <button type="button" onclick="closeYearModal()" class="px-6 py-2.5 font-bold text-slate-500 text-sm hover:text-slate-700 transition-colors">ปิดหน้าต่าง</button>
             </div>
+        </div>
+    </div>
+
+    <!-- New Event Modal -->
+    <div id="newEventModal" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 animate-fade-in font-sarabun text-slate-800">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-black italic uppercase text-lg text-slate-800 flex items-center gap-2">
+                    <i class="ri-add-circle-fill text-blue-600 text-xl"></i> เพิ่มครั้งการแข่งขันใหม่
+                </h3>
+                <button type="button" onclick="closeNewEventModal()" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="ri-close-line text-2xl"></i></button>
+            </div>
+            
+            <form id="newEventForm" method="POST" action="{{ event_url('config/events', $currentEvent->event_number) }}" onsubmit="return confirmCreateEvent(this)" class="p-6 space-y-4">
+                @csrf
+                <div class="space-y-1">
+                    <label class="block text-xs font-black text-slate-500 uppercase">ครั้งที่ (Event Number)</label>
+                    <input type="number" name="event_number" required min="1" placeholder="เช่น 75" class="w-full px-4 py-3 rounded-xl border border-slate-200 font-bold text-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-black text-slate-500 uppercase">ปีการศึกษา พ.ศ. (Academic Year)</label>
+                    <input type="number" name="academic_year" required min="2500" max="2600" placeholder="เช่น 2570" class="w-full px-4 py-3 rounded-xl border border-slate-200 font-bold text-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-black text-slate-500 uppercase">ชื่อการแข่งขัน</label>
+                    <input type="text" name="name" placeholder="เช่น งานศิลปหัตถกรรมนักเรียน ครั้งที่ 75" class="w-full px-4 py-3 rounded-xl border border-slate-200 font-bold text-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <p class="text-xs text-slate-400 italic leading-relaxed">
+                    * เมื่อสร้างแล้ว ระบบจะตั้งค่าเริ่มต้นโดยคัดลอกจากการตั้งค่าปัจจุบัน และเปิดให้เข้าดู/ตั้งค่าได้ทันที
+                </p>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
+                    <button type="button" onclick="closeNewEventModal()" class="px-5 py-2.5 font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all">ยกเลิก</button>
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black shadow-md shadow-blue-100 transition-all flex items-center gap-1.5">
+                        <i class="ri-save-line"></i> บันทึกและเพิ่มครั้งใหม่
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -517,7 +731,7 @@
 
         errorEl.classList.add('hidden');
 
-        fetch("{{ route('config.addYear') }}", {
+        fetch("{{ event_url('config/years', $currentEvent->event_number) }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -560,11 +774,13 @@
             'ยืนยันการลบปีการศึกษา',
             `ยืนยันการลบปีการศึกษา ${yearVal} ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`,
             function() {
-                fetch(`{{ url('config/years') }}/${id}`, {
-                    method: 'DELETE',
+                fetch(`{{ event_url('config/years', $currentEvent->event_number) }}/${id}`, {
+                    method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -582,7 +798,7 @@
             'ตั้งค่าปีหลักของระบบ',
             `ยืนยันการตั้งค่าปีการศึกษา ${yearVal} เป็นปีการศึกษาหลักของระบบใช่หรือไม่?`,
             function() {
-                fetch(`{{ url('config/years/active') }}/${id}`, {
+                fetch(`{{ event_url('config/years/active', $currentEvent->event_number) }}/${id}`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -607,7 +823,7 @@
                 'สลับปีการศึกษาและข้อมูลระบบ',
                 `ยืนยันการตั้งค่าและสลับระบบทั้งหมดเป็นปีการศึกษา ${yearVal} ใช่หรือไม่?`,
                 function() {
-                    fetch(`{{ url('config/years/active-value') }}/${yearVal}`, {
+                    fetch(`{{ event_url('config/years/active-value', $currentEvent->event_number) }}/${yearVal}`, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -616,9 +832,9 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.href = "{{ route('config.index') }}?year=" + yearVal;
+                            window.location.href = "{{ event_url('config', $currentEvent->event_number) }}?year=" + yearVal;
                         } else {
-                            alert("ไม่สามารถเปลี่ยนปีการศึกษาหลักได้");
+                            showCustomAlert("ข้อผิดพลาด", "ไม่สามารถเปลี่ยนปีการศึกษาหลักได้", "error");
                         }
                     });
                 },
@@ -641,6 +857,132 @@
             ]
         }
     });
+
+    @if($readOnly)
+        quill.enable(false);
+        const qlToolbar = document.querySelector('.ql-toolbar');
+        if (qlToolbar) qlToolbar.style.display = 'none';
+    @endif
+
+    function submitAreaCert(actionUrl, fileInput) {
+        if (!fileInput.files || !fileInput.files.length) return;
+        const tempForm = document.createElement('form');
+        tempForm.method = 'POST';
+        tempForm.action = actionUrl;
+        tempForm.enctype = 'multipart/form-data';
+        tempForm.style.display = 'none';
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = '{{ csrf_token() }}';
+        tempForm.appendChild(csrf);
+
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'put';
+        tempForm.appendChild(method);
+
+        fileInput.name = 'app_certificate';
+        tempForm.appendChild(fileInput);
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+    }
+
+    function confirmSaveConfig() {
+        const form = document.getElementById('mainConfigForm');
+        if (!form) return;
+
+        const appName = form.querySelector('input[name="app_name"]');
+        if (appName && !appName.value.trim()) {
+            showCustomAlert('กรุณากรอกข้อมูล', 'กรุณาระบุชื่องาน / Application Name ให้เรียบร้อย', 'warning', () => {
+                switchTab('general');
+                appName.focus();
+            });
+            return;
+        }
+
+        const appYear = form.querySelector('input[name="app_year"]');
+        if (appYear && !appYear.value.trim()) {
+            showCustomAlert('กรุณากรอกข้อมูล', 'กรุณาระบุปีการศึกษา (พ.ศ.) ให้เรียบร้อย', 'warning', () => {
+                switchTab('general');
+                appYear.focus();
+            });
+            return;
+        }
+
+        showCustomConfirm(
+            'ยืนยันการบันทึกข้อมูล',
+            'คุณต้องการบันทึกการตั้งค่าระบบใช่หรือไม่?',
+            function() {
+                const hiddenInput = form.querySelector('#app_slogan');
+                if (hiddenInput && typeof quill !== 'undefined') {
+                    hiddenInput.value = quill.root.innerHTML;
+                }
+                form.submit();
+            },
+            'บันทึกข้อมูล',
+            false
+        );
+    }
+
+    function confirmActivateEvent() {
+        showCustomConfirm(
+            'ยืนยันการตั้งเป็นระบบปัจจุบัน',
+            'คุณต้องการตั้งการแข่งขันครั้งที่ {{ $currentEvent->event_number }} เป็นระบบปัจจุบันใช่หรือไม่?',
+            function() {
+                const form = document.getElementById('activateEventForm');
+                if (form) form.submit();
+            },
+            'ตั้งเป็น Active',
+            false
+        );
+    }
+
+    function confirmDeleteEvent() {
+        showCustomConfirm(
+            'ยืนยันการลบครั้งการแข่งขัน',
+            'คุณต้องการลบการแข่งขันครั้งที่ {{ $currentEvent->event_number }} (ปีการศึกษา {{ $currentEvent->academic_year }}) ใช่หรือไม่?\n⚠️ ข้อมูลการตั้งค่าและรายการทั้งหมดที่ผูกกับครั้งนี้จะถูกลบถาวร!',
+            function() {
+                const form = document.getElementById('deleteEventForm');
+                if (form) form.submit();
+            },
+            'ยืนยันการลบ',
+            true
+        );
+    }
+
+    function confirmCreateEvent(form) {
+        const evNum = form.querySelector('input[name="event_number"]').value.trim();
+        const acYear = form.querySelector('input[name="academic_year"]').value.trim();
+
+        if (!evNum || !acYear) {
+            showCustomAlert('กรุณากรอกข้อมูล', 'กรุณาระบุครั้งที่และปีการศึกษาให้ครบถ้วน', 'warning');
+            return false;
+        }
+
+        showCustomConfirm(
+            'ยืนยันการเพิ่มครั้งการแข่งขัน',
+            `คุณต้องการสร้างการแข่งขันครั้งที่ ${evNum} (พ.ศ. ${acYear}) ใช่หรือไม่?`,
+            function() {
+                form.submit();
+            },
+            'เพิ่มครั้งใหม่',
+            false
+        );
+        return false;
+    }
+
+    function openNewEventModal() {
+        const modal = document.getElementById('newEventModal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeNewEventModal() {
+        const modal = document.getElementById('newEventModal');
+        if (modal) modal.classList.add('hidden');
+    }
 
     // Sync Quill content to hidden input on submit
     document.querySelectorAll('form').forEach(form => {
@@ -681,12 +1023,37 @@
         }
     }
 
+    function syncThemeColor(type, val) {
+        if (!val) return;
+        const picker = document.getElementById('theme_' + type + '_picker');
+        const hexInput = document.getElementById('theme_' + type + '_hex');
+        if (picker && picker.value.toLowerCase() !== val.toLowerCase()) {
+            picker.value = val;
+        }
+        if (hexInput && hexInput.value.toLowerCase() !== val.toLowerCase()) {
+            hexInput.value = val;
+        }
+        const primaryVal = document.getElementById('theme_primary_picker')?.value || '#059669';
+        const secondaryVal = document.getElementById('theme_secondary_picker')?.value || '#0f172a';
+        const navPreview = document.getElementById('theme_preview_navbar');
+        const badgePreview = document.getElementById('theme_preview_badge');
+        const bannerPreview = document.getElementById('theme_preview_banner');
+        if (navPreview) navPreview.style.backgroundColor = primaryVal;
+        if (badgePreview) badgePreview.style.backgroundColor = secondaryVal;
+        if (bannerPreview) bannerPreview.style.background = `linear-gradient(to right, ${primaryVal}, ${secondaryVal}, ${primaryVal})`;
+    }
+
+    function applyThemePreset(primaryHex, secondaryHex) {
+        syncThemeColor('primary', primaryHex);
+        syncThemeColor('secondary', secondaryHex);
+    }
+
     function submitCopyActivities() {
         const sourceYear = document.getElementById('source_year_select').value;
         const clearExisting = document.getElementById('clear_existing_checkbox').checked ? '1' : '0';
 
         if (!sourceYear) {
-            alert('กรุณาเลือกปีการศึกษาต้นทาง');
+            showCustomAlert('แจ้งเตือน', 'กรุณาเลือกปีการศึกษาต้นทางที่ต้องการดึงข้อมูล', 'warning');
             return;
         }
 
@@ -699,7 +1066,7 @@
                 btn.disabled = true;
                 btn.innerHTML = '<i class="ri-loader-4-line animate-spin text-lg"></i> กำลังคัดลอกข้อมูล...';
 
-                fetch('{{ route("config.copyActivities") }}', {
+                fetch("{{ event_url('config/activities/copy', $currentEvent->event_number) }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -715,23 +1082,26 @@
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                     if (data.success) {
-                        alert(
-                            "คัดลอกข้อมูลเสร็จสมบูรณ์!\n\n" +
-                            `- กลุ่มสาระการแข่งขัน (subjectgroups): ${data.subjectgroups_count} รายการ\n` +
-                            `- สถานที่แข่งขัน (branches): ${data.branches_count} รายการ\n` +
-                            `- กิจกรรมการแข่งขัน (activities): ${data.activities_count} รายการ`
+                        showCustomAlert(
+                            "คัดลอกข้อมูลสำเร็จ",
+                            `คัดลอกข้อมูลกิจกรรมเรียบร้อยแล้ว!\n- กลุ่มสาระการแข่งขัน: ${data.subjectgroups_count} รายการ\n- สถานที่แข่งขัน: ${data.branches_count} รายการ\n- กิจกรรมการแข่งขัน: ${data.activities_count} รายการ`,
+                            'success',
+                            function() {
+                                window.location.href = "{{ event_url('config', $currentEvent->event_number) }}";
+                            }
                         );
-                        window.location.href = "{{ route('config.index') }}";
                     } else {
-                        alert(data.message || 'เกิดข้อผิดพลาดในการคัดลอกข้อมูล');
+                        showCustomAlert('ไม่สามารถดำเนินการได้', data.message || 'เกิดข้อผิดพลาดในการคัดลอกข้อมูล', 'error');
                     }
                 })
                 .catch(err => {
                     btn.disabled = false;
                     btn.innerHTML = originalText;
-                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+                    showCustomAlert('เกิดข้อผิดพลาด', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง', 'error');
                 });
-            }
+            },
+            'เริ่มดึงข้อมูล',
+            false
         );
     }
 </script>

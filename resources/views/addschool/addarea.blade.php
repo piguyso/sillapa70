@@ -59,7 +59,7 @@
                                     <td class="px-6 py-5">
                                         <p class="text-[9px] text-slate-400 uppercase tracking-tighter">เครือข่าย {{$l->getschoolgroup->schoolgroup_name}}</p>
                                         @if($activity->activity_status == 0)
-                                            <a href="../addaddstudent/{{$l->id}}" class="text-slate-800 hover:text-orange-600 font-black text-sm uppercase italic transition-colors">
+                                            <a href="{{ url('area/addaddstudent/'.$l->id) }}" class="text-slate-800 hover:text-orange-600 font-black text-sm uppercase italic transition-colors">
                                                 {{$l->getschoolname->school_name}}
                                             </a>
                                         @else
@@ -218,7 +218,7 @@
 
         if(groupID) {
             $.ajax({
-                url: '/area/addaddschool/getschool/' + groupID,
+                url: '{{ url('area/addaddschool/getschool') }}/' + groupID,
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

@@ -110,7 +110,7 @@
         </div>
 
         <div class="mt-2">
-            <a href="/" class="link-muted text-decoration-none">
+            <a href="{{ url('/') }}" class="link-muted text-decoration-none">
                 &copy; {{ date('Y') ?? '2023' }} sillapa cpn1
             </a>
         </div>

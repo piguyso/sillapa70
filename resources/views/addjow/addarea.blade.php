@@ -27,7 +27,7 @@
             <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden mb-8">
                 <div class="bg-slate-50 px-8 py-5 border-b border-slate-100 flex justify-between items-center">
                     <div class="flex items-center gap-4 text-slate-800">
-                        <a href="../jowviewactivity/{{$activity->activity_subject}}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
+                        <a href="{{ url('area/jowviewactivity/'.$activity->activity_subject) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                             <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
                         </a>
                         <div>

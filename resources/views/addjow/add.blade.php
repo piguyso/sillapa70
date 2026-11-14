@@ -6,7 +6,7 @@
     <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="../jowviewactivity/{{$activity->activity_subject}}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
+                <a href="{{ url('jowviewactivity/'.$activity->activity_subject) }}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
                     <i class="ri-arrow-left-line text-2xl text-white"></i>
                 </a>
                 <div>
@@ -64,7 +64,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="{{'../jow/'.$l->id.'/edit'}}" class="w-9 h-9 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
+                                            <a href="{{ url('jow/'.$l->id.'/edit') }}" class="w-9 h-9 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
                                                 <i class="ri-edit-line"></i>
                                             </a>
                                             <form id="delform{{$l->id}}" method="post" action="{{ route('jow.destroy',$l->id)}}" class="inline">

@@ -12,7 +12,7 @@
         
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
             <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <a href="../viewactivity/{{$activity->activity_subject}}" 
+                <a href="{{ url('viewactivity/'.$activity->activity_subject) }}" 
                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                     <i class="ri-arrow-left-line text-xl"></i>
                 </a>

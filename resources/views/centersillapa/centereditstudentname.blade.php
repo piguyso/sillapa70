@@ -22,7 +22,7 @@
     @endif
 
     <div class="flex items-center gap-4 mb-8 text-white">
-        <a href="../centerviewactivityschool/{{$addschool[0]->school_activity}}" 
+        <a href="{{ url('centerviewactivityschool/'.$addschool[0]->school_activity) }}" 
            class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-emerald-600 border border-gray-200 hover:bg-emerald-600 hover:text-white transition-all shadow-sm group">
             <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
         </a>
@@ -117,7 +117,7 @@
                         <i class="ri-save-line text-xl text-white"></i>
                         UPDATE / บันทึกข้อมูล
                     </button>
-                    <a href="../centerviewactivityschool/{{$addschool[0]->school_activity}}" 
+                    <a href="{{ url('centerviewactivityschool/'.$addschool[0]->school_activity) }}" 
                        class="inline-flex items-center justify-center px-8 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black hover:bg-gray-200 transition-all">
                         CANCEL
                     </a>

@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="../report/{{session('area')??'99'}}" class="btn btn-info btn-md" onclick="">
+              <div class="panel-heading"><a href="{{ url('area/report/'.(session('area') ?? '99')) }}" class="btn btn-info btn-md" onclick="">
                 <span class="glyphicon glyphicon-backward"></span>
                 </a> รายชื่อกรรมการตัดสิน </div>
 
@@ -140,15 +140,15 @@
                        <td> 
                       
                        
-                       <a href="../printjow/{{$l->id}}" class="btn btn-info btn-md" target='_black'> <span class="glyphicon glyphicon-print"> ไม่มีพื้นหลัง</span></a>
+                       <a href="{{ url('area/printjow/'.$l->id) }}" class="btn btn-info btn-md" target='_black'> <span class="glyphicon glyphicon-print"> ไม่มีพื้นหลัง</span></a>
                   
-                       <a href="../printjow_showbg/{{$l->id}}" class="btn btn-success btn-md" target='_black'> <span class="glyphicon glyphicon-print"> มีพื้นหลัง</span></a>
+                       <a href="{{ url('area/printjow_showbg/'.$l->id) }}" class="btn btn-success btn-md" target='_black'> <span class="glyphicon glyphicon-print"> มีพื้นหลัง</span></a>
                        
 
 
                       
                          <!--
-                         <a href="{{'../centereditactiviy/'.$l->id}}" class="btn btn-info btn-md">
+                         <a href="{{ url('area/centereditactiviy/'.$l->id) }}" class="btn btn-info btn-md">
                            <span class="glyphicon glyphicon-pencil"></span> 
                          </a> -->
                         </td>

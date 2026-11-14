@@ -12,7 +12,7 @@
         
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="../" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-colors shadow-sm">
+                <a href="{{ url('/') }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-colors shadow-sm">
                     <i class="ri-arrow-left-line text-xl"></i>
                 </a>
                 <h2 class="text-xl font-bold text-gray-800">
@@ -53,7 +53,7 @@
                         <tr class="hover:bg-gray-50 transition-colors group" x-data="{ openModal: false }">
                             <td class="px-4 py-4 text-center text-gray-400">@php $x++; echo $x; @endphp.</td>
                           <td class="px-4 py-4">
-                                <a href="../viewactivitydetail/{{$l->id}}" class="flex items-center gap-2 font-bold text-gray-800 hover:text-secondary transition-colors">
+                                <a href="{{ url('viewactivitydetail/'.$l->id) }}" class="flex items-center gap-2 font-bold text-gray-800 hover:text-secondary transition-colors">
                                     <span class="line-clamp-2">{{$l->activity_name}}</span>
                                     
                                     @if($l->activity_status == 1)

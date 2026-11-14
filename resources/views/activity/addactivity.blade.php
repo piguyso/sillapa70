@@ -60,7 +60,7 @@
                             <tr class="group bg-white hover:bg-emerald-50/30 transition-all border border-gray-100 shadow-sm rounded-2xl">
                                 <td class="px-6 py-5 text-center text-slate-300 italic">{{ ++$x }}.</td>
                                 <td class="px-6 py-5">
-                                    <a href="../addaddschool/{{$l->id}}" class="text-gray-800 group-hover:text-emerald-700 transition-colors uppercase italic font-black">
+                                    <a href="{{ url('addaddschool/'.$l->id) }}" class="text-gray-800 group-hover:text-emerald-700 transition-colors uppercase italic font-black">
                                         {{$l->activity_name}}
                                     </a>
                                 </td>
@@ -68,7 +68,7 @@
                                     <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] uppercase font-black italic">{{$l->getclass->class_name}}</span>
                                 </td>
                                 <td class="px-6 py-5 text-center">
-                                    <a href="../viewaddschool/{{$l->id}}" class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-black border border-blue-100 hover:bg-blue-600 hover:text-white transition-all italic shadow-sm">
+                                    <a href="{{ url('viewaddschool/'.$l->id) }}" class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-black border border-blue-100 hover:bg-blue-600 hover:text-white transition-all italic shadow-sm">
                                         @if(isset($schoolcountactivity[$l->id])) {{ $schoolcountactivity[$l->id] }} @else 0 @endif ทีม
                                     </a>
                                 </td>
@@ -81,7 +81,7 @@
                                 @if(adminchk())
                                 <td class="px-6 py-5 text-center">
                                     <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                        <a href="{{'../activity/'.$l->id.'/edit?action=edit'}}" class="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                        <a href="{{ url('activity/'.$l->id.'/edit?action=edit') }}" class="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                             <i class="ri-edit-2-line"></i>
                                         </a>
                                         <button onclick="DelConfirm({{$l->id}})" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm">

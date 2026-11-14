@@ -272,7 +272,7 @@ class ReportController extends Controller
         $jows->jow_lastname = $request->jow_lastname;
         $jows->save();
         Session::flash('massage','Jow has been update..');
-        return redirect('./addjow/'.$jows->jow_activity);
+        return redirect('addjow/'.$jows->jow_activity);
       // return redirect(url()->previous());
     }
 

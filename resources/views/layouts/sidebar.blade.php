@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-light-success elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ config('app.url', '/') }}" class="brand-link">
+    <a href="{{ url('/') }}" class="brand-link">
  
 		<i class="fas fa-laptop-code fa-1x" style="color:Pink;" ></i>
       <span class="brand-text font-weight-light" style="color:Pink;">ระบบรับสมัครนักเรียน</span>

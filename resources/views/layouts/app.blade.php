@@ -4,7 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ session('app_name') }}</title>
+    @php
+        $themePrimary = config('app.theme_primary') ?: session('theme_primary', '#059669');
+        $themeSecondary = config('app.theme_secondary') ?: session('theme_secondary', '#0f172a');
+        $appName = config('app.name') ?: session('app_name', 'งานศิลปหัตถกรรมนักเรียน');
+        $appGroup = config('app.group') !== null ? config('app.group') : session('app_group', '');
+        $appYear = config('app.year') ?: session('app_year', '');
+    @endphp
+    <title>{{ $appName }}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -17,9 +24,9 @@
                 extend: {
                     fontFamily: { sans: ['Sarabun', 'sans-serif'] },
                     colors: { 
-                        primary: '#059669', 
-                        primaryDark: '#047857', 
-                        secondary: '#db2777' 
+                        primary: @json($themePrimary),
+                        primaryDark: @json($themePrimary),
+                        secondary: @json($themeSecondary)
                     }
                 }
             }
@@ -63,16 +70,16 @@
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background-color: #f3f4f6 !important;
         border-color: #9ca3af !important;
-        color: #059669 !important; /* สีเขียวหลัก */
+        color: {{ $themePrimary }} !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current,
     .dataTables_wrapper .dataTables_paginate .paginate_button.active {
-        background-color: #059669 !important; /* สีเขียวเด่นชัด */
+        background-color: {{ $themePrimary }} !important;
         color: #ffffff !important;
-        border-color: #059669 !important;
+        border-color: {{ $themePrimary }} !important;
         font-weight: 700 !important;
-        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15) !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
@@ -120,7 +127,7 @@
     .pagination .page-link:hover {
         background-color: #f3f4f6 !important;
         border-color: #9ca3af !important;
-        color: #059669 !important;
+        color: {{ $themePrimary }} !important;
     }
 
     /* โหมดกำลังใช้งาน (Active) */
@@ -128,11 +135,11 @@
     nav[role="navigation"] .bg-emerald-600,
     nav[role="navigation"] .bg-primary,
     .pagination .page-item.active .page-link {
-        background-color: #059669 !important;
+        background-color: {{ $themePrimary }} !important;
         color: #ffffff !important;
-        border-color: #059669 !important;
+        border-color: {{ $themePrimary }} !important;
         font-weight: 700 !important;
-        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15) !important;
     }
 
     /* ปรับแต่งปุ่ม Disabled */
@@ -252,7 +259,7 @@
                     <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center text-white gap-2 group">
                         <img class="h-10 w-auto bg-white rounded-full p-1" src="{{ asset('imgs/obec_icon2.png') }}" alt="Logo">
                         <span class="font-bold text-lg tracking-wide group-hover:text-pink-200 transition">
-                            {{ session('app_name').' '.session('app_group').' '.session('app_year') }}
+                            {{ $appName.' '.$appGroup.' '.$appYear }}
                         </span>
                     </a>
                 </div>
@@ -427,11 +434,11 @@
             </div>
         </div>
 
-        <div class="md:hidden bg-emerald-800" x-show="mobileMenuOpen" x-transition style="display:none;">
+        <div class="md:hidden bg-primaryDark" x-show="mobileMenuOpen" x-transition style="display:none;">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="{{url('/')}}" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-emerald-700">หน้าหลัก</a>
+                <a href="{{url('/')}}" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-primary">หน้าหลัก</a>
                 @guest
-                    <a href="{{ route('login') }}" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-emerald-700">Login</a>
+                    <a href="{{ route('login') }}" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-primary">Login</a>
                 @endguest
             </div>
         </div>
@@ -473,21 +480,26 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-        window.showCustomConfirm = function(title, message, onConfirm) {
+        window.showCustomConfirm = function(title, message, onConfirm, okText = 'ยืนยัน', isDanger = true) {
+            const iconBg = isDanger ? '#fef2f2' : '#ecfdf5';
+            const iconColor = isDanger ? '#ef4444' : '#10b981';
+            const iconClass = isDanger ? 'ri-error-warning-line' : 'ri-question-line';
+            const btnBg = isDanger ? '#dc2626' : '#059669';
+
             const modalHtml = `
                 <div id="custom-confirm-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
                     <div style="background-color: white; border-radius: 24px; padding: 32px; max-width: 448px; width: 100%; mx: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #f1f5f9; text-align: center; font-family: 'Sarabun', 'Inter', sans-serif;" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 text-center animate-in zoom-in duration-300">
-                        <div style="width: 64px; height: 64px; background-color: #fef2f2; color: #ef4444; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 30px;" class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
-                            <i class="ri-error-warning-line"></i>
+                        <div style="width: 64px; height: 64px; background-color: ${iconBg}; color: ${iconColor}; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 30px;" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                            <i class="${iconClass}"></i>
                         </div>
                         <h3 style="font-size: 20px; font-weight: 900; color: #1e293b; margin-bottom: 8px; margin-top: 0;" class="text-xl font-black text-slate-800 mb-2 font-sarabun">${title}</h3>
-                        <p style="font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 32px; line-height: 1.625;" class="text-sm text-slate-500 font-medium mb-8 font-sarabun leading-relaxed">${message}</p>
+                        <p style="font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 32px; line-height: 1.625; white-space: pre-line;" class="text-sm text-slate-500 font-medium mb-8 font-sarabun leading-relaxed">${message}</p>
                         <div style="display: flex; gap: 16px;" class="flex gap-4 font-sarabun">
                             <button id="confirm-cancel" style="flex: 1; padding: 14px 0; background-color: #f1f5f9; color: #475569; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 bg-slate-100 text-slate-600 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all uppercase tracking-wider">
                                 ยกเลิก
                             </button>
-                            <button id="confirm-ok" style="flex: 1; padding: 14px 0; background-color: #dc2626; color: white; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-red-200 uppercase tracking-wider">
-                                ยืนยัน
+                            <button id="confirm-ok" style="flex: 1; padding: 14px 0; background-color: ${btnBg}; color: white; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 text-white rounded-2xl font-black text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg uppercase tracking-wider">
+                                ${okText}
                             </button>
                         </div>
                     </div>
@@ -508,7 +520,61 @@
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) closeModal();
             });
-        }
+        };
+
+        window.showCustomAlert = function(title, message, type = 'info', onOk = null) {
+            let iconBg = '#eff6ff';
+            let iconColor = '#3b82f6';
+            let iconClass = 'ri-information-line';
+            let btnBg = '#3b82f6';
+
+            if (type === 'success') {
+                iconBg = '#ecfdf5';
+                iconColor = '#10b981';
+                iconClass = 'ri-checkbox-circle-line';
+                btnBg = '#059669';
+            } else if (type === 'error' || type === 'danger') {
+                iconBg = '#fef2f2';
+                iconColor = '#ef4444';
+                iconClass = 'ri-error-warning-line';
+                btnBg = '#dc2626';
+            } else if (type === 'warning') {
+                iconBg = '#fffbeb';
+                iconColor = '#f59e0b';
+                iconClass = 'ri-alert-line';
+                btnBg = '#d97706';
+            }
+
+            const modalHtml = `
+                <div id="custom-alert-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div style="background-color: white; border-radius: 24px; padding: 32px; max-width: 448px; width: 100%; mx: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #f1f5f9; text-align: center; font-family: 'Sarabun', 'Inter', sans-serif;" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 text-center animate-in zoom-in duration-300">
+                        <div style="width: 64px; height: 64px; background-color: ${iconBg}; color: ${iconColor}; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 30px;" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <h3 style="font-size: 20px; font-weight: 900; color: #1e293b; margin-bottom: 8px; margin-top: 0;" class="text-xl font-black text-slate-800 mb-2 font-sarabun">${title}</h3>
+                        <p style="font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 32px; line-height: 1.625; white-space: pre-line;" class="text-sm text-slate-500 font-medium mb-8 font-sarabun leading-relaxed">${message}</p>
+                        <div style="display: flex;" class="font-sarabun">
+                            <button id="alert-ok" style="flex: 1; padding: 14px 0; background-color: ${btnBg}; color: white; border-radius: 16px; border: none; font-weight: 900; font-size: 14px; cursor: pointer; transition: all 0.2s;" class="flex-1 py-3.5 text-white rounded-2xl font-black text-sm uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all">
+                                ตกลง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = document.getElementById('custom-alert-modal');
+            const okBtn = document.getElementById('alert-ok');
+            const closeModal = () => {
+                modal.remove();
+                if (typeof onOk === 'function') {
+                    onOk();
+                }
+            };
+            okBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        };
     </script>
     @if(Session::has('massage') || Session::has('success') || Session::has('status'))
         <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #10b981; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
@@ -530,6 +596,22 @@
         <script>
             setTimeout(() => {
                 const toast = document.getElementById('toast-notification');
+                if (toast) {
+                    toast.style.transform = 'translateY(20px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        </script>
+    @endif
+    @if(Session::has('error'))
+        <div id="toast-error" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #ef4444; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
+            <i class="ri-error-warning-fill" style="font-size: 20px;"></i>
+            <span>{{ Session::get('error') }}</span>
+        </div>
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-error');
                 if (toast) {
                     toast.style.transform = 'translateY(20px)';
                     toast.style.opacity = '0';

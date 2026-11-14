@@ -57,7 +57,7 @@
                                 {{ $x }}.
                             </td>
                             <td class="px-6 py-6 text-slate-800">
-                                <a href="../showschooldetail/{{$l->id}}/{{$l->school_group}}" class="text-lg font-black text-slate-800 uppercase hover:text-orange-600 transition-colors tracking-tight text-slate-800">
+                                <a href="{{ url('area/showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="text-lg font-black text-slate-800 uppercase hover:text-orange-600 transition-colors tracking-tight text-slate-800">
                                     {{$l->school_name}}
                                 </a>
                                 <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest leading-none text-slate-800">Chumphon Primary Educational Area Office</p>
@@ -72,7 +72,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-6 text-right rounded-r-2xl text-slate-800">
-                                <a href="../showschooldetail/{{$l->id}}/{{$l->school_group}}" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-900 text-white rounded-xl font-black text-[10px] hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 uppercase italic tracking-widest text-white">
+                                <a href="{{ url('area/showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-900 text-white rounded-xl font-black text-[10px] hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 uppercase italic tracking-widest text-white">
                                     <i class="ri-bar-chart-box-line text-white"></i> View Medal Tally
                                 </a>
                             </td>

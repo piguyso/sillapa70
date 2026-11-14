@@ -6,7 +6,7 @@
     <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <a href="../centerviewactivity/{{$activity->activity_subject}}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
+                <a href="{{ url('centerviewactivity/'.$activity->activity_subject) }}" class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/40 transition-all border border-white/30 shadow-sm">
                     <i class="ri-arrow-left-line text-2xl text-white"></i>
                 </a>
                 <div>
@@ -60,7 +60,7 @@
                                 @php $x++; echo $x; @endphp
                             </td>
                             <td class="px-6 py-4">
-                                <a href="../centereditstudent/{{$l->id}}" class="font-black text-gray-800 hover:text-primary transition-colors block leading-tight">
+                                <a href="{{ url('centereditstudent/'.$l->id) }}" class="font-black text-gray-800 hover:text-primary transition-colors block leading-tight">
                                     {{$l->getschoolname->school_name}}
                                 </a>
                                 <span class="text-[10px] font-bold text-gray-400 italic">เครือข่าย: {{$l->getschoolgroup->schoolgroup_name}}</span>

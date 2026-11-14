@@ -31,7 +31,7 @@
                                     <td>{{$l->notice_type}}</td>
                                     <td>{!!$l->notice_detail!!}</td>
                                     <td>
-                                    <a href="{{'Notice/'.$l->id.'/edit'}}" class="btn btn-info btn-ms">
+                                    <a href="{{ url('Notice/'.$l->id.'/edit') }}" class="btn btn-info btn-ms">
                                           <span class="glyphicon glyphicon-pencil">EDIT</span>
                                         </a>
                                       

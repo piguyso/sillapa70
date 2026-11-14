@@ -41,7 +41,7 @@
                     @forelse($subjectgroup as $l)
                      <tr>
                        <td>{{$num1}}</td> <?php $num1 = $num1+1; ?>
-                       <td><a href="./viewactivity/{{$l->id}}">{{$l->subjectgroup_name}}</a></td>
+                       <td><a href="{{ url('viewactivity/'.$l->id) }}">{{$l->subjectgroup_name}}</a></td>
                        <td>
                         
                        
@@ -96,7 +96,7 @@
                     @forelse($subjectgroup as $l)
                      <tr>
                        <td>{{$num1}}</td> <?php $num1 = $num1+1; ?>
-                       <td><a href="./reportviewactivity/{{$l->id}}">{{$l->subjectgroup_name}}</a></td>
+                       <td><a href="{{ url('reportviewactivity/'.$l->id) }}">{{$l->subjectgroup_name}}</a></td>
                        <td>
                         
                        
@@ -151,7 +151,7 @@
                     @forelse($subjectgroup as $l)
                      <tr>
                        <td>{{$num1}}</td> <?php $num1 = $num1+1; ?>
-                       <td><a href="./reportviewactivity/{{$l->id}}">{{$l->subjectgroup_name}}</a></td>
+                       <td><a href="{{ url('reportviewactivity/'.$l->id) }}">{{$l->subjectgroup_name}}</a></td>
                        <td>
                         
                        

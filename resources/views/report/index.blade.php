@@ -38,7 +38,7 @@
                         <tr class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                             <td class="py-4 text-center font-bold text-gray-400">{{$n1++}}</td>
                             <td class="py-4 font-bold text-gray-700">
-                                <a href="./viewactivity/{{$l->id}}" class="hover:text-primary flex items-center justify-between group">
+                                <a href="{{ url('viewactivity/'.$l->id) }}" class="hover:text-primary flex items-center justify-between group">
                                     {{$l->subjectgroup_name}}
                                     <i class="ri-arrow-right-line opacity-0 group-hover:opacity-100 transition-all text-primary"></i>
                                 </a>
@@ -73,7 +73,7 @@
                         <tr class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                             <td class="py-4 text-center font-bold text-gray-400">{{$n2++}}</td>
                             <td class="py-4 font-bold text-gray-700">
-                                <a href="./reportviewactivity/{{$l->id}}" class="hover:text-blue-600 flex items-center justify-between group">
+                                <a href="{{ url('reportviewactivity/'.$l->id) }}" class="hover:text-blue-600 flex items-center justify-between group">
                                     {{$l->subjectgroup_name}}
                                     <i class="ri-arrow-right-line opacity-0 group-hover:opacity-100 transition-all text-blue-600"></i>
                                 </a>
@@ -108,7 +108,7 @@
                         <tr class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                             <td class="py-4 text-center font-bold text-gray-400">{{$n3++}}</td>
                             <td class="py-4 font-bold text-gray-700">
-                                <a href="./reportviewjow/{{$l->id}}" class="hover:text-orange-600 flex items-center justify-between group">
+                                <a href="{{ url('reportviewjow/'.$l->id) }}" class="hover:text-orange-600 flex items-center justify-between group">
                                     {{$l->branch_name}}
                                     <i class="ri-arrow-right-line opacity-0 group-hover:opacity-100 transition-all text-orange-600"></i>
                                 </a>
