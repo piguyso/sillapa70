@@ -161,6 +161,7 @@ class CentersillapaController extends Controller
           return view('centersillapa.edit',$data);
     }
     public function centereditstudent($id){
+        addschool::findOrFail($id);
         $addschool = addschool::where('id','=',$id)->get();
         $addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(40);
         $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(40);
@@ -173,7 +174,8 @@ class CentersillapaController extends Controller
        return view('centersillapa.centereditstudent',$data);
     }
     public function centereditstudentname($id){
-        $addstudent = addstudent::find($id);
+        $addstudent = addstudent::findOrFail($id);
+        addschool::findOrFail($addstudent->school);
         $addschool = addschool::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(

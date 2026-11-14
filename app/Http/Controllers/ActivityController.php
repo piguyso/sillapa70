@@ -42,7 +42,7 @@ class ActivityController extends Controller
        // dd($schoolcountactivity);
 
         $activity = activities::where('activity_subject','=',$id)->paginate(40);
-        $subjectgroup = Subjectgroup::find($id);
+        $subjectgroup = Subjectgroup::findOrFail($id);
         $branch = Branch::all();
         $class = Classes::all();
         $dayofsillapa = Dayofsillapas::all();
@@ -113,7 +113,7 @@ class ActivityController extends Controller
      * @param  \App\activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function show(activity $activity)
+    public function show(Activities $activity)
     {
         //
     }
@@ -127,7 +127,7 @@ class ActivityController extends Controller
     public function edit($id)
     {
         adminchk();
-        $activity = activities::find($id);
+        $activity = activities::findOrFail($id);
       //  $subjectgroup = Subjectgroup::find($id);
         $branch = Branch::all();
         $class = Classes::all();

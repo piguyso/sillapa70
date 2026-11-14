@@ -29,6 +29,7 @@ class AddstudentController extends Controller
     public function addaddstudent($id)
     {
        // dd($id);
+        addschool::findOrFail($id);
         $addschool = addschool::where('id','=',$id)->get();
         $addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
         $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
@@ -127,7 +128,8 @@ class AddstudentController extends Controller
      */
     public function edit($id)
     {
-        $addstudent = addstudent::find($id);
+        $addstudent = addstudent::findOrFail($id);
+        addschool::findOrFail($addstudent->school);
         $addschool = addschool::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(

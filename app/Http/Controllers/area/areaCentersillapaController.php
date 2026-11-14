@@ -16,6 +16,7 @@ use App\addschools_areas;
 use App\dayofsillapas;
 use App\systemactives;
 use App\addstudent;
+use App\addstudents_areas;
 use App\titles;
 class areaCentersillapaController extends Controller
 {
@@ -121,9 +122,10 @@ class areaCentersillapaController extends Controller
           return view('centersillapa.edit',$data);
     }
     public function centereditstudent($id){
-        $addschool = addschool::where('id','=',$id)->get();
-        $addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(40);
-        $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(40);
+        addschools_areas::findOrFail($id);
+        $addschool = addschools_areas::where('id','=',$id)->get();
+        $addstudent = addstudents_areas::where('school','=',$id)->where('type','=','0')->paginate(40);
+        $addteacher = addstudents_areas::where('school','=',$id)->where('type','=','1')->paginate(40);
         $data = array(
             'addschool'=>$addschool,
             'addstudent'=> $addstudent,
@@ -133,8 +135,9 @@ class areaCentersillapaController extends Controller
        return view('centersillapa.centereditstudent',$data);
     }
     public function centereditstudentname($id){
-        $addstudent = addstudent::find($id);
-        $addschool = addschool::where('id','=',$addstudent->school)->get();
+        $addstudent = addstudents_areas::findOrFail($id);
+        addschools_areas::findOrFail($addstudent->school);
+        $addschool = addschools_areas::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(
             'addstudent'=>$addstudent,
@@ -300,7 +303,7 @@ class areaCentersillapaController extends Controller
             'lastname'=>'required',
           
         ]);
-        $addstudent = addstudent::find($id);
+        $addstudent = addstudents_areas::findOrFail($id);
         $addstudent->name = $request->name;
         $addstudent->lastname = $request->lastname;
         $addstudent->title = $request->title;

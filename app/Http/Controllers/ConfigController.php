@@ -31,7 +31,7 @@ class ConfigController extends Controller
                          ->where('event_id', $currentEvent->id)
                          ->get();
                          
-        if ($config->isEmpty()) {
+        if ($config->isEmpty() && $currentEvent->is_active) {
             // Clone the most recent config info if available, to make creation seamless
             $latestConfig = Configs::where('schoolgroup', 0)->orderBy('app_year', 'desc')->first();
             
@@ -63,18 +63,19 @@ class ConfigController extends Controller
             // Auto-clone configs ของทุก schoolgroup (1, 2, 3, ...) จากปีก่อนหน้า
             // เพื่อให้รูปพื้นหลังเกียรติบัตรของแต่ละเครือข่ายไม่หายไปในปีใหม่
             $prevYearAreaConfigs = Configs::where('schoolgroup', '>', 0)
-                ->where('app_year', '!=', $selectedYear)
+                ->where('event_id', '!=', $currentEvent->id)
                 ->orderBy('app_year', 'desc')
                 ->get()
                 ->groupBy('schoolgroup');
 
             foreach ($prevYearAreaConfigs as $sgId => $sgConfigs) {
                 $alreadyExists = Configs::where('schoolgroup', $sgId)
-                    ->where('app_year', $selectedYear)
+                    ->where('event_id', $currentEvent->id)
                     ->exists();
                 if (!$alreadyExists) {
                     $src = $sgConfigs->first();
                     $clone = new Configs();
+                    $clone->event_id = $currentEvent->id;
                     $clone->schoolgroup = $sgId;
                     $clone->app_year = $selectedYear;
                     $clone->app_name = $src->app_name;
@@ -87,6 +88,8 @@ class ConfigController extends Controller
                     $clone->link_ai = $src->link_ai;
                     $clone->link_survey = $src->link_survey;
                     $clone->survey_qr = $src->survey_qr;
+                    $clone->theme_primary = $src->theme_primary ?: '#059669';
+                    $clone->theme_secondary = $src->theme_secondary ?: '#0f172a';
                     $clone->save();
                 }
             }
@@ -122,9 +125,9 @@ class ConfigController extends Controller
             'name' => 'nullable|string|max:255',
         ]);
 
-        $sourceConfig = Configs::where('event_id', active_event_id())->where('schoolgroup', 0)->first();
+        $sourceConfigs = Configs::where('event_id', active_event_id())->get();
 
-        $event = DB::transaction(function () use ($data, $sourceConfig) {
+        $event = DB::transaction(function () use ($data, $sourceConfigs) {
             $event = Event::create([
                 'event_number' => $data['event_number'],
                 'academic_year' => $data['academic_year'],
@@ -133,12 +136,24 @@ class ConfigController extends Controller
                 'is_active' => false,
             ]);
 
-            $config = $sourceConfig ? $sourceConfig->replicate() : new Configs();
-            $config->event_id = $event->id;
-            $config->schoolgroup = 0;
-            $config->app_year = $event->academic_year;
-            $config->app_name = $data['name'] ?: ($sourceConfig->app_name ?? 'งานศิลปหัตถกรรมนักเรียน');
-            $config->save();
+            if ($sourceConfigs->isEmpty()) {
+                $config = new Configs();
+                $config->event_id = $event->id;
+                $config->schoolgroup = 0;
+                $config->app_year = $event->academic_year;
+                $config->app_name = $data['name'] ?: 'งานศิลปหัตถกรรมนักเรียน';
+                $config->save();
+            } else {
+                foreach ($sourceConfigs as $sourceConfig) {
+                    $config = $sourceConfig->replicate();
+                    $config->event_id = $event->id;
+                    $config->app_year = $event->academic_year;
+                    if ((int) $config->schoolgroup === 0 && ! empty($data['name'])) {
+                        $config->app_name = $data['name'];
+                    }
+                    $config->save();
+                }
+            }
 
             return $event;
         });
@@ -286,6 +301,15 @@ class ConfigController extends Controller
 
         $sourceYear = $request->source_year;
         $activeYear = active_year();
+        $targetEvent = active_event();
+        $sourceEvent = Event::where('academic_year', $sourceYear)->first();
+
+        if (! $targetEvent || ! $sourceEvent) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบครั้งการแข่งขันต้นทางหรือปลายทาง'
+            ], 422);
+        }
 
         if ($sourceYear == $activeYear) {
             return response()->json([
@@ -295,15 +319,15 @@ class ConfigController extends Controller
         }
 
         $subjectgroups = \Illuminate\Support\Facades\DB::table('subjectgroups')
-            ->where('year', $sourceYear)
+            ->where('event_id', $sourceEvent->id)
             ->get();
 
         $branches = \Illuminate\Support\Facades\DB::table('branches')
-            ->where('year', $sourceYear)
+            ->where('event_id', $sourceEvent->id)
             ->get();
 
         $activities = \Illuminate\Support\Facades\DB::table('activities')
-            ->where('year', $sourceYear)
+            ->where('event_id', $sourceEvent->id)
             ->get();
 
         if ($subjectgroups->isEmpty() && $branches->isEmpty() && $activities->isEmpty()) {
@@ -314,24 +338,25 @@ class ConfigController extends Controller
         }
 
         try {
-            \Illuminate\Support\Facades\DB::transaction(function () use ($subjectgroups, $branches, $activities, $activeYear, $request) {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($subjectgroups, $branches, $activities, $activeYear, $targetEvent, $request) {
                 if ($request->clear_existing === 'on' || $request->clear_existing === '1' || $request->clear_existing === 'true') {
                     \Illuminate\Support\Facades\DB::table('activities')
-                        ->where('year', $activeYear)
+                        ->where('event_id', $targetEvent->id)
                         ->delete();
                     
                     \Illuminate\Support\Facades\DB::table('branches')
-                        ->where('year', $activeYear)
+                        ->where('event_id', $targetEvent->id)
                         ->delete();
 
                     \Illuminate\Support\Facades\DB::table('subjectgroups')
-                        ->where('year', $activeYear)
+                        ->where('event_id', $targetEvent->id)
                         ->delete();
                 }
 
                 $subjectgroupMap = [];
                 foreach ($subjectgroups as $sg) {
                     $newId = \Illuminate\Support\Facades\DB::table('subjectgroups')->insertGetId([
+                        'event_id'            => $targetEvent->id,
                         'year'                 => $activeYear,
                         'subjectgroup_name'    => $sg->subjectgroup_name,
                         'subjectgroup_detail'  => $sg->subjectgroup_detail,
@@ -345,6 +370,7 @@ class ConfigController extends Controller
                 $branchMap = [];
                 foreach ($branches as $br) {
                     $newId = \Illuminate\Support\Facades\DB::table('branches')->insertGetId([
+                        'event_id'      => $targetEvent->id,
                         'year'          => $activeYear,
                         'branch_name'   => $br->branch_name,
                         'branch_detail' => $br->branch_detail,
@@ -359,6 +385,7 @@ class ConfigController extends Controller
                     $newBranchId = isset($branchMap[$act->activity_branch]) ? $branchMap[$act->activity_branch] : $act->activity_branch;
 
                     $data = [
+                        'event_id'                  => $targetEvent->id,
                         'year'                      => $activeYear,
                         'in_dex'                    => $act->in_dex,
                         'activity_name'             => $act->activity_name,
@@ -454,8 +481,14 @@ class ConfigController extends Controller
     {
        // dd($request);
         $this->validate($request,[
-    
-            'app_certificate' => 'mimes:JPG,jpg,jpeg,png|max:12048'
+            'app_certificate' => 'nullable|mimes:JPG,jpg,jpeg,png|max:12048',
+            'app_year' => 'nullable|integer|digits:4',
+            'app_name' => 'nullable|string|max:255',
+            'app_group' => 'nullable|string|max:255',
+            'app_area' => 'nullable|string|max:255',
+            'link_criteria' => 'nullable|url|max:2048',
+            'link_ai' => 'nullable|url|max:2048',
+            'link_survey' => 'nullable|url|max:2048',
            
         ]);
 
@@ -464,6 +497,7 @@ class ConfigController extends Controller
         // position=5 (เครือข่ายสถานศึกษา) — แก้ได้เฉพาะ app_certificate ของ schoolgroup ตัวเอง
         if ($user->position == '5') {
             $Configs = Configs::where('schoolgroup', $user->schoolgroup)
+                              ->where('event_id', active_event_id())
                               ->where('id', $id)
                               ->firstOrFail();
             $storageYear = $Configs->app_year ?: active_year();
@@ -482,9 +516,12 @@ class ConfigController extends Controller
 
         // position=1, 10 (admin) — แก้ไขได้ทั้งหมด
         if ($user->position == '10' || $user->position == '1') {
-            $Configs = Configs::findOrFail($id);
+            $Configs = Configs::where('event_id', active_event_id())->findOrFail($id);
         } else {
-            $Configs = Configs::where('schoolgroup', $user->schoolgroup)->where('id', $id)->firstOrFail();
+            $Configs = Configs::where('event_id', active_event_id())
+                ->where('schoolgroup', $user->schoolgroup)
+                ->where('id', $id)
+                ->firstOrFail();
         }
         $storageYear = $Configs->app_year ?: active_year();
 

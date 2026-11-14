@@ -63,8 +63,9 @@ class DatatranferController extends Controller
             }
 
             // 2. Clear Tables
-            Addstudent::truncate();
-            Addschool::truncate();
+            $targetEventId = active_event_id();
+            Addstudent::where('event_id', $targetEventId)->delete();
+            Addschool::where('event_id', $targetEventId)->delete();
             
             // Commit การล้างข้อมูลก่อน (หรือจะรวมใน Transaction เดียวก็ได้ แต่ถ้ายาวมากอาจจะแยก)
             // ในที่นี้ขอรวมไว้ตาม logic เดิม

@@ -150,7 +150,7 @@ class JowController extends Controller
      public function editjow2($id)
         {
             adminchk(); // ตรวจสอบสิทธิ์
-            $jow = jows::find($id);
+            $jow = jows::findOrFail($id);
             $title = titles::all(); // สำหรับเลือกคำนำหน้า
             $jowbranch = Branch::where('id',auth::user()->branch)->get(); // สำหรับเลือกศูนย์การแข่งขัน
 
@@ -224,7 +224,7 @@ class JowController extends Controller
      */
     public function edit($id)
     {
-        $jows = jows::find($id);
+        $jows = jows::findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,

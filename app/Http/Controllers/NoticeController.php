@@ -94,7 +94,7 @@ class NoticeController extends Controller
     }
 
     public function adddata(){
-        return view('myuser.adddata');
+        return view('Notice.adddata');
     }
 
     /**

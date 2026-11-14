@@ -38,37 +38,37 @@ Auth::routes();
 // area route
 Route::get('/area/{id}','area\AreaController@index')->where('id', '[0-9]+');
 
-Route::get('/area/areasubjectgroup/{id}','area\areaSubjectgroupController@index');
-Route::get('/area/areasubjectgroup/activity/{id}','area\areaSubjectgroupController@showactivity');
-Route::get('area/addaddschool/{id}','area\areaAddschoolController@addaddschool');
+Route::get('/area/areasubjectgroup/{id}','area\areaSubjectgroupController@index')->middleware('schoolgroup.context');
+Route::get('/area/areasubjectgroup/activity/{id}','area\areaSubjectgroupController@showactivity')->middleware('schoolgroup.context');
+Route::get('area/addaddschool/{id}','area\areaAddschoolController@addaddschool')->middleware('schoolgroup.context');
 Route::get('area/addaddschool/getschool/{id}','area\areaAddschoolController@getschool');
 
 
-Route::get('area/addaddstudent/{id}','area\areaAddstudentController@addaddstudent');
-Route::get('area/jowviewactivity/{id}','area\areaJowController@jowviewactivity');
-route::get('area/addjow/{id}','area\areaJowController@addjow');
-route::get('area/addjow2','area\areaJowController@addjow2');
-route::get('area/areajow/{id}/edit','area\areaJowController@edit');
-route::get('area/areajow2/{id}/edit','area\areaJowController@edit2');
+Route::get('area/addaddstudent/{id}','area\areaAddstudentController@addaddstudent')->middleware('schoolgroup.context');
+Route::get('area/jowviewactivity/{id}','area\areaJowController@jowviewactivity')->middleware('schoolgroup.context');
+route::get('area/addjow/{id}','area\areaJowController@addjow')->middleware('schoolgroup.context');
+route::get('area/addjow2','area\areaJowController@addjow2')->middleware('schoolgroup.context');
+route::get('area/areajow/{id}/edit','area\areaJowController@edit')->middleware('schoolgroup.context');
+route::get('area/areajow2/{id}/edit','area\areaJowController@edit2')->middleware('schoolgroup.context');
 
 //บันทึกผลการแข่ง
 route::get('area/centersillapa','area\areaCentersillapaController@index');
 route::get('area/centerviewactivity/{id}','area\areaCentersillapaController@centerviewactivity');
-route::get('area/centerviewactivityschool/{id}','area\areaCentersillapaController@centerviewactivityschool');
+route::get('area/centerviewactivityschool/{id}','area\areaCentersillapaController@centerviewactivityschool')->middleware('schoolgroup.context');
 route::get('area/centereditactiviy/{id}','area\areaCentersillapaController@centereditactiviy');
 route::get('area/centereditstudent/{id}','area\areaCentersillapaController@centereditstudent');
 route::get('area/centereditstudentname/{id}','area\areaCentersillapaController@centereditstudentname');
 
 // ตั้งค่าระบบ
-route::get('area/areaconfig','area\areaconfigController@index');
+route::get('area/areaconfig','area\areaconfigController@index')->middleware('auth');
 
 
 
 //พิมพ์เอกสารและเกียรติบัตร
 Route::get('area/printpointdoc/{id}','area\areaPrintdocController@printpointdoc');
-Route::get('area/studentregisterform/{id}','area\areaPrintdocController@studentregisterform');
-Route::get('area/teacherregisterform/{id}','area\areaPrintdocController@teacherregisterform');
-Route::get('area/jowregisterform/{id}','area\areaPrintdocController@jowregisterform');
+Route::get('area/studentregisterform/{id}','area\areaPrintdocController@studentregisterform')->middleware('auth');
+Route::get('area/teacherregisterform/{id}','area\areaPrintdocController@teacherregisterform')->middleware('auth');
+Route::get('area/jowregisterform/{id}','area\areaPrintdocController@jowregisterform')->middleware('auth');
 
 Route::get('area/report/{id}','ReportController@areareport');
 route::get('area/reportviewactivity/{id}','ReportController@areajowviewactivity');
@@ -82,7 +82,7 @@ Route::post('dataempty','area\DatatranferController@dataempty')->middleware(['au
 
 Route::resource('areaaddstudent','area\areaAddstudentController');
 Route::resource('areaaddschool','area\areaAddschoolController');
-Route::resource('areajow','area\areaJowController');
+Route::resource('areajow','area\areaJowController')->middleware('schoolgroup.context');
 Route::resource('areacentersillapa','area\areaCentersillapaController');
 Route::resource('areaconfig','area\areaConfigController')->middleware(['auth', 'areamiddleware']);
 
@@ -110,7 +110,7 @@ Route::get('area/showall_print7/{id}','area\AreaController@showall_print7');
 Route::get('area/showall_print8/{id}','area\AreaController@showall_print8');
 
 //จัดการผู้ใช้งาน
-Route::get('area/areauser','MyUserController@areauser');
+Route::get('area/areauser','MyUserController@areauser')->middleware(['auth', 'schoolgroup.context']);
 Route::get('area/myuser/{id}/edit','MyUserController@areauseredit');
 Route::get('center/myuser/{id}/edit','MyUserController@centeruseredit');
 Route::put('updateuser','MyUserController@updateuser');
@@ -132,7 +132,7 @@ Route::get('area/printjow2_showbg/{id}','PdfController@areaprintjow2doccerf_show
 // เพิ่ม route สำหรับเช็ค progress
 Route::get('datatranfer/progress', 'area\DatatranferController@checkProgress')->middleware(['auth', 'systemadmin'])->name('datatranfer.progress');
 Route::get('databackup/progress', 'area\DatatranferController@checkBackupProgress')->middleware(['auth', 'systemadmin'])->name('databackup.progress');
-Route::resource('datatranfer','area\DatatranferController')->middleware(['auth', 'systemadmin']);
+Route::resource('datatranfer','area\DatatranferController')->only(['index', 'store'])->middleware(['auth', 'systemadmin']);
 Route::post('databackup', 'area\DatatranferController@databackup')->middleware(['auth', 'systemadmin'])->name('databackup');
 
 Route::resource('myuser','MyUserController');
@@ -160,7 +160,7 @@ Route::get('secure-assets/{year}/{type}/{file}', 'FileDownloadController@downloa
 
 //Route::post('noticeupload',[NoticeController::class,'noticeupload'])->name('noticeupload');
 Route::post('noticeupload','NoticeController@noticeupload')->middleware('auth')->name('noticeupload');
-Route::get('area/shownotice','NoticeController@shownoticearea')->middleware('auth');
+Route::get('area/shownotice','NoticeController@shownoticearea')->middleware(['auth', 'schoolgroup.context']);
 
 
 Route::post('config/years', 'ConfigController@addYear')->name('config.addYear')->middleware(['auth', 'centermiddleware']);
@@ -248,7 +248,7 @@ Route::get('/addaddschool/getschool/{id}','AddschoolController@getschool');
 if ($isEventGroup) {
     Route::get('/','HomeController@index');
 }
-Route::get('/home','HomeController@index2');
+Route::get('/home','HomeController@index');
 
 
 Route::get('/adduser', 'HomeController@adduser')->middleware(['auth', 'centermiddleware']);
@@ -299,15 +299,6 @@ Route::get('/printspeedmath/{id}','newpdfController@printspeedmath'); // print �
 Route::get('/copy-data', [CopyDataController::class, 'index'])->middleware(['auth', 'systemadmin'])->name('copydata.index');
 Route::post('/copy-data/process', [CopyDataController::class, 'copyData'])->middleware(['auth', 'systemadmin'])->name('copydata.process');
 };
-
-Route::prefix('cpn1/{eventNumber}')
-    ->as('cpn1.')
-    ->where(['eventNumber' => '[0-9]+'])
-    ->middleware('strip.event.parameter')
-    ->namespace('App\\Http\\Controllers')
-    ->group(function () use ($registerRoutes) {
-        $registerRoutes(true);
-    });
 
 Route::prefix('{eventNumber}')
     ->where(['eventNumber' => '[0-9]+'])

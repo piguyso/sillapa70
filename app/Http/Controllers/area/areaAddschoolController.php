@@ -35,10 +35,9 @@ class areaAddschoolController extends Controller
     public function getschool($id){ /// ดึงข้อมูลช่ือโรงเรียนจากคอมโบบ๊อคเครือข่าย
 
         //เชคว่าเป็นเครือข่ายหรือโรงเรียนก่อน
-        if(Auth::user()->position == 5){
         $school = School::where('school_group','=',$id)
         ->pluck("school_name","id");
-        }elseif(Auth::user()->position == 0){
+        if(Auth::user()->position == 0){
         $school = School::where('school_group','=',$id)
         ->where('id',Auth::user()->school_id)
         ->pluck("school_name","id");
@@ -69,7 +68,7 @@ class areaAddschoolController extends Controller
             $addschool = addschools_areas::where('school_activity','=',$id)->where('school_schoolgroup','=',$schoolgroup[0]->id)->paginate(15);
         }
 
-        $activity= Activities::find($id);
+        $activity= Activities::findOrFail($id);
         $student = addschools_areas::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
         $data = array(
             'addschool'=>$addschool,

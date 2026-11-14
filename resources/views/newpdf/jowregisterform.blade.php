@@ -69,6 +69,9 @@
                 line-height: 0.5cm;
                
             }
+            table.table-bordered { width: 100%; border-collapse: collapse; border-spacing: 0; }
+            table.table-bordered th, table.table-bordered td { border: 1px solid #000; padding: 2px; }
+            .container, .row, .col-md-12 { width: 100%; margin: 0; padding: 0; }
 
     </style>
 </head>

@@ -201,7 +201,7 @@ class areaJowController extends Controller
      */
     public function edit($id)
     {
-        $jows = Jows_areas::find($id);
+        $jows = Jows_areas::findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,
@@ -214,7 +214,7 @@ class areaJowController extends Controller
 
         public function edit2($id)
     {
-        $jows = Jows_areas::find($id);
+        $jows = Jows_areas::findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,

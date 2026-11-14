@@ -49,11 +49,7 @@ class MyUserController extends Controller
     public function create()
     {
       officerchk();
-      $user = user::where('id','like','%')->paginate(25);
-      $data  = array(
-        'data' => $user,
-      );
-      return view('auth.adduser2',$data);
+      return redirect()->route('myuser.index');
     }
 
     /**

@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'areaweb' => \App\Http\Middleware\areaweb::class,
             'systemadmin' => \App\Http\Middleware\SystemAdminMiddleware::class,
             'strip.event.parameter' => \App\Http\Middleware\StripEventRouteParameter::class,
+            'schoolgroup.context' => \App\Http\Middleware\RequireSchoolgroupContext::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

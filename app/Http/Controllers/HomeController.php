@@ -512,7 +512,7 @@ $schoolcountactivity = DB::table('addschools')
 ->groupBy('school_activity')
 ->pluck('total','school_activity');
       $activity = activities::where('activity_subject','=',$id)->orderBy('updated_at','desc')->paginate(1000);
-      $subjectgroup = Subjectgroup::find($id);
+      $subjectgroup = Subjectgroup::findOrFail($id);
       $branch = Branch::all();
       $class = Classes::all();
       $dayofsillapa = Dayofsillapas::all();
@@ -769,7 +769,7 @@ $activityNames = Addschool::select('school_activity')
               $addschool = addschool::where('school_activity','=',$id)->orderBy('student_score','desc')->paginate(1000);
           
 
-          $activity= activities::find($id);
+          $activity= activities::findOrFail($id);
           $student = addschool::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
           $data = array(
               'addschool'=>$addschool,
@@ -845,11 +845,7 @@ $activityNames = Addschool::select('school_activity')
   //////////////////////////////////
     public function adduser()
     {
-        $user = user::where('id','like','%')->paginate(1000);
-        $data  = array(
-          'data' => $user,
-        );
-        return view('adduser',$data);
+        return redirect()->route('myuser.index');
     }
 
     /////////////////////////////////

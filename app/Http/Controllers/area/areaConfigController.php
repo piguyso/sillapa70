@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\dayofsillapas;
 use App\Configs;
 use App\Systemactives;
+use App\Schoolgroup;
 use Auth;
 class areaConfigController extends Controller
 {
@@ -17,13 +18,12 @@ class areaConfigController extends Controller
      */
     public function index()
     {
+        Schoolgroup::findOrFail(Auth::user()->schoolgroup);
         $config = Configs::where('schoolgroup', Auth::user()->schoolgroup)
-                         ->where('app_year', active_year())
+                         ->where('event_id', active_event_id())
                          ->get();
         if ($config->isEmpty()) {
-            $config = Configs::where('schoolgroup', Auth::user()->schoolgroup)
-                             ->orderBy('app_year', 'desc')
-                             ->get();
+            abort(404, 'ไม่พบการตั้งค่าเครือข่ายสำหรับครั้งการแข่งขันนี้');
         }
         $dayofsillapa = dayofsillapas::where('schoolgroup', Auth::user()->schoolgroup)->get();
         $systemactive = Systemactives::where('schoolgroup', Auth::user()->schoolgroup)->get();

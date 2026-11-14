@@ -71,9 +71,12 @@
                 line-height: 0.3cm;
                
             }
+            table.table-bordered { border-collapse: collapse; border-spacing: 0; }
+            table.table-bordered th, table.table-bordered td { border: 1px solid #000; }
+            .container, .row, .col-md-12 { width: 100%; margin: 0; padding: 0; }
        
-            table{
-        width:783px;
+            table.table-bordered{
+        width:100%;
       height:auto;
     table-layout:fixed;
   }

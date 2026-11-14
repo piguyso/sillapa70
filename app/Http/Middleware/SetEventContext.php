@@ -41,7 +41,16 @@ class SetEventContext
         URL::formatPathUsing(function (string $path, $route = null) use ($eventNumber, $needsCpn1InPath): string {
             // Named routes already contain the dynamic event prefix. Plain url()
             // calls from legacy views need the prefix added centrally.
-            if ($route !== null || preg_match('~^/(?:cpn1/)?[0-9]+(?:/|$)~', $path)) {
+            // Public assets are shared by every event and must remain outside the
+            // /{eventNumber} prefix (for example /cpn1/imgs/silver.png).
+            $isPublicAsset = preg_match(
+                '~^/(?:adminlte|css|dist|downloads|fonts1?|imgs|js|upload)(?:/|$)~i',
+                $path
+            );
+
+            if ($route !== null
+                || $isPublicAsset
+                || preg_match('~^/(?:cpn1/)?[0-9]+(?:/|$)~', $path)) {
                 return $path;
             }
 

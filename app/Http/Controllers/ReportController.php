@@ -88,7 +88,7 @@ class ReportController extends Controller
        // dd($schoolcountactivity);
 
         $activity = activities::where('activity_subject','=',$id)->paginate(1000);
-        $subjectgroup = Subjectgroup::find($id);
+        $subjectgroup = Subjectgroup::findOrFail($id);
         $branch = Branch::all();
         $class = Classes::all();
         $dayofsillapa = Dayofsillapas::all();
@@ -180,7 +180,7 @@ class ReportController extends Controller
         return view('report.reportviewactivity',$data);
 }
     public function addjow($id){
-        $activity = activities::find($id);
+        $activity = activities::findOrFail($id);
         $jow = jows::where('jow_activity','=',$id)->get();
         $title = titles::all();
         $data = array(
@@ -245,7 +245,7 @@ class ReportController extends Controller
      */
     public function edit($id)
     {
-        $jows = jows::find($id);
+        $jows = jows::findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,

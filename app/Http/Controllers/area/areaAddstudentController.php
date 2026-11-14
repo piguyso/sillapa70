@@ -34,7 +34,7 @@ class areaAddstudentController extends Controller
     }
     public function addaddstudent($id)
     {
-        
+        addschools_areas::findOrFail($id);
         $addschool = addschools_areas::where('id','=',$id)->get();
         $addstudent = addstudents_areas::where('school','=',$id)->where('type','=','0')->paginate(20);
         $addteacher = addstudents_areas::where('school','=',$id)->where('type','=','1')->paginate(20);
@@ -139,7 +139,8 @@ class areaAddstudentController extends Controller
     public function edit($id)
     {
       //  dd($id);
-        $addstudent = addstudents_areas::find($id);
+        $addstudent = addstudents_areas::findOrFail($id);
+        addschools_areas::findOrFail($addstudent->school);
         $addschool = addschools_areas::where('id','=',$addstudent->school)->get();
         $title = titles::all();
 
