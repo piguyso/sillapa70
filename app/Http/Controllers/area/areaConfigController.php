@@ -9,6 +9,7 @@ use App\Configs;
 use App\Systemactives;
 use App\Schoolgroup;
 use Auth;
+use App\CompetitionAccessRule;
 class areaConfigController extends Controller
 {
     /**
@@ -26,7 +27,19 @@ class areaConfigController extends Controller
             abort(404, 'ไม่พบการตั้งค่าเครือข่ายสำหรับครั้งการแข่งขันนี้');
         }
         $dayofsillapa = dayofsillapas::where('schoolgroup', Auth::user()->schoolgroup)->get();
-        $systemactive = Systemactives::where('schoolgroup', Auth::user()->schoolgroup)->get();
+        $networkRule = CompetitionAccessRule::where('event_id', active_event_id())
+            ->where('competition_level', 'network')->where('subject_type', 'school')
+            ->where('scope_type', 'network')->where('scope_id', Auth::user()->schoolgroup)->first();
+        $masterFreeze = CompetitionAccessRule::where('event_id', active_event_id())
+            ->where('competition_level', 'network')->where('subject_type', 'master')
+            ->where('scope_type', 'all')->where('scope_id', 0)->where('is_closed', true)->exists();
+        $systemactive = collect([(object) [
+            'id' => Auth::user()->schoolgroup,
+            'systemname' => 'การแก้ไขข้อมูลของโรงเรียนในเครือข่าย',
+            'detail' => $masterFreeze ? 'แอดมินหลัก Freeze ระบบแล้ว' : 'เปิดหรือปิดให้โรงเรียนในเครือข่ายแก้ไขข้อมูล',
+            'status' => $masterFreeze || optional($networkRule)->is_closed ? 1 : 0,
+            'master_freeze' => $masterFreeze,
+        ]]);
         $data = Array(
             'config' => $config,
             'systemactive' => $systemactive,

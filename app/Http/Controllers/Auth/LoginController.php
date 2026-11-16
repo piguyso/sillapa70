@@ -52,6 +52,7 @@ class LoginController extends Controller
                 session(['name' => Auth::user()->name]);
                 session(['lastname' => Auth::user()->lastname]);
                 session(['userid' => Auth::user()->id]);
+                session(['auth_password_version' => (int) (Auth::user()->password_version ?? 1)]);
                 //$pos = Auth::user()->position;
 
                 //session(['position'=>])

@@ -61,4 +61,105 @@ class ExampleTest extends TestCase
         $this->assertContains('auth', $route->gatherMiddleware());
         $this->assertContains('systemadmin', $route->gatherMiddleware());
     }
+
+    public function test_network_score_routes_require_network_scorekeeper_role(): void
+    {
+        $route = Route::getRoutes()->getByName('areacentersillapa.store');
+
+        $this->assertNotNull($route);
+        $this->assertContains('auth', $route->gatherMiddleware());
+        $this->assertContains('score.network', $route->gatherMiddleware());
+        $this->assertContains('schoolgroup.context', $route->gatherMiddleware());
+    }
+
+    public function test_district_score_routes_require_district_scorekeeper_role(): void
+    {
+        $route = Route::getRoutes()->getByName('centersillapa.store');
+
+        $this->assertNotNull($route);
+        $this->assertContains('auth', $route->gatherMiddleware());
+        $this->assertContains('score.district', $route->gatherMiddleware());
+    }
+
+    public function test_title_mutations_require_system_administrator(): void
+    {
+        foreach (['title.store', 'title.update', 'title.destroy'] as $routeName) {
+            $route = Route::getRoutes()->getByName($routeName);
+
+            $this->assertNotNull($route);
+            $this->assertContains('auth', $route->gatherMiddleware());
+            $this->assertContains('systemadmin', $route->gatherMiddleware());
+        }
+    }
+
+    public function test_shared_reference_data_requires_system_administrator(): void
+    {
+        foreach (['school', 'schoolgroup', 'branch', 'class', 'dayofsillapa', 'myuser'] as $resource) {
+            foreach (['index', 'store', 'edit', 'update', 'destroy'] as $action) {
+                $route = Route::getRoutes()->getByName("{$resource}.{$action}");
+                $this->assertNotNull($route, "Missing route {$resource}.{$action}");
+                $this->assertContains('systemadmin', $route->gatherMiddleware(), "{$resource}.{$action} is not admin-only");
+            }
+        }
+    }
+
+    public function test_school_import_requires_system_administrator(): void
+    {
+        foreach (['school.import.template', 'school.import.inspect', 'school.import.store'] as $routeName) {
+            $route = Route::getRoutes()->getByName($routeName);
+            $this->assertNotNull($route);
+            $this->assertContains('auth', $route->gatherMiddleware());
+            $this->assertContains('systemadmin', $route->gatherMiddleware());
+        }
+    }
+
+    public function test_activity_and_subject_mutations_require_system_administrator(): void
+    {
+        foreach (['activity', 'subjectgroup'] as $resource) {
+            foreach (['store', 'edit', 'update', 'destroy'] as $action) {
+                $route = Route::getRoutes()->getByName("{$resource}.{$action}");
+                $this->assertNotNull($route);
+                $this->assertContains('systemadmin', $route->gatherMiddleware());
+            }
+        }
+    }
+
+    public function test_network_user_management_requires_network_admin_and_context(): void
+    {
+        foreach ([
+            ['GET', '/73/area/areauser'],
+            ['GET', '/73/area/myuser/2/edit'],
+            ['PUT', '/73/myuserareaupdate'],
+        ] as [$method, $uri]) {
+            $route = Route::getRoutes()->match(Request::create($uri, $method));
+            $middleware = $route->gatherMiddleware();
+
+            $this->assertContains('auth', $middleware);
+            $this->assertContains('networkadmin', $middleware);
+            $this->assertContains('schoolgroup.context', $middleware);
+        }
+    }
+
+    public function test_network_registration_routes_require_registration_role_and_context(): void
+    {
+        foreach (['areaaddschool.store', 'areaaddschool.destroy', 'areaaddstudent.store', 'areaaddstudent.update', 'areaaddstudent.destroy'] as $routeName) {
+            $route = Route::getRoutes()->getByName($routeName);
+            $middleware = $route->gatherMiddleware();
+
+            $this->assertContains('auth', $middleware);
+            $this->assertContains('registration.network', $middleware);
+            $this->assertContains('schoolgroup.context', $middleware);
+        }
+    }
+
+    public function test_school_users_cannot_reach_network_judge_management(): void
+    {
+        foreach (['areajow.store', 'areajow.update', 'areajow.destroy'] as $routeName) {
+            $route = Route::getRoutes()->getByName($routeName);
+            $middleware = $route->gatherMiddleware();
+
+            $this->assertContains('operator.network', $middleware);
+            $this->assertContains('schoolgroup.context', $middleware);
+        }
+    }
 }

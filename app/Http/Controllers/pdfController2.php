@@ -30,6 +30,7 @@ public function printPDF(request $request){
 
       $score = $addschool[0]->student_score;
   $inx = $addschool[0]->activity_rank;
+     abort_if((float) $score <= 0, 403, 'ไม่สามารถพิมพ์เกียรติบัตรสำหรับผู้ไม่เข้าร่วมการแข่งขัน');
      //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
     // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
      $addstudent = addstudent::where('school','=',$id)->paginate(65);
@@ -54,7 +55,7 @@ public function printPDF(request $request){
                }elseif($score >= 60){
                  $xscore = "เหรียญทองแดง";
               }elseif($score == 0){
-                 $xscore = '';
+                 $xscore = 'ไม่เข้าร่วม';
              }else{
                 $xscore ='เข้าร่วม';
              }
@@ -84,17 +85,17 @@ if (file_exists($imagePath)) {
     abort(404, 'ไม่พบไฟล์พื้นหลังเกียรติบัตร');
 } 
                if($addstudent[$i]->type == 1){
-                 if($xscore=='เข้าร่วม'){
-                 $teach ='ครูผู้สอนนักเรียน'.$xinx.''.$xscore;
+                 if(in_array($xscore, ['เข้าร่วม', 'ไม่เข้าร่วม'], true)){
+                 $teach = $xscore === 'ไม่เข้าร่วม' ? 'ครูผู้สอนนักเรียนที่ไม่เข้าร่วมการแข่งขัน' : 'ครูผู้สอนนักเรียน'.$xinx.''.$xscore;
                  $student =''; 
                  }else{
                  $teach ='ครูผู้สอนนักเรียนได้รับรางวัลระดับ'.$xscore.' '.$xinx;
                  $student ='';
                  }
               }else{
-                 if($xscore=='เข้าร่วม'){
+                 if(in_array($xscore, ['เข้าร่วม', 'ไม่เข้าร่วม'], true)){
                  $teach ='';
-                 $student ='ได้'.$xinx.''.$xscore;
+                 $student = $xscore === 'ไม่เข้าร่วม' ? 'ไม่เข้าร่วมการแข่งขัน' : 'ได้'.$xinx.''.$xscore;
                  }else{
                  $teach ='';
                  $student ='ได้รับรางวัลระดับ'.$xscore.' '.$xinx;
@@ -197,7 +198,7 @@ public function printstudent($id){
              }elseif($score >= 60){
                $xscore = "เหรียญทองแดง";
             }elseif($score == 0){
-               $xscore = '';
+               $xscore = 'ไม่เข้าร่วม';
            }else{
               $xscore ='เข้าร่วม';
            }
@@ -228,17 +229,17 @@ if (file_exists($imagePath)) {
     abort(404, 'ไม่พบไฟล์พื้นหลังเกียรติบัตร');
 } 
                 if($addstudent[$i]->type == 1){
-                  if($xscore=='เข้าร่วม'){
-                  $teach ='ครูผู้สอนนักเรียน'.$xinx.''.$xscore;
+                  if(in_array($xscore, ['เข้าร่วม', 'ไม่เข้าร่วม'], true)){
+                  $teach = $xscore === 'ไม่เข้าร่วม' ? 'ครูผู้สอนนักเรียนที่ไม่เข้าร่วมการแข่งขัน' : 'ครูผู้สอนนักเรียน'.$xinx.''.$xscore;
                   $student =''; 
                   }else{
                   $teach ='ครูผู้สอนนักเรียนได้รับรางวัล'.$xinx.' '.$xscore;
                   $student ='';
                   }
               }else{
-                  if($xscore=='เข้าร่วม'){
+                  if(in_array($xscore, ['เข้าร่วม', 'ไม่เข้าร่วม'], true)){
                   $teach ='';
-                  $student ='ได้'.$xinx.''.$xscore;
+                  $student = $xscore === 'ไม่เข้าร่วม' ? 'ไม่เข้าร่วมการแข่งขัน' : 'ได้'.$xinx.''.$xscore;
                   }else{
                   $teach ='';
                   $student ='ได้รับรางวัล '.$xinx.' '.$xscore;

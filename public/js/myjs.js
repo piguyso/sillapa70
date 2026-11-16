@@ -1,4 +1,4 @@
-﻿
+
 
 $(document).ready(function () {
 
@@ -14,35 +14,19 @@ $(document).ready(function () {
 
 function DelConfirm($x)
 {
-      var result = confirm("ยืนยันการลบข้อมูล?");
-          if (result) {
-              document.getElementById('delform'+$x).submit();
-          }
+      return appConfirmForm('delform'+$x, "ยืนยันการลบข้อมูล?");
 }
 function Activeactivity($x)
 {
-    //  var activity_status = document.getElementById("activity_status");
-      var result = confirm("ยืนยันการประกาศผลการแข่งขัน คุณจะไม่สามารถแก้ไขข้อมูลได้อีก?");
-          if (result) {
-      //      activity_status.value='1';
-              document.getElementById($x).submit();
-          }
+      return appConfirmForm($x, "ยืนยันการประกาศผลการแข่งขัน คุณจะไม่สามารถแก้ไขข้อมูลได้อีก?");
 }
 function Saveactivity($x)
 {
-      var activity_status = document.getElementById("activity_status");
-      var result = confirm("ยืนยันการบันทึกคะแนน?");
-          if (result) {
-        //      activity_status.value='0';
-              document.getElementById($x).submit();
-          }
+      return appConfirmForm($x, "ยืนยันการบันทึกคะแนน?", { danger: false });
 }
 function SaveConfirm($x)
 {
-      var result = confirm("ยืนยันการบันทึกข้อมูล?");
-          if (result) {
-              document.getElementById($x).submit();
-          }
+      return appConfirmForm($x, "ยืนยันการบันทึกข้อมูล?", { danger: false });
 }
 $(document).ready(function(){
 //Add(); //--- เพิ่มช่องสำหรับกรอกข้อมูล 1 ช่องตอนเริ่มรันหน้า
@@ -54,17 +38,17 @@ function AddUser(){
   //--------------
     if($("#Name option:selected").val() =="")
     {
-      alert("กรุณาเลือกกรรมการตรวจรับ !");
+      appAlert("กรุณาเลือกกรรมการตรวจรับ !");
      return false;
     }
      if($("#position option:selected").val() =="")
      {
-       alert("กรุณาเลือกตำแหน่งของกรรมการ !");
+       appAlert("กรุณาเลือกตำแหน่งของกรรมการ !");
       return false;
      }
     // if($("#itemNameMenu option:selected").val() =="")
     // {
-    //   alert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
+    //   appAlert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
     //  return false;
     // }
   //-------------
@@ -96,17 +80,17 @@ function Add(){
   //--------------
     if($("#itemTypeMenu option:selected").val() =="")
     {
-      alert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
+      appAlert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
      return false;
     }
     if($("#itemCategoryMenu option:selected").val() =="")
     {
-      alert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
+      appAlert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
      return false;
     }
     if($("#itemNameMenu option:selected").val() =="")
     {
-      alert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
+      appAlert("กรุณาเลือกข้อมูลให้ครบถ้วน !");
      return false;
     }
   //-------------
@@ -165,20 +149,20 @@ function Delete(){
 		calculateSum();
 	};
   function Delete2(){
-      alert();
+      appAlert();
   		$(this).closest('tr').remove();
   		//CheckTextBox();
   	//	calculateSum();
   	};
 
   $(document).on('click', 'button.btnDelete', function () { // ฟังก์ชั่นการลบข้อมูลหน้าแก้ไขกรรมการตรวจรับ
-       //alert("aa");
+       //appAlert("aa");
        $(this).closest('tr').remove();
        return false;
    });
 
    $(document).on('click', 'button.btnDelete2', function () { // ฟังก์ชั่นการลบข้อมูลไอเทม
-        //alert("aa");
+        //appAlert("aa");
         $(this).closest('tr').remove();
         calculateSum();
         return false;
@@ -187,7 +171,7 @@ function Delete(){
 /// multiselect list item
   $(document).ready(function() {
     $('select[name="itemType"]').on('change', function(){
-      alert('dfksld;fksl;kl');
+      appAlert('dfksld;fksl;kl');
         var itemTypeId = $(this).val();
         if(itemTypeId) {
             $.ajax({
@@ -199,7 +183,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                     $('select[name="itemCategory"]').empty();
                     $('select[name="itemCategory"]').append('<option value="">Please Select</option>');
 
@@ -233,7 +217,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                   $.each(data, function(key, value){
                     $('input[name="itemTypeId"]').val(value);
                     //  $('select[name="itemCategory"]').append('<option value="'+ key +'">' + value + '</option>');
@@ -251,7 +235,7 @@ function Delete(){
 // get itemtypeMenu หน้าจัดซื้อ
     $('select[name="itemTypeMenu"]').on('change', function(){
         var itemTypeId = $(this).val();
-        //alert(itemTypeId);
+        //appAlert(itemTypeId);
         if(itemTypeId) {
             $.ajax({
                 url: 'itemType/get/'+itemTypeId,
@@ -262,7 +246,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                //    alert(data);
+                //    appAlert(data);
                     $('select[name="itemCategoryMenu"]').empty();
                     $('select[name="itemCategoryMenu"]').append('<option value="">Please Select</option>');
                     $('select[name="itemNameMenu"]').empty();
@@ -297,7 +281,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                       $('select[name="itemNameMenu"]').empty();
                       $('select[name="itemNameMenu"]').append('<option value="">Please Select</option>');
                   $.each(data, function(key, value){
@@ -330,7 +314,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                       $('select[name="itemUnitMenu"]').empty();
                     //  $('select[name="itemUnitMenu"]').append('<option value="">หน่วย</option>');
                   $.each(data, function(key, value){
@@ -363,7 +347,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                       $('select[name="itemUnitMenu"]').empty();
                     //  $('select[name="itemUnitMenu"]').append('<option value="">หน่วย</option>');
                   $.each(data, function(key, value){
@@ -396,7 +380,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                     //  $('select[name="itemUnitMenu"]').empty();
                     //  $('select[name="itemUnitMenu"]').append('<option value="">หน่วย</option>');
                   $.each(data, function(key, value){
@@ -431,7 +415,7 @@ function Delete(){
                 },
 
                 success:function(data) {
-                  //  alert(data);
+                  //  appAlert(data);
                     //  $('select[name="itemUnitMenu"]').empty();
                     //  $('select[name="itemUnitMenu"]').append('<option value="">หน่วย</option>');
                   $.each(data, function(key, value){
@@ -458,7 +442,7 @@ function Delete(){
     $('select[name="itemName"]').on('change', function(){
         var url = $(this).val();
         window.location = '/purchase/home/items/'+url;
-      //  alert(url);
+      //  appAlert(url);
     });
 	
 	
@@ -492,7 +476,7 @@ function Delete(){
                 dataType:"json",
                 beforeSend: function(){
                     $('#loader').css("visibility", "visible");
-					//alert("lppplll");
+					//appAlert("lppplll");
 					
                 },
 				
@@ -543,7 +527,7 @@ function Delete(){
                 dataType:"json",
                 beforeSend: function(){
                     $('#loader').css("visibility", "visible");
-					//alert("lppplll");
+					//appAlert("lppplll");
 					
                 },
 				
@@ -593,7 +577,7 @@ function calculateSum() {
     var sum = 1;
       $row.find(".expenses").each(function() {
         sum = sum * parseFloat(this.value) || 0;
-        //  alert(sum);
+        //  appAlert(sum);
       });
 
       $row.find(".expenses_sum").val(sum.toFixed(2));
@@ -643,60 +627,60 @@ currencySymbol: '€ '
 function formcheck() {
 	  var x = $("#workgroups");
     if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#workgroups").focus();
         return false;
     }
 	  var x = $("#commandId");
     if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#commandId").focus();
         return false;
     }
   var x = $("#purchaseId");
     if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#purchaseId").focus();
         return false;
     }
     var x = $("#purchasetype2");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
       var x = $("#dateOfPurcase");
         if (x.val() == "") {
-            alert("กรุณากรอกข้อมูลให้ครบ !");
+            appAlert("กรุณากรอกข้อมูลให้ครบ !");
             x.focus();
             return false;
         }
     var x = $("#purchaseName");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
 
       var x = $("#purchaseReason");
         if (x.val() == "") {
-            alert("กรุณากรอกข้อมูลให้ครบ !");
+            appAlert("กรุณากรอกข้อมูลให้ครบ !");
             x.focus();
             return false;
         }
         if($("#tblUser tr").length < 2)
         {
-          alert("กรุณาเพิ่มกรรมการตรวจรับ !");
+          appAlert("กรุณาเพิ่มกรรมการตรวจรับ !");
           return false;
         }
      if($("#tblData tr").length < 2)
      {
-       alert("กรุณาเพิ่มวัสดุ/ครุภัณฑ์ !");
+       appAlert("กรุณาเพิ่มวัสดุ/ครุภัณฑ์ !");
        return false;
      }
      if($('#App_tax_No3').val()==0)
      {
-       alert("ราคาของวัสดุ/ครุภัณฑ์ต้องมากกว่า 0 !");
+       appAlert("ราคาของวัสดุ/ครุภัณฑ์ต้องมากกว่า 0 !");
        return false;
      }
 }
@@ -704,7 +688,7 @@ function formcheck() {
 function formcheck2() {
     var x = $("#purchaseAcceptSlip");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
@@ -712,49 +696,49 @@ function formcheck2() {
 function formcheck3() {
     var x = $("#itemIdMemu");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
       var x = $("#itemCategoryMenu");
         if (x.val() == "") {
-            alert("กรุณากรอกข้อมูลให้ครบ !");
+            appAlert("กรุณากรอกข้อมูลให้ครบ !");
             x.focus();
             return false;
         }
         var x = $("#itemNameMenu");
           if (x.val() == "") {
-              alert("กรุณากรอกข้อมูลให้ครบ !");
+              appAlert("กรุณากรอกข้อมูลให้ครบ !");
               x.focus();
               return false;
           }
           var x = $("#ItemDetail");
             if (x.val() == "") {
-                alert("กรุณากรอกข้อมูลให้ครบ !");
+                appAlert("กรุณากรอกข้อมูลให้ครบ !");
                 x.focus();
                 return false;
             }
             var x = $("#bItemNumber");
               if (x.val() == "") {
-                  alert("กรุณากรอกข้อมูลให้ครบ !");
+                  appAlert("กรุณากรอกข้อมูลให้ครบ !");
                   x.focus();
                   return false;
               }
               var x = $("#bItemPrice");
                 if (x.val() == "") {
-                    alert("กรุณากรอกข้อมูลให้ครบ !");
+                    appAlert("กรุณากรอกข้อมูลให้ครบ !");
                     x.focus();
                     return false;
                 }
 								  var x = $("#itembudgettype");
                   if (x.val() == "") {
-                      alert("กรุณากรอกข้อมูลให้ครบ !");
+                      appAlert("กรุณากรอกข้อมูลให้ครบ !");
                       x.focus();
                       return false;
                   }
                 var x = $("#type");
                   if (x.val() == "") {
-                      alert("กรุณากรอกข้อมูลให้ครบ !");
+                      appAlert("กรุณากรอกข้อมูลให้ครบ !");
                       x.focus();
                       return false;
                   }
@@ -765,14 +749,14 @@ function formcheck3() {
 function formcheckprocess() {
     var x = $("#processdate");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
 	  
 	      var x = $("#process");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -782,11 +766,11 @@ function formcheckprocess() {
 		    //var regex=/^[0-9]+$/;
 			//if (x.match(regex))
 			//{
-			//	alert("Must input numbers");
+			//	appAlert("Must input numbers");
 			//	x.focus();
 			//	return false;
 			//}
-		  alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+		  appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -794,10 +778,10 @@ function formcheckprocess() {
 	  	  var x = $("#budget");		  
 		  var regex=/^[0-9]+$/;
 		  var y =x.val();
-		 // alert(y.match(regex));
+		 // appAlert(y.match(regex));
 			if (!y.match(regex))
 			{
-				alert("Must input numbers");
+				appAlert("Must input numbers");
 				x.focus();
 				return false;
 			}
@@ -805,16 +789,16 @@ function formcheckprocess() {
 		  var z = $("#budgetleft");
 		  var regex=/^[0-9]+$/;
 		  var y =x.val();
-		 // alert(y.match(regex));
+		 // appAlert(y.match(regex));
 			if (!y.match(regex))
 			{
-				alert("Must input numbers");
+				appAlert("Must input numbers");
 				x.focus();
 				return false;
 			}
 			if(Number(x.val()) > Number(z.val()))
 			{
-				alert("งบประมาณที่เหลือไม่เพียงพอ..");
+				appAlert("งบประมาณที่เหลือไม่เพียงพอ..");
 				x.focus();
 				return false;
 			}
@@ -823,20 +807,20 @@ function formcheckprocess() {
 function formcheckrepairlog() {
     var x = $("#dateofrepair");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
 	  
 	      var x = $("#text");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
 	  	      var x = $("#itemplace");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -846,11 +830,11 @@ function formcheckrepairlog() {
 		    //var regex=/^[0-9]+$/;
 			//if (x.match(regex))
 			//{
-			//	alert("Must input numbers");
+			//	appAlert("Must input numbers");
 			//	x.focus();
 			//	return false;
 			//}
-		  alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+		  appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -858,10 +842,10 @@ function formcheckrepairlog() {
 	  	  var x = $("#price");		  
 		  var regex=/^[0-9]+$/;
 		  var y =x.val();
-		 // alert(y.match(regex));
+		 // appAlert(y.match(regex));
 			if (!y.match(regex))
 			{
-				alert("Must input numbers");
+				appAlert("Must input numbers");
 				x.focus();
 				return false;
 			}
@@ -871,13 +855,13 @@ function formcheckrepairlog() {
 	  
 	     var x = $("#budget");
       if (x.val() == "0") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
     var x = $("#workgroups");
       if (x.val() == "0") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }	  
@@ -892,20 +876,20 @@ function formcheckrepairlog() {
 function formcheckprocessto() {
     var x = $("#processdate");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
 	  
 	      var x = $("#processfrom");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
 	  	      var x = $("#processto");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -913,7 +897,7 @@ function formcheckprocessto() {
 	  var y = $("#processto");
 	  
 	  if (x.val() == y.val()) {
-          alert("กรุณากรอกข้อมูลให้ถูกต้องห้ามเลือกโครงการเดียวกัน !");
+          appAlert("กรุณากรอกข้อมูลให้ถูกต้องห้ามเลือกโครงการเดียวกัน !");
           x.focus();
           return false;
       }
@@ -924,11 +908,11 @@ function formcheckprocessto() {
 		    //var regex=/^[0-9]+$/;
 			//if (x.match(regex))
 			//{
-			//	alert("Must input numbers");
+			//	appAlert("Must input numbers");
 			//	x.focus();
 			//	return false;
 			//}
-		  alert("กรุณากรอกข้อมูลให้ถูกต้อง !");
+		  appAlert("กรุณากรอกข้อมูลให้ถูกต้อง !");
           x.focus();
           return false;
       }
@@ -937,16 +921,16 @@ function formcheckprocessto() {
 		  var z = $("#budgetleft");
 		  var regex=/^[0-9]+$/;
 		  var y =x.val();
-		 // alert(y.match(regex));
+		 // appAlert(y.match(regex));
 			if (!y.match(regex))
 			{
-				alert("Must input numbers");
+				appAlert("Must input numbers");
 				x.focus();
 				return false;
 			}
 			if(Number(x.val()) > Number(z.val()))
 			{
-				alert("งบประมาณที่เหลือไม่เพียงพอ..");
+				appAlert("งบประมาณที่เหลือไม่เพียงพอ..");
 				x.focus();
 				return false;
 			}
@@ -957,25 +941,25 @@ function formcheckprocessto() {
 function formcheckturakan() {
     var x = $("#documenttype");
     if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#documenttype").focus();
         return false;
     }
 	var x = $("#workgroups");
 	if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#workgroups").focus();
         return false;
     }
 		var x = $("#documentDate");
 	if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#documentDate").focus();
         return false;
     }
 		var x = $("#document");
 	if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#document").focus();
         return false;
     }
@@ -985,35 +969,35 @@ function formcheckturakan() {
 function formcheckproject() {
     var x = $("#projectName");
     if (x.val() == "") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#projectName").focus();
         return false;
     }
 	var x = $("#workgroups");
 	if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#workgroups").focus();
         return false;
     }
 	var x = $("#projectBudgetofschool");
 	if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#projectBudgetofschool").focus();
         return false;
     }
 		  	  var x = $("#projectBudget");		  
 		  var regex=/^[0-9]+$/;
 		  var y =x.val();
-		 // alert(y.match(regex));
+		 // appAlert(y.match(regex));
 			if (!y.match(regex))
 			{
-				alert("Must input numbers");
+				appAlert("Must input numbers");
 				x.focus();
 				return false;
 			}
 			if(y <=0)
 			{
-				alert("Input must more then zero");
+				appAlert("Input must more then zero");
 				x.focus();
 				return false;
 			}
@@ -1022,13 +1006,13 @@ function formcheckproject() {
 			
 		var x = $("#projectYear");
 	if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#projectYear").focus();
         return false;
     }
 		var x = $("#projectTerm");
 	if (x.val() == "0") {
-        alert("กรุณากรอกข้อมูลให้ครบ !");
+        appAlert("กรุณากรอกข้อมูลให้ครบ !");
         $("#projectTerm").focus();
         return false;
     }
@@ -1038,13 +1022,13 @@ function formcheckproject() {
 function formcheckbudgetofschool() {
     var x = $("#budgettype");
       if (x.val() == "0") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
 	 var x = $("#budgetofschool");
       if (x.val() == "") {
-          alert("กรุณากรอกข้อมูลให้ครบ !");
+          appAlert("กรุณากรอกข้อมูลให้ครบ !");
           x.focus();
           return false;
       }
@@ -1055,7 +1039,7 @@ $(document).ready(function(){
     $('select[name="itemTypeMenu"]').on('change', function(){
     var cat = $("#itemTypeMenu").val();
     //var items = $('#itemNameMenu').val();
-    //alert(cat);
+    //appAlert(cat);
     $.ajax({
       type: 'get',
       dataType: 'html',
@@ -1073,7 +1057,7 @@ $(document).ready(function(){
     $('select[name="itemCategoryMenu"]').on('change', function(){
     var cat = $("#itemCategoryMenu").val();
     //var items = $('#itemNameMenu').val();
-    //alert(cat);
+    //appAlert(cat);
     $.ajax({
       type: 'get',
       dataType: 'html',
@@ -1090,7 +1074,7 @@ $(document).ready(function(){
     $('select[name="itemNameMenu"]').on('change', function(){
     var cat = $("#itemCategoryMenu").val();
     var items = $('#itemNameMenu').val();
-  //  alert();
+  //  appAlert();
     $.ajax({
       type: 'get',
       dataType: 'html',
@@ -1149,7 +1133,7 @@ $(document).ready(function(){
     $('select[name="itemtype"]').on('change', function(){
     var cat = $("#itemtype").val();
 
-  //  alert();
+  //  appAlert();
     $.ajax({
       type: 'get',
       dataType: 'html',
@@ -1189,7 +1173,7 @@ $(document).ready(function(){
     $('select[name="itemType"]').on('change', function(){
     var cat = $("#itemType").val();
 
-    //alert();
+    //appAlert();
     $.ajax({
       type: 'get',
       dataType: 'html',
@@ -1209,7 +1193,7 @@ $(document).ready(function(){
     var cat = $("#itemType").val();
     var cat2 = $('#itemCategory').val();
 
-  //  alert(cat2);
+  //  appAlert(cat2);
     $.ajax({
       type: 'get',
       dataType: 'html',

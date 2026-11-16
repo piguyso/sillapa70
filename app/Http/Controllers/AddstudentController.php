@@ -9,6 +9,7 @@ use App\Activities;
 use App\titles;
 use Session;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 class AddstudentController extends Controller
 {
     /**
@@ -19,6 +20,7 @@ class AddstudentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('competition.access:district');
         $this->middleware('areamiddleware');
         //adminchk();
     }
@@ -164,38 +166,10 @@ class AddstudentController extends Controller
 
     // 3. เช็คว่ามีการส่งรูปภาพ Base64 มาจาก Croppie หรือไม่
     if ($request->image_base64) {
-        $data = $request->image_base64;
-
-        // แยกส่วน Header ของ Base64 เพื่อเช็คนามสกุลไฟล์
-        if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
-            $data = substr($data, strpos($data, ',') + 1);
-            $type = strtolower($type[1]); // png, jpg, jpeg
-
-            // ตรวจสอบนามสกุลไฟล์
-            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
-                throw new \Exception('invalid image type');
-            }
-
-            $data = str_replace(' ', '+', $data);
-            $data = base64_decode($data);
-
-            if ($data === false) {
-                throw new \Exception('base64_decode failed');
-            }
-        } else {
-            throw new \Exception('did not match data URI with image data');
-        }
-
-        // ตั้งชื่อไฟล์ใหม่: ใช้ ID + เวลา เพื่อป้องกันชื่อซ้ำ
-        $fileName = "stu_" . $id . "_" . time() . '.' . $type;
         $year = $addstudent->year ?: active_year();
-        Storage::disk('public')->put(storage_year_path('picture', $fileName, $year), $data);
-
-        // ลบรูปเก่าทิ้ง (ถ้ามี) เพื่อประหยัดพื้นที่เซิร์ฟเวอร์
-        delete_storage_file('picture', $addstudent->student_image, $year);
-
-        // เก็บชื่อไฟล์ใหม่ลงฐานข้อมูล
-        $addstudent->student_image = $fileName;
+        $addstudent->student_image = app(ImageUploadService::class)->storeBase64Webp(
+            $request->image_base64, 'picture', (string) $year, 'student_'.$id, $addstudent->student_image, 800
+        );
     }
 
     // 4. บันทึกข้อมูลทั้งหมด

@@ -42,6 +42,7 @@
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.css')}}">
 
+    <link rel="stylesheet" href="{{ asset('css/form-system.css') }}">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -346,5 +347,7 @@ function SaveConfirm($x)
             }, 5000);
         </script>
     @endif
+<script src="{{ asset('js/ui-feedback.js') }}"></script>
+<script src="{{ asset('js/image-upload-rules.js') }}"></script>
 </body>
 </html>

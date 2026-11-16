@@ -213,9 +213,7 @@
 
 <script>
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบรายชื่อนี้ออกจากทีม? ข้อมูลจะไม่สามารถกู้คืนได้')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'ยืนยันการลบรายชื่อนี้ออกจากทีม? ข้อมูลจะไม่สามารถกู้คืนได้');
     }
 </script>
 @endsection

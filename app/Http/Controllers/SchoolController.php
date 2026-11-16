@@ -19,7 +19,7 @@ class SchoolController extends Controller
     }
     public function index()
     {
-        $school = school::where('id','like','%')->paginate(25);
+        $school = school::with('getschoolgroup')->orderBy('school_name')->get();
         $schoolgroup = schoolgroup::all();
         $data = array(
             'data'=>$school,
@@ -83,9 +83,11 @@ class SchoolController extends Controller
     public function edit($id)
     {
         adminchk();
-        $school = school::find($id);
+        $school = school::findOrFail($id);
+        $schoolgroups = schoolgroup::orderBy('schoolgroup_name')->get();
         $data = array(
           'school'=>$school,
+          'schoolgroups'=>$schoolgroups,
           'id'=>$id
         );
         return view('school.editschool',$data);
@@ -100,13 +102,16 @@ class SchoolController extends Controller
      */
     public function update(Request $request,$id)
     {
+        adminchk();
         $this->validate($request,[
             'school_name'=>'required',
             'school_detail'=>'required',
+            'school_group'=>'required|exists:schoolgroups,id',
           
         ]);
-        $school = school::find($id);
+        $school = school::findOrFail($id);
         $school->school_name = $request->school_name;
+        $school->school_group = $request->school_group;
         $school->school_detail = $request->school_detail;
         $school->save();
         Session::flash('massage','Data update Successfull..');

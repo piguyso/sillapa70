@@ -40,16 +40,16 @@ Route::get('/area/{id}','area\AreaController@index')->where('id', '[0-9]+');
 
 Route::get('/area/areasubjectgroup/{id}','area\areaSubjectgroupController@index')->middleware('schoolgroup.context');
 Route::get('/area/areasubjectgroup/activity/{id}','area\areaSubjectgroupController@showactivity')->middleware('schoolgroup.context');
-Route::get('area/addaddschool/{id}','area\areaAddschoolController@addaddschool')->middleware('schoolgroup.context');
-Route::get('area/addaddschool/getschool/{id}','area\areaAddschoolController@getschool');
+Route::get('area/addaddschool/{id}','area\areaAddschoolController@addaddschool')->middleware(['schoolgroup.context', 'registration.network']);
+Route::get('area/addaddschool/getschool/{id}','area\areaAddschoolController@getschool')->middleware(['schoolgroup.context', 'registration.network']);
 
 
-Route::get('area/addaddstudent/{id}','area\areaAddstudentController@addaddstudent')->middleware('schoolgroup.context');
-Route::get('area/jowviewactivity/{id}','area\areaJowController@jowviewactivity')->middleware('schoolgroup.context');
-route::get('area/addjow/{id}','area\areaJowController@addjow')->middleware('schoolgroup.context');
-route::get('area/addjow2','area\areaJowController@addjow2')->middleware('schoolgroup.context');
-route::get('area/areajow/{id}/edit','area\areaJowController@edit')->middleware('schoolgroup.context');
-route::get('area/areajow2/{id}/edit','area\areaJowController@edit2')->middleware('schoolgroup.context');
+Route::get('area/addaddstudent/{id}','area\areaAddstudentController@addaddstudent')->middleware(['schoolgroup.context', 'registration.network']);
+Route::get('area/jowviewactivity/{id}','area\areaJowController@jowviewactivity')->middleware(['schoolgroup.context', 'operator.network']);
+route::get('area/addjow/{id}','area\areaJowController@addjow')->middleware(['schoolgroup.context', 'operator.network']);
+route::get('area/addjow2','area\areaJowController@addjow2')->middleware(['schoolgroup.context', 'operator.network']);
+route::get('area/areajow/{id}/edit','area\areaJowController@edit')->middleware(['schoolgroup.context', 'operator.network']);
+route::get('area/areajow2/{id}/edit','area\areaJowController@edit2')->middleware(['schoolgroup.context', 'operator.network']);
 
 //บันทึกผลการแข่ง
 route::get('area/centersillapa','area\areaCentersillapaController@index');
@@ -80,9 +80,9 @@ Route::post('dataempty','area\DatatranferController@dataempty')->middleware(['au
 
 
 
-Route::resource('areaaddstudent','area\areaAddstudentController');
-Route::resource('areaaddschool','area\areaAddschoolController');
-Route::resource('areajow','area\areaJowController')->middleware('schoolgroup.context');
+Route::resource('areaaddstudent','area\areaAddstudentController')->middleware(['schoolgroup.context', 'registration.network']);
+Route::resource('areaaddschool','area\areaAddschoolController')->middleware(['schoolgroup.context', 'registration.network']);
+Route::resource('areajow','area\areaJowController')->middleware(['schoolgroup.context', 'operator.network']);
 Route::resource('areacentersillapa','area\areaCentersillapaController');
 Route::resource('areaconfig','area\areaConfigController')->middleware(['auth', 'areamiddleware']);
 
@@ -110,11 +110,11 @@ Route::get('area/showall_print7/{id}','area\AreaController@showall_print7');
 Route::get('area/showall_print8/{id}','area\AreaController@showall_print8');
 
 //จัดการผู้ใช้งาน
-Route::get('area/areauser','MyUserController@areauser')->middleware(['auth', 'schoolgroup.context']);
-Route::get('area/myuser/{id}/edit','MyUserController@areauseredit');
-Route::get('center/myuser/{id}/edit','MyUserController@centeruseredit');
-Route::put('updateuser','MyUserController@updateuser');
-Route::put('myuserareaupdate','MyUserController@myuserareaupdate');
+Route::get('area/areauser','MyUserController@areauser')->middleware(['auth', 'networkadmin', 'schoolgroup.context']);
+Route::get('area/myuser/{id}/edit','MyUserController@areauseredit')->middleware(['auth', 'networkadmin', 'schoolgroup.context']);
+Route::get('center/myuser/{id}/edit','MyUserController@centeruseredit')->middleware('auth');
+Route::put('updateuser','MyUserController@updateuser')->middleware('auth');
+Route::put('myuserareaupdate','MyUserController@myuserareaupdate')->middleware(['auth', 'networkadmin', 'schoolgroup.context']);
 
 // เกียรติบัตร
 Route::get('area/printtest/{id}','PdfController@areaprinttest');
@@ -135,19 +135,33 @@ Route::get('databackup/progress', 'area\DatatranferController@checkBackupProgres
 Route::resource('datatranfer','area\DatatranferController')->only(['index', 'store'])->middleware(['auth', 'systemadmin']);
 Route::post('databackup', 'area\DatatranferController@databackup')->middleware(['auth', 'systemadmin'])->name('databackup');
 
-Route::resource('myuser','MyUserController');
-Route::resource('branch','BranchController');
-Route::resource('school','SchoolController');
-Route::resource('schoolgroup','SchoolgroupController');
+Route::resource('myuser','MyUserController')->middleware(['auth', 'systemadmin']);
+Route::post('myuser/password-reset', 'PasswordResetManagementController@reset')
+    ->middleware(['auth', 'systemadmin'])
+    ->name('myuser.password-reset');
+Route::get('password/change-required', 'RequiredPasswordChangeController@edit')
+    ->middleware('auth')
+    ->name('password.change-required.edit');
+Route::put('password/change-required', 'RequiredPasswordChangeController@update')
+    ->middleware('auth')
+    ->name('password.change-required.update');
+Route::resource('branch','BranchController')->middleware(['auth', 'systemadmin']);
+Route::get('school-import/template', 'SchoolImportController@template')->middleware(['auth', 'systemadmin'])->name('school.import.template');
+Route::post('school-import/inspect', 'SchoolImportController@inspect')->middleware(['auth', 'systemadmin'])->name('school.import.inspect');
+Route::post('school-import/store', 'SchoolImportController@store')->middleware(['auth', 'systemadmin'])->name('school.import.store');
+Route::resource('school','SchoolController')->middleware(['auth', 'systemadmin']);
+Route::resource('schoolgroup','SchoolgroupController')->middleware(['auth', 'systemadmin']);
 Route::resource('activity','ActivityController');
 Route::resource('subjectgroup','SubjectgroupController');
-Route::resource('class','ClassController');
+Route::resource('class','ClassController')->middleware(['auth', 'systemadmin']);
 Route::resource('addstudent','AddstudentController');
 Route::resource('addschool','AddschoolController');
-Route::resource('dayofsillapa','DayofsillapaController');
+Route::resource('dayofsillapa','DayofsillapaController')->middleware(['auth', 'systemadmin']);
 Route::resource('centersillapa','CentersillapaController');
-Route::resource('systemactive','SystemactiveController')->middleware(['auth', 'centermiddleware']);
-Route::resource('title','titleController');
+Route::get('systemactive','SystemactiveController@index')->middleware(['auth', 'systemadmin'])->name('systemactive.index');
+Route::put('systemactive/rule','SystemactiveController@updateRule')->middleware(['auth', 'systemadmin'])->name('systemactive.rule.update');
+Route::put('systemactive/network-school','SystemactiveController@networkSchoolUpdate')->middleware(['auth', 'networkadmin'])->name('systemactive.network-school.update');
+Route::resource('title','titleController')->middleware(['auth', 'systemadmin']);
 Route::resource('jow','jowController');
 Route::resource('report','ReportController');
 Route::resource('Notice','NoticeController');
@@ -225,7 +239,7 @@ route::get('/reportviewactivity/{id}','ReportController@jowviewactivity');
 route::get('/reportviewjow/{id}','ReportController@reportviewjow');
 route::get('/addjow/{id}','jowController@addjow');
 route::get('/addjow2','jowController@addjow2');
-route::get('/jow2/{id}/edit','jowController@editjow2');
+route::get('/jow2/{id}/edit','jowController@editjow2')->middleware(['auth', 'systemadmin']);
 
 
 //route::get('/reportviewjow2','ReportController@reportviewjow2');

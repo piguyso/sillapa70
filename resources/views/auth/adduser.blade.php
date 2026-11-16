@@ -38,6 +38,29 @@
     @endif
 
     <div class="grid grid-cols-1 gap-8">
+
+        <div class="bg-white rounded-3xl shadow-sm border border-red-100 overflow-hidden">
+            <div class="bg-red-600 px-8 py-6 text-white">
+                <h2 class="text-xl font-black flex items-center gap-2"><i class="ri-lock-password-line"></i> Reset รหัสผ่านผู้ใช้งาน</h2>
+                <p class="text-red-100 text-sm mt-1">รหัสผ่านชั่วคราวจะเหมือน Username และผู้ใช้ต้องเปลี่ยนรหัสเมื่อเข้าสู่ระบบ</p>
+            </div>
+            <form id="password-reset-form" method="POST" action="{{ event_url('myuser/password-reset') }}" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                @csrf
+                <x-form.select name="target_type" id="reset-target-type" label="ประเภทบัญชี" required>
+                    <option value="">เลือกประเภทบัญชี</option>
+                    <option value="school_all">โรงเรียนทั้งหมด</option>
+                    <option value="school">โรงเรียนเฉพาะแห่ง</option>
+                    <option value="network">เครือข่าย</option>
+                    <option value="center">ศูนย์การแข่งขัน</option>
+                </x-form.select>
+                <x-form.select name="target_id" id="reset-target-id" label="หน่วยงาน" disabled>
+                    <option value="">เลือกประเภทบัญชีก่อน</option>
+                </x-form.select>
+                <x-form.button type="submit" variant="danger" class="w-full" onclick="return confirmPasswordReset(this)">
+                    <i class="ri-refresh-line"></i> Reset รหัสผ่าน
+                </x-form.button>
+            </form>
+        </div>
         
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex justify-between items-center">
@@ -182,6 +205,46 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script>
+    const resetTargets = {
+        school: @json($resetSchools->map(fn($item) => ['id' => $item->id, 'name' => $item->school_name])->values()),
+        network: @json($resetNetworks->map(fn($item) => ['id' => $item->id, 'name' => $item->schoolgroup_name])->values()),
+        center: @json($resetCenters->map(fn($item) => ['id' => $item->id, 'name' => $item->branch_name])->values())
+    };
+    const resetType = document.getElementById('reset-target-type');
+    const resetTarget = document.getElementById('reset-target-id');
+
+    resetType.addEventListener('change', function () {
+        const type = this.value;
+        resetTarget.innerHTML = '';
+        if (type === 'school_all') {
+            resetTarget.disabled = true;
+            resetTarget.append(new Option('ทุกโรงเรียน ({{ $resetSchools->count() }} บัญชี)', ''));
+            return;
+        }
+        const items = resetTargets[type] || [];
+        resetTarget.disabled = false;
+        resetTarget.append(new Option('เลือกหน่วยงาน', ''));
+        items.forEach(item => resetTarget.append(new Option(item.name, item.id)));
+    });
+
+    function confirmPasswordReset(button) {
+        if (!resetType.value) {
+            appAlert('กรุณาเลือกประเภทบัญชี');
+            return false;
+        }
+        if (resetType.value !== 'school_all' && !resetTarget.value) {
+            appAlert('กรุณาเลือกหน่วยงาน');
+            return false;
+        }
+        const label = resetType.value === 'school_all'
+            ? 'โรงเรียนทั้งหมด {{ $resetSchools->count() }} บัญชี'
+            : resetTarget.options[resetTarget.selectedIndex].text;
+        return appConfirmSubmit(button,
+            'ต้องการ Reset รหัสผ่านของ ' + label + ' ใช่หรือไม่? รหัสผ่านเดิมจะใช้ไม่ได้ทันที',
+            { title: 'ยืนยันการ Reset รหัสผ่าน', confirmText: 'Reset รหัสผ่าน' }
+        );
+    }
+
     $(document).ready(function() {
         if ($.fn.DataTable) {
             var table = $('#table_users').DataTable({
@@ -204,9 +267,7 @@
     });
 
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบผู้ใช้งานรายนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนคืนได้')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'คุณต้องการลบผู้ใช้งานรายนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนคืนได้');
     }
 </script>
 @endsection

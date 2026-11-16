@@ -138,7 +138,7 @@ $dbrank = DB::select("
         school_name,
         COUNT(CASE WHEN student_score >= 80 THEN 1 END) as Gold,
         COUNT(CASE WHEN student_score < 80 AND student_score >= 70 THEN 1 END) as Silver,
-        COUNT(CASE WHEN student_score < 70 AND student_score > 0 THEN 1 END) as Bronce
+        COUNT(CASE WHEN student_score < 70 AND student_score >= 60 THEN 1 END) as Bronce
     FROM addschools
     WHERE activity_status = 1 AND year = ?
     GROUP BY school_name
@@ -315,9 +315,9 @@ public function index2()
    $schoolrank = Schoolranks::where('id','like','%')->orderBy('schoolpoint')->paginate(10);
 
    $dbrank = DB::select("SELECT a.school_name , 
-    (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.student_score >= 80 and b.year = ?) as Gold,
-    (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
-    (select count(activity_rank) from addschools d where d.school_name = a.school_name  and d.student_score < 70 and d.student_score > 0 and d.year = ?) as Bronce
+    (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.activity_status = 1 and b.student_score >= 80 and b.year = ?) as Gold,
+    (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.activity_status = 1 and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
+    (select count(activity_rank) from addschools d where d.school_name = a.school_name and d.activity_status = 1 and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce
     FROM addschools a 
     where activity_status = 1 and a.year = ?
     group by school_name
@@ -476,7 +476,7 @@ public function index2()
         school_name,
         COUNT(CASE WHEN student_score >= 80 THEN 1 END) as Gold,
         COUNT(CASE WHEN student_score < 80 AND student_score >= 70 THEN 1 END) as Silver,
-        COUNT(CASE WHEN student_score < 70 AND student_score > 0 THEN 1 END) as Bronce
+        COUNT(CASE WHEN student_score < 70 AND student_score >= 60 THEN 1 END) as Bronce
     FROM addschools
     WHERE activity_status = 1 AND year = ?
     GROUP BY school_name
@@ -810,9 +810,9 @@ $activityNames = Addschool::select('school_activity')
     $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
    // $student2 = addschool::where('school','=',$id)->get();
     $dbrank = DB::select("SELECT a.school_name , 
-    (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.student_score >= 80 and b.year = ?) as Gold,
-    (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
-    (select count(activity_rank) from addschools d where d.school_name = a.school_name  and d.student_score < 70 and d.student_score > 0 and d.year = ?) as Bronce
+    (select count(activity_rank) from addschools b where b.school_name = a.school_name and b.activity_status = 1 and b.student_score >= 80 and b.year = ?) as Gold,
+    (select count(activity_rank) from addschools c where c.school_name = a.school_name and c.activity_status = 1 and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
+    (select count(activity_rank) from addschools d where d.school_name = a.school_name and d.activity_status = 1 and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce
     FROM addschools a 
     where activity_status = 1
     and school = ? and a.year = ?
@@ -824,7 +824,7 @@ $activityNames = Addschool::select('school_activity')
         school_name,
         COUNT(CASE WHEN student_score >= 80 THEN 1 END) as Gold,
         COUNT(CASE WHEN student_score < 80 AND student_score >= 70 THEN 1 END) as Silver,
-        COUNT(CASE WHEN student_score < 70 AND student_score > 0 THEN 1 END) as Bronce
+        COUNT(CASE WHEN student_score < 70 AND student_score >= 60 THEN 1 END) as Bronce
     FROM addschools
     WHERE activity_status = 1 and school = ? and year = ?
     GROUP BY school_name

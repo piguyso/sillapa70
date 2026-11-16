@@ -58,7 +58,7 @@
                         </div>
                         <label for="upload" class="absolute -bottom-2 -right-2 w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center cursor-pointer hover:bg-slate-800 transition-all shadow-xl">
                             <i class="ri-camera-3-line text-2xl text-white"></i>
-                            <input type="file" id="upload" class="hidden" accept="image/*">
+                            <input type="file" id="upload" class="hidden" accept="image/jpeg,image/png,image/webp">
                         </label>
                     </div>
 
@@ -159,7 +159,8 @@
             vanilla.result({
                 type: 'base64',
                 size: { width: 500, height: 500 },
-                format: 'png'
+                format: 'webp',
+                quality: 0.82
             }).then(function(base64) {
                 currentImage.src = base64;
                 imageBase64Input.value = base64;

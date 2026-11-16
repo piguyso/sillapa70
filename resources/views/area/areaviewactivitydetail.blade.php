@@ -99,11 +99,7 @@
                        </td>
                        <td>
                 
-                      @if (($l->student_score ?? 0) > 0)
-                        {{ $l->student_score }}
-                      @else
-                        -
-                      @endif
+                      {{ $l->student_score ?? 0 }}
                     
                       
                        </td>
@@ -121,18 +117,14 @@
                        </td>
                        <td>
             
-                                @if (($l->student_score ?? 0) > 0)
-                        {{getmedel($l->student_score ??'')}}
-                      @else
-                        -
-                      @endif
+                      {{getmedel($l->student_score ?? 0)}}
                       
                     
                        </td>
                        <td>
                  
                   
-                        @if($l->activity_status??'0' && $l->student_score > 0 ?? '0')
+                        @if(($l->activity_status ?? 0) == 1 && ($l->student_score ?? 0) > 0)
                         
                      
                          <form id="printform" class="form-horizontal" method="post" target="_blank" action="{{url('area/printPDF')}}">

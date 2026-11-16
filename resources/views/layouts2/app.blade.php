@@ -15,6 +15,7 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/form-system.css') }}">
 </head>
 <body>
     <div id="app">
@@ -76,5 +77,7 @@
             @yield('content')
         </main>
     </div>
+<script src="{{ asset('js/ui-feedback.js') }}"></script>
+<script src="{{ asset('js/image-upload-rules.js') }}"></script>
 </body>
 </html>

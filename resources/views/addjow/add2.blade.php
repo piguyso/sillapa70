@@ -163,9 +163,7 @@
 
 <script>
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบรายชื่อกรรมการท่านนี้ใช่หรือไม่?')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'คุณต้องการลบรายชื่อกรรมการท่านนี้ใช่หรือไม่?');
     }
 </script>
 @endsection

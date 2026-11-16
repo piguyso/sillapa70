@@ -151,9 +151,7 @@
 
 <script>
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบรายชื่อกรรมการท่านนี้? ข้อมูลนี้จะไม่สามารถกู้คืนได้')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'ยืนยันการลบรายชื่อกรรมการท่านนี้? ข้อมูลนี้จะไม่สามารถกู้คืนได้');
     }
 </script>
 @endsection

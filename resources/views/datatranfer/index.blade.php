@@ -168,9 +168,16 @@ $(document).ready(function() {
                 clearInterval(progressInterval);
             },
             error: function(xhr) {
-                var msg = xhr.responseJSON ? xhr.responseJSON.message : 'เกิดข้อผิดพลาดในการประมวลผล';
-                $('#alert-message').html('<div class="p-4 mb-4 text-sm text-red-800 rounded-2xl bg-red-50 border border-red-100 font-bold"><i class="ri-error-warning-line mr-1"></i> '+msg+'</div>');
+                var data = xhr.responseJSON || {};
+                var msg = data.message || ('เซิร์ฟเวอร์ตอบกลับ HTTP ' + xhr.status + ' โดยไม่มีรายละเอียดข้อผิดพลาด');
+                $('#alert-message').html(
+                    '<div class="p-5 mb-4 text-sm text-red-900 rounded-2xl bg-red-50 border border-red-200">' +
+                    '<div class="font-black text-base"><i class="ri-error-warning-line mr-1"></i> ' + escapeHtml(msg) + '</div>' +
+                    buildErrorDetails(data) +
+                    '</div>'
+                );
                 $('#progress-bar').removeClass('progress-bar-animated').addClass('bg-red-500');
+                $('#process-label').text('ดำเนินการไม่สำเร็จ');
                 $('button').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
                 clearInterval(progressInterval);
             }
@@ -189,6 +196,36 @@ $(document).ready(function() {
                 }
             });
         }, 1000);
+    }
+
+    function escapeHtml(value) {
+        return $('<div>').text(value == null ? '' : String(value)).html();
+    }
+
+    function buildErrorDetails(data) {
+        var html = '<dl class="mt-4 grid grid-cols-1 md:grid-cols-[160px_1fr] gap-2">';
+        if (data.error_code) html += '<dt class="font-bold">รหัสข้อผิดพลาด</dt><dd>' + escapeHtml(data.error_code) + '</dd>';
+        if (data.error_id) html += '<dt class="font-bold">เลขอ้างอิง</dt><dd>' + escapeHtml(data.error_id) + '</dd>';
+        if (data.stage) html += '<dt class="font-bold">ขั้นตอนที่ผิดพลาด</dt><dd>' + escapeHtml(data.stage) + '</dd>';
+        if (data.technical_message) html += '<dt class="font-bold">รายละเอียดระบบ</dt><dd class="break-all">' + escapeHtml(data.technical_message) + '</dd>';
+        html += '</dl>';
+
+        if (data.team) {
+            html += '<div class="mt-4 rounded-xl bg-white/70 p-3"><b>ทีมที่กำลังประมวลผล:</b> Team ID ' +
+                escapeHtml(data.team.team_id) + ', School ID ' + escapeHtml(data.team.school_id) +
+                ', Activity ID ' + escapeHtml(data.team.activity_id) + ', อันดับ ' + escapeHtml(data.team.rank) + '</div>';
+        }
+
+        if (Array.isArray(data.errors) && data.errors.length) {
+            html += '<div class="mt-4"><b>รายการที่ต้องแก้ไข:</b><ol class="mt-2 list-decimal pl-5 space-y-2">';
+            data.errors.forEach(function(item) {
+                html += '<li><b>' + escapeHtml(item.school) + '</b> — ' + escapeHtml(item.activity) +
+                    ', อันดับ ' + escapeHtml(item.rank) + ': ' + escapeHtml(item.problem) + '</li>';
+            });
+            html += '</ol></div>';
+        }
+
+        return html;
     }
 });
 </script>

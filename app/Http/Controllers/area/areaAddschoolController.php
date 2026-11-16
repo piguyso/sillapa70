@@ -12,8 +12,12 @@ use App\addstudent;
 use App\Activities;
 use Session;
 use Auth;
+use App\Http\Controllers\Concerns\AuthorizesNetworkRegistration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 class areaAddschoolController extends Controller
 {
+    use AuthorizesNetworkRegistration;
     /**
      * Display a listing of the resource.
      *
@@ -23,6 +27,7 @@ class areaAddschoolController extends Controller
     {
         
         $this->middleware('auth');
+        $this->middleware('competition.access:network');
         $this->middleware('areaschoolmiddleware')->except(['getschool']);
 
       //  $this->middleware('areamiddleware');
@@ -35,10 +40,11 @@ class areaAddschoolController extends Controller
     public function getschool($id){ /// ดึงข้อมูลช่ือโรงเรียนจากคอมโบบ๊อคเครือข่าย
 
         //เชคว่าเป็นเครือข่ายหรือโรงเรียนก่อน
-        $school = School::where('school_group','=',$id)
+        $groupId = $this->registrationGroupId();
+        $school = School::where('school_group', $groupId)
         ->pluck("school_name","id");
         if(Auth::user()->position == 0){
-        $school = School::where('school_group','=',$id)
+        $school = School::where('school_group', $groupId)
         ->where('id',Auth::user()->school_id)
         ->pluck("school_name","id");
       /*  $school = School::where('school_group','=',$id)
@@ -55,21 +61,19 @@ class areaAddschoolController extends Controller
     public function addaddschool($id) // ดึงข้อมูลของโรงเรียนมาแสดง
     {
         //dd($id);
-        if(Auth::user()->position==10){
-            $schoolgroup = schoolgroup::all();
-            $addschool = addschools_areas::where('school_activity','=',$id)->paginate(25);
-  
-        }
-        
-        else{
-
-            $schoolgroup = schoolgroup::where('id','=',Auth::user()->schoolgroup)->get();
-
-            $addschool = addschools_areas::where('school_activity','=',$id)->where('school_schoolgroup','=',$schoolgroup[0]->id)->paginate(15);
-        }
+        $groupId = $this->registrationGroupId();
+        $schoolgroup = schoolgroup::whereKey($groupId)->get();
+        $addschool = addschools_areas::where('school_activity', $id)
+            ->where('school_schoolgroup', $groupId)
+            ->when((int) Auth::user()->position === 0, fn ($query) => $query->where('school', Auth::user()->school_id))
+            ->paginate(25);
 
         $activity= Activities::findOrFail($id);
-        $student = addschools_areas::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
+        $student = addschools_areas::WITH("getstudentname")
+            ->where('school_activity', $id)
+            ->where('school_schoolgroup', $groupId)
+            ->when((int) Auth::user()->position === 0, fn ($query) => $query->where('school', Auth::user()->school_id))
+            ->orderBy('id','desc')->get();
         $data = array(
             'addschool'=>$addschool,
             'student'=>$student,
@@ -115,21 +119,24 @@ class areaAddschoolController extends Controller
     {
         
         $this->validate($request,[
-            'school_schoolgroup'=>'required',
             'school_name'=>'required',
+            'school_activity'=>'required|integer',
 
         ]);
 
+        $school = $this->authorizedRegistrationSchool((int) $request->school_name);
+        $activity = Activities::findOrFail((int) $request->school_activity);
+
 //dd($request);
         $chkschool = addschools_areas::where('school','=',$request->school_name)->where('school_activity','=',$request->school_activity)->count();
-        $numschool = activities::find($request->school_activity)->activity_schoolteamnumber;
-        $activityteamnumber = activities::find($request->school_activity)->activity_teamnumber;
+        $numschool = $activity->activity_schoolteamnumber;
+        $activityteamnumber = $activity->activity_teamnumber;
         //dd($numschool);
         if($chkschool >= $numschool){
             Session::flash('massage','จำนวนทีมต่อโรงเรียนเกินที่กำหนด !!');
             return redirect(url()->previous());
         }
-        $chktotelschool = addschools_areas::where('school_activity','=',$request->school_activity)->where('school_schoolgroup','=',$request->school_schoolgroup)->count();
+        $chktotelschool = addschools_areas::where('school_activity','=',$request->school_activity)->where('school_schoolgroup','=',$this->registrationGroupId())->count();
         if($chktotelschool>=$activityteamnumber){
             Session::flash('massage','จำนวนทีมต่อรายการสามารถลงได้แค่ '.$activityteamnumber.' ทีม !!');
          //   return redirect(url()->previous());
@@ -137,12 +144,13 @@ class areaAddschoolController extends Controller
 
 
         $addschool  = new addschools_areas;
-        $addschool->school_schoolgroup = $request->school_schoolgroup;
-        $addschool->school_name = $request->school_name;
-        $addschool->school = $request->school_name;
+        $addschool->school_schoolgroup = $this->registrationGroupId();
+        $addschool->school_name = $school->id;
+        $addschool->school = $school->id;
         $addschool->school_activity = $request->school_activity;
         
         $addschool->save();
+        Log::notice('Network registration team created', ['user_id' => Auth::id(), 'ip' => $request->ip(), 'team_id' => $addschool->id, 'school_id' => $school->id, 'schoolgroup_id' => $this->registrationGroupId()]);
         Session::flash('massage','Success Create School !!');
         return redirect(url()->previous());
     }
@@ -189,25 +197,18 @@ class areaAddschoolController extends Controller
      */
     public function destroy($id)
     {
-        // อ่าน school_activity จาก DB ก่อนลบ
-        $record = \Illuminate\Support\Facades\DB::table('addschools_areas')
-            ->where('id', $id)
-            ->first();
+        $record = $this->authorizedRegistrationTeam((int) $id);
 
-        // ลบ students ก่อน
-        \Illuminate\Support\Facades\DB::table('addstudents_areas')
-            ->where('school', $id)
-            ->delete();
-
-        // ลบ school
-        \Illuminate\Support\Facades\DB::table('addschools_areas')
-            ->where('id', $id)
-            ->delete();
+        DB::transaction(function () use ($record): void {
+            \App\addstudents_areas::where('school', $record->id)->delete();
+            $record->delete();
+        });
+        Log::notice('Network registration team deleted', ['user_id' => Auth::id(), 'ip' => request()->ip(), 'team_id' => $record->id, 'school_id' => $record->school, 'schoolgroup_id' => $record->school_schoolgroup]);
 
         Session::flash('massage', 'ลบข้อมูลสำเร็จ');
 
         // redirect กลับหน้า addaddschool ของ activity นั้นตรงๆ
-        $activityId = $record ? $record->school_activity : null;
+        $activityId = $record->school_activity;
         if ($activityId) {
             return redirect('area/addaddschool/' . $activityId);
         }

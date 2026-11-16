@@ -161,9 +161,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function DelConfirm(id) {
-        if (confirm('⚠️ ยืนยันการลบโรงเรียนนี้? รายชื่อนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย!')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'ยืนยันการลบโรงเรียนนี้? รายชื่อนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย!');
     }
 
     $(document).ready(function() {

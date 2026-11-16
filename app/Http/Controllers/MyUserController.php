@@ -31,11 +31,20 @@ class MyUserController extends Controller
       $schoolgroup = Schoolgroup::all();
       $user = user::all();
       $school = school::where('school_group','=', env('APP_SCHOOLGROUP','0'))->get();
+      $resetSchools = School::whereIn('id', User::where('position', 0)->whereNotNull('school_id')->pluck('school_id'))
+          ->orderBy('school_name')->get(['id', 'school_name']);
+      $resetNetworks = Schoolgroup::whereIn('id', User::where('position', 5)->pluck('schoolgroup'))
+          ->orderBy('schoolgroup_name')->get(['id', 'schoolgroup_name']);
+      $resetCenters = Branch::whereIn('id', User::where('position', 1)->pluck('branch'))
+          ->orderBy('branch_name')->get(['id', 'branch_name']);
       $data  = array(
         'data' => $user,
         'branch'=> $branch,
         'schoolgroup'=>$schoolgroup,
         'school'=>$school,
+        'resetSchools'=>$resetSchools,
+        'resetNetworks'=>$resetNetworks,
+        'resetCenters'=>$resetCenters,
       );
       return view('auth.adduser',$data);
 	  }
@@ -155,7 +164,9 @@ class MyUserController extends Controller
     {
         $id = $request->id;
 
-        $user= User::find($id);
+        abort_unless((int) Auth::id() === (int) $id, 403, 'แก้ไขได้เฉพาะบัญชีของตนเอง');
+
+        $user= User::findOrFail($id);
         if($request->password!=""){
            $user->password=bcrypt($request->password);
           $user->save();
@@ -201,7 +212,8 @@ class MyUserController extends Controller
     }
     public function areauseredit($id)
     {
-        $user = User::find($id);
+        $schoolgroupId = (int) request()->attributes->get('schoolgroup_id');
+        $user = User::where('schoolgroup', $schoolgroupId)->findOrFail($id);
         $branch = branch::all();
         $schoolgroup = Schoolgroup::all();
         $school = school::where('school_group','=', Auth::user()->schoolgroup)->get();
@@ -234,13 +246,23 @@ class MyUserController extends Controller
     }
      public function myuserareaupdate(Request $request)
     {
-     // dd($request);
-        $user= User::find($request->id);
+        $schoolgroupId = (int) $request->attributes->get('schoolgroup_id');
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'name' => ['required'],
+            'lastname' => ['required'],
+            'email' => ['required', 'email'],
+            'phonenumber' => ['required'],
+            'position' => ['required', 'integer', 'in:0,5'],
+        ]);
+
+        $user = User::where('schoolgroup', $schoolgroupId)->findOrFail($request->id);
         $user->name=$request->name;
         $user->lastname=$request->lastname;
         $user->position=$request->position;
         $user->email=$request->email;
         $user->phonenumber = $request->phonenumber;
+        $user->schoolgroup = $schoolgroupId;
         if($request->password != null)
         {
           $user->password=bcrypt($request->password);

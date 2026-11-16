@@ -145,7 +145,7 @@
                                 @endif
                             </td>
                             <td class="px-4 py-4 text-center">
-                                {{ ($l->getactivityname->activity_status == 1) ? $l->activity_rank : '-' }}
+                                {{ ($l->getactivityname->activity_status == 1 && $l->student_score > 0) ? $l->activity_rank : '-' }}
                             </td>
                             <td class="px-4 py-4 text-center" data-exclude="true">
                                 @if($l->getactivityname->activity_status == 1 && $l->student_score > 0)

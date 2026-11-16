@@ -21,7 +21,7 @@ class NoticeController extends Controller
     public function noticeupload(Request $request){
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:12048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:12048'
             ]);
 
             $file = $request->file('image');
@@ -119,7 +119,7 @@ class NoticeController extends Controller
             'notice_text'=>'required',
             'notice_detail'=>'required',
             'notice_file' => 'nullable',
-            'notice_file.*' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
+            'notice_file.*' => 'mimes:csv,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,webp,zip,rar|max:12048'
         ]);
 
         $uploadedFilenames = [];
@@ -197,7 +197,7 @@ class NoticeController extends Controller
             'notice_text'=>'required',
             'notice_detail'=>'required',
             'notice_file' => 'nullable',
-            'notice_file.*' => 'mimes:csv,gif,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,zip,rar|max:12048'
+            'notice_file.*' => 'mimes:csv,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,webp,zip,rar|max:12048'
         ]);
 
         $notice = Notices::findOrFail($id);

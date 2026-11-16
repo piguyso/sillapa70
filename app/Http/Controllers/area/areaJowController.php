@@ -17,6 +17,7 @@ use App\dayofsillapas;
 use App\systemactives;
 use App\addstudents_areas;
 use App\titles;
+use Illuminate\Support\Facades\Log;
 
 class areaJowController extends Controller
 {
@@ -25,6 +26,7 @@ class areaJowController extends Controller
       
         $this->middleware('auth');
         $this->middleware('areaweb');
+        $this->middleware('competition.access:network');
        // $this->middleware('centermiddleware');
     }
          public function index()
@@ -201,7 +203,7 @@ class areaJowController extends Controller
      */
     public function edit($id)
     {
-        $jows = Jows_areas::findOrFail($id);
+        $jows = Jows_areas::where('jow_area', $this->currentSchoolgroupId())->findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,
@@ -214,7 +216,7 @@ class areaJowController extends Controller
 
         public function edit2($id)
     {
-        $jows = Jows_areas::findOrFail($id);
+        $jows = Jows_areas::where('jow_area', $this->currentSchoolgroupId())->findOrFail($id);
         $title = titles::all();
         $data = array(
             'jows'=>$jows,
@@ -235,12 +237,14 @@ class areaJowController extends Controller
     public function update(Request $request, $id)
     {
        // dd($request);
-        $jows= Jows_areas::find($id);
+        $jows = Jows_areas::where('jow_area', $this->currentSchoolgroupId())->findOrFail($id);
+        $before = $jows->only(['jowclass', 'jow_title', 'jow_name', 'jow_lastname']);
         $jows->jowclass = $request->jowclass;
         $jows->jow_title = $request->jow_title;
         $jows->jow_name = $request->jow_name;
         $jows->jow_lastname = $request->jow_lastname;
         $jows->save();
+        Log::notice('Network judge updated', ['user_id' => Auth::id(), 'ip' => $request->ip(), 'judge_id' => $jows->id, 'schoolgroup_id' => $this->currentSchoolgroupId(), 'before' => $before, 'after' => $jows->only(['jowclass', 'jow_title', 'jow_name', 'jow_lastname'])]);
         Session::flash('massage','แก้ไขข้อมูลกรรมการแล้ว....');
       //  return redirect('./addjow/'.$jows->jow_activity);
        return redirect(url()->previous(3));
@@ -254,13 +258,18 @@ class areaJowController extends Controller
      */
     public function destroy($id)
     {
-        $jow = Jows_areas::find($id);
+        $jow = Jows_areas::where('jow_area', $this->currentSchoolgroupId())->findOrFail($id);
+        $snapshot = $jow->only(['id', 'jow_title', 'jow_name', 'jow_lastname', 'jow_activity']);
         $jow->delete();
+        Log::notice('Network judge deleted', ['user_id' => Auth::id(), 'ip' => request()->ip(), 'schoolgroup_id' => $this->currentSchoolgroupId(), 'judge' => $snapshot]);
         Session::flash('massage','ลบข้อมูลแล้ว');
         return redirect(url()->previous(2));
     }
 
-    
+    private function currentSchoolgroupId(): int
+    {
+        return (int) (request()->attributes->get('schoolgroup_id') ?: Auth::user()->schoolgroup);
+    }
    
     
 }

@@ -16,6 +16,8 @@ use App\systemactives;
 use App\addstudent;
 use App\titles;
 use Illuminate\Support\Facades\Storage;
+use App\Services\CompetitionScoreService;
+use App\Services\ImageUploadService;
 class CentersillapaController extends Controller
 {
     /**
@@ -27,7 +29,8 @@ class CentersillapaController extends Controller
     {
       
         $this->middleware('auth');
-        $this->middleware('centermiddleware');
+        $this->middleware('competition.access:district');
+        $this->middleware('score.district');
         
 
     
@@ -35,16 +38,6 @@ class CentersillapaController extends Controller
     }
     public function index()
     {
-
-        $centerchk = systemactives::where('systemname','=','center')->get();
-       // $scorechk = systemactives::where('systemname','=','score')->get();
-       //dd($centerchk->status);
-        if($centerchk[0]->status == 1 and Auth::user()->position != 10){
-           // Auth::logout();
-            return view('home.out');
-        }
-
-
 
         if(Auth::user()->position>=10){
             $activityinbranch = activities::all()->groupBy('activity_subject');
@@ -129,6 +122,7 @@ class CentersillapaController extends Controller
              return view('centersillapa.centerviewactivity',$data);
     }
     public function centerviewactivityschool($id){
+        $this->authorizeActivity((int) $id);
         $addschool = addschool::where('school_activity','=',$id)->orderBy('student_score','desc')->paginate(40);
           
 
@@ -144,7 +138,7 @@ class CentersillapaController extends Controller
     }
 
     public function centereditactiviy($id){
-        $activity = activities::find($id);
+        $activity = $this->authorizeActivity((int) $id);
         //  $subjectgroup = Subjectgroup::find($id);
           $branch = Branch::all();
           $class = Classes::all();
@@ -161,7 +155,7 @@ class CentersillapaController extends Controller
           return view('centersillapa.edit',$data);
     }
     public function centereditstudent($id){
-        addschool::findOrFail($id);
+        $this->authorizeTeam((int) $id);
         $addschool = addschool::where('id','=',$id)->get();
         $addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(40);
         $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(40);
@@ -175,7 +169,7 @@ class CentersillapaController extends Controller
     }
     public function centereditstudentname($id){
         $addstudent = addstudent::findOrFail($id);
-        addschool::findOrFail($addstudent->school);
+        $this->authorizeTeam((int) $addstudent->school);
         $addschool = addschool::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(
@@ -205,6 +199,21 @@ class CentersillapaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeActivity((int) $request->input('id'));
+        app(CompetitionScoreService::class)->process(
+            addschool::class,
+            (int) $request->input('id'),
+            (array) $request->input('activity_score', []),
+            (int) $request->input('activity_chk'),
+            null,
+            true,
+        );
+
+        Session::flash('massage', 'บันทึกและจัดลำดับผลการแข่งขันเรียบร้อยแล้ว');
+        return redirect('/centerviewactivityschool/'.$request->input('id'));
+
+        /* Legacy score processing retained temporarily below for reference. */
+        /*
       //  dd($request);
               //  $chkactivity_status = activities::find($request->id)->activity_status;
                // dd($chkactivity_status);
@@ -266,9 +275,12 @@ class CentersillapaController extends Controller
                 
                 return redirect('/centerviewactivityschool/'.$request->id);
 
+        */
     }
     public function updatescore(Request $request) //ไม่ได้ใช้แล้ว ไปใช้ข้างบนแทน
     {
+        $this->authorizeActivity((int) $request->id);
+        abort(410, 'กรุณาบันทึกและประกาศผลผ่านหน้าจัดการแข่งขัน เพื่อให้ระบบคำนวณอันดับใหม่');
        // dd($request);
         $activity = activities::find($request->id);
         $activity->activity_status = $request->activity_status;
@@ -284,45 +296,18 @@ public function updatestudentname(Request $request, $id)
         'lastname' => 'required',
     ]);
 
-    $addstudent = addstudent::find($id);
+    $addstudent = addstudent::findOrFail($id);
+    $this->authorizeTeam((int) $addstudent->school);
     $addstudent->name = $request->name;
     $addstudent->lastname = $request->lastname;
     $addstudent->title = $request->title;
 
     // 2. ตรวจสอบว่ามีการส่งรูปภาพใหม่ (Base64) มาหรือไม่
     if ($request->image_base64) {
-        $data = $request->image_base64;
-
-        // แยกส่วน Header ของ Base64 เพื่อหานามสกุลไฟล์
-        if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
-            $data = substr($data, strpos($data, ',') + 1);
-            $type = strtolower($type[1]); // png, jpg, jpeg
-
-            // ตรวจสอบนามสกุลไฟล์ที่อนุญาต
-            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
-                throw new \Exception('invalid image type');
-            }
-
-            $data = str_replace(' ', '+', $data);
-            $data = base64_decode($data);
-
-            if ($data === false) {
-                throw new \Exception('base64_decode failed');
-            }
-        } else {
-            throw new \Exception('did not match data URI with image data');
-        }
-
-        // ตั้งชื่อไฟล์ใหม่ (ใช้ ID + Timestamp เพื่อป้องกันชื่อซ้ำ)
-        $fileName = "profile_center_" . $id . "_" . time() . '.' . $type;
         $year = $addstudent->year ?: active_year();
-        Storage::disk('public')->put(storage_year_path('picture', $fileName, $year), $data);
-
-        // ลบรูปภาพเก่าทิ้ง (ถ้ามี) เพื่อประหยัดพื้นที่
-        delete_storage_file('picture', $addstudent->student_image, $year);
-
-        // อัปเดตชื่อไฟล์รูปภาพลงในฐานข้อมูล
-        $addstudent->student_image = $fileName;
+        $addstudent->student_image = app(ImageUploadService::class)->storeBase64Webp(
+            $request->image_base64, 'picture', (string) $year, 'center_'.$id, $addstudent->student_image, 800
+        );
     }
 
     // 3. บันทึกข้อมูลลงฐานข้อมูล
@@ -364,6 +349,7 @@ public function updatestudentname(Request $request, $id)
      */
     public function update(Request $request, $id)
     {
+        $this->authorizeActivity((int) $id);
       //  dd($request);
         $this->validate($request,[
             //'activity_name'=>'required',
@@ -399,5 +385,24 @@ public function updatestudentname(Request $request, $id)
     public function destroy($id)
     {
         //
+    }
+
+    private function authorizeActivity(int $activityId): Activities
+    {
+        $activity = Activities::findOrFail($activityId);
+        if ((int) Auth::user()->position < 10
+            && (int) $activity->activity_branch !== (int) Auth::user()->branch) {
+            abort(403, 'ไม่มีสิทธิ์จัดการรายการแข่งขันของสาขานี้');
+        }
+
+        return $activity;
+    }
+
+    private function authorizeTeam(int $teamId): addschool
+    {
+        $team = addschool::findOrFail($teamId);
+        $this->authorizeActivity((int) $team->school_activity);
+
+        return $team;
     }
 }

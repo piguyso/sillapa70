@@ -14,8 +14,12 @@ use App\titles;
 use Auth;
 use Session;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Concerns\AuthorizesNetworkRegistration;
+use Illuminate\Support\Facades\Log;
+use App\Services\ImageUploadService;
 class areaAddstudentController extends Controller
 {
+    use AuthorizesNetworkRegistration;
 
     /**
      * Display a listing of the resource.
@@ -25,6 +29,7 @@ class areaAddstudentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('competition.access:network');
      ///   $this->middleware('areamiddleware');
         //adminchk();
     }
@@ -34,8 +39,8 @@ class areaAddstudentController extends Controller
     }
     public function addaddstudent($id)
     {
-        addschools_areas::findOrFail($id);
-        $addschool = addschools_areas::where('id','=',$id)->get();
+        $team = $this->authorizedRegistrationTeam((int) $id);
+        $addschool = collect([$team]);
         $addstudent = addstudents_areas::where('school','=',$id)->where('type','=','0')->paginate(20);
         $addteacher = addstudents_areas::where('school','=',$id)->where('type','=','1')->paginate(20);
         $title = titles::all();
@@ -46,10 +51,6 @@ class areaAddstudentController extends Controller
             'addteacher'=> $addteacher,
         );
       //  dd($addschool[0]->school);
-        if(Auth::user()->position == 0 && Auth::user()->schoolgroup == $addschool[0]->school ){
-            return ("xxx");
-        }
-
      //   dd($data);
        return view('addstudent.addarea',$data);
 
@@ -72,48 +73,42 @@ class areaAddstudentController extends Controller
      */
     public function store(Request $request)
     {
-       // dd($request); นับจำนวนของนักเรียนและครูในฐานข้อมุล
-       $chkstudent = addstudents_areas::where('activity','=',$request->activity)->where('school','=',$request->school)->where('type','=','0')->count();
-       $chkteacher = addstudents_areas::where('activity','=',$request->activity)->where('school','=',$request->school)->where('type','=','1')->count();
+       $this->validate($request, [
+        'name' => 'required',
+        'lastname' => 'required',
+        'school' => 'required|integer',
+        'type' => 'required|integer|in:0,1',
+       ]);
 
-      // dd($chkteacher); ตรวจจำนวนของนักเรียนและครูในเกณฑ์
+       $team = $this->authorizedRegistrationTeam((int) $request->school);
+       $activity = Activities::findOrFail((int) $team->school_activity);
+       $chkstudent = addstudents_areas::where('activity', $activity->id)->where('school', $team->id)->where('type', 0)->count();
+       $chkteacher = addstudents_areas::where('activity', $activity->id)->where('school', $team->id)->where('type', 1)->count();
 
-       $chkactivity = Activities::find($request->activity)->activity_studennumber;
-       $chkteachernum = Activities::find($request->activity)->activity_teachernumber;
-       
-       //dd($chkactivity);
-       if($request->type==0){
-        if($chkstudent >= $chkactivity){
+       if((int) $request->type === 0){
+        if($chkstudent >= $activity->activity_studennumber){
             Session::flash('massage','จำนวนของนักเรียนเกินกว่าที่เกณฑ์กำหนด !!');
             return redirect(url()->previous());
             }
        }
-       elseif($request->type==1){
-        if($chkteacher >= $chkteachernum){
+       elseif((int) $request->type === 1){
+        if($chkteacher >= $activity->activity_teachernumber){
             Session::flash('massage','จำนวนของครูผู้ควบคุมเกินกว่าที่เกณฑ์กำหนด !!');
             return redirect(url()->previous());
         }
        }
-   
-        
 
-
-
-
-       $this->validate($request,[
-        'name'=>'required',
-        'lastname'=>'required',
-       ]);
         $addstudent  = new addstudents_areas;
         $addstudent->title = $request->title;
         $addstudent->name = $request->name;
         $addstudent->lastname = $request->lastname;
-        $addstudent->activity = $request->activity;
-        $addstudent->school = $request->school;
+        $addstudent->activity = $activity->id;
+        $addstudent->school = $team->id;
         $addstudent->type = $request->type;
-        $addstudent->schoolgroup = Auth::user()->schoolgroup;
+        $addstudent->schoolgroup = $team->school_schoolgroup;
         
         $addstudent->save();
+        Log::notice('Network participant created', ['user_id' => Auth::id(), 'ip' => $request->ip(), 'person_id' => $addstudent->id, 'team_id' => $team->id, 'school_id' => $team->school]);
         Session::flash('massage','เพิ่มข้อมูลสำเร็จ !!');
         return redirect(url()->previous());  
    
@@ -139,25 +134,10 @@ class areaAddstudentController extends Controller
     public function edit($id)
     {
       //  dd($id);
-        $addstudent = addstudents_areas::findOrFail($id);
-        addschools_areas::findOrFail($addstudent->school);
-        $addschool = addschools_areas::where('id','=',$addstudent->school)->get();
+        $addstudent = $this->authorizedRegistrationPerson((int) $id);
+        $addschool = collect([$this->authorizedRegistrationTeam((int) $addstudent->school)]);
         $title = titles::all();
 
-        //return $addschool[0]->school.Auth::user()->school_id;
-
-     /*   if($addschool[0]->school != Auth::user()->school_id ){
-            return("error access denied..");
-        }elseif($addschool[0]->school_schoolgroup != Auth::user()->schoolgroup){
-             return("error access denied..");
-        }*/
-        if(Auth::user()->position == 5 && $addschool[0]->school_schoolgroup != Auth::user()->schoolgroup){
-            return("error access denied..");
-        }
-        if(Auth::user()->position == 0 && $addschool[0]->school != Auth::user()->school_id){
-             return("error access denied..");
-        }
-            
         $data = array(
             'addstudent'=>$addstudent,
             'addschool'=>$addschool,
@@ -181,50 +161,26 @@ class areaAddstudentController extends Controller
                     'lastname' => 'required',
                 ]);
 
-                $addstudent = addstudents_areas::find($id);
+                $addstudent = $this->authorizedRegistrationPerson((int) $id);
+                $team = $this->authorizedRegistrationTeam((int) $addstudent->school);
+                $before = $addstudent->only(['title', 'name', 'lastname', 'student_image']);
                 $addstudent->name = $request->name;
                 $addstudent->lastname = $request->lastname;
                 $addstudent->title = $request->title;
 
                 // เช็คว่ามีการส่งรูปภาพ Base64 มาหรือไม่
                 if ($request->image_base64) {
-                    $data = $request->image_base64;
-
-                    // แยกส่วน Header ของ Base64 ออกมา
-                    // Format: data:image/png;base64,iVBORw0KGgoAAAANSUhEU...
-                    if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
-                        $data = substr($data, strpos($data, ',') + 1);
-                        $type = strtolower($type[1]); // png, jpg, jpeg
-
-                        if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
-                            throw new \Exception('invalid image type');
-                        }
-                        $data = str_replace(' ', '+', $data);
-                        $data = base64_decode($data);
-
-                        if ($data === false) {
-                            throw new \Exception('base64_decode failed');
-                        }
-                    } else {
-                        throw new \Exception('did not match data URI with image data');
-                    }
-
-                    // ตั้งชื่อไฟล์ใหม่: ใช้ ID + เวลา เพื่อป้องกันชื่อซ้ำ
-                    $fileName = "profile_" . $id . "_" . time() . '.' . $type;
                     $year = $addstudent->year ?: active_year();
-                    Storage::disk('public')->put(storage_year_path('picture', $fileName, $year), $data);
-
-                    // ลบรูปเก่าทิ้ง (ถ้ามี) เพื่อประหยัดพื้นที่
-                    delete_storage_file('picture', $addstudent->student_image, $year);
-
-                    // เก็บชื่อไฟล์ใหม่ลงฐานข้อมูล
-                    $addstudent->student_image = $fileName;
+                    $addstudent->student_image = app(ImageUploadService::class)->storeBase64Webp(
+                        $request->image_base64, 'picture', (string) $year, 'network_'.$id, $addstudent->student_image, 800
+                    );
                 }
 
                 $addstudent->save();
+                Log::notice('Network participant updated', ['user_id' => Auth::id(), 'ip' => $request->ip(), 'person_id' => $addstudent->id, 'team_id' => $team->id, 'before' => $before, 'after' => $addstudent->only(['title', 'name', 'lastname', 'student_image'])]);
 
                 Session::flash('massage', 'แก้ไขข้อมูลสำเร็จ..');
-                return redirect('area/addaddstudent/' . $request->school);
+                return redirect('area/addaddstudent/' . $team->id);
             }
 
     /**
@@ -235,8 +191,11 @@ class areaAddstudentController extends Controller
      */
     public function destroy($id)
     {
-        $addstudent = addstudents_areas::find($id);
+        $addstudent = $this->authorizedRegistrationPerson((int) $id);
+        $team = $this->authorizedRegistrationTeam((int) $addstudent->school);
+        $snapshot = $addstudent->only(['id', 'title', 'name', 'lastname', 'type']);
         $addstudent->delete();
+        Log::notice('Network participant deleted', ['user_id' => Auth::id(), 'ip' => request()->ip(), 'team_id' => $team->id, 'person' => $snapshot]);
         Session::flash('massage','ลบข้อมูลสำเร็จ..');
         $redirectUrl = request()->input('redirect_url', url()->previous());
         return redirect($redirectUrl);

@@ -340,7 +340,7 @@ function getmedel($score){
     echo " เข้าร่วม";
   }
   else{
-    echo "-";
+    echo "ไม่เข้าร่วม";
   }
 
 }

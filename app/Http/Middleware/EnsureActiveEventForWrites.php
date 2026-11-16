@@ -15,7 +15,7 @@ class EnsureActiveEventForWrites
         }
 
         $allowedRoutes = [
-            'login', 'logout', 'password.email', 'password.update',
+            'login', 'logout', 'password.email', 'password.update', 'password.change-required.update',
             'config.events.store', 'config.events.update', 'config.events.activate', 'config.events.destroy',
         ];
 
@@ -30,7 +30,7 @@ class EnsureActiveEventForWrites
         ], true) || preg_match('~/(?:cpn1/)?(?:[0-9]+/)?config/events(?:/|$)~', $path);
 
         $isAuthentication = in_array($routeName, $allowedRoutes, true)
-            || preg_match('~/(?:cpn1/)?(?:[0-9]+/)?(?:login|logout|password/(?:email|reset))(?:/|$)~', $path);
+            || preg_match('~/(?:cpn1/)?(?:[0-9]+/)?(?:login|logout|password/(?:email|reset|change-required))(?:/|$)~', $path);
 
         if ($isEventAdministration || $isAuthentication) {
             return $next($request);

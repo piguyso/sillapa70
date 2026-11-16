@@ -25,9 +25,11 @@ class JowController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('competition.access:district');
       
         $this->middleware('auth');
         $this->middleware('centermiddleware');
+        $this->middleware('systemadmin')->only(['destroy']);
         
 
     

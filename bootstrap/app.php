@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\SetEventContext::class);
         $middleware->web(append: [
             \App\Http\Middleware\SetEventContext::class,
+            \App\Http\Middleware\RequirePasswordChange::class,
         ]);
         $middleware->append(\App\Http\Middleware\EnsureActiveEventForWrites::class);
         $middleware->append(\App\Http\Middleware\TranslateToThaiNumbers::class);
@@ -28,6 +29,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'systemadmin' => \App\Http\Middleware\SystemAdminMiddleware::class,
             'strip.event.parameter' => \App\Http\Middleware\StripEventRouteParameter::class,
             'schoolgroup.context' => \App\Http\Middleware\RequireSchoolgroupContext::class,
+            'score.network' => \App\Http\Middleware\NetworkScorekeeperMiddleware::class,
+            'score.district' => \App\Http\Middleware\DistrictScorekeeperMiddleware::class,
+            'networkadmin' => \App\Http\Middleware\NetworkAdminMiddleware::class,
+            'registration.network' => \App\Http\Middleware\NetworkRegistrationMiddleware::class,
+            'operator.network' => \App\Http\Middleware\NetworkOperatorMiddleware::class,
+            'competition.access' => \App\Http\Middleware\CompetitionAccessMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

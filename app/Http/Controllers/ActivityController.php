@@ -17,6 +17,7 @@ class ActivityController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('areamiddleware');
+        $this->middleware('systemadmin')->only(['store', 'edit', 'update', 'destroy']);
     }
     public function index()
     {

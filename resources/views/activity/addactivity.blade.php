@@ -218,9 +218,7 @@
 
 <script>
     function DelConfirm(id) {
-        if (confirm('ยืนยันการลบรายการกิจกรรมนี้? ข้อมูลการสมัครแข่งขันที่เกี่ยวข้องจะถูกลบทิ้งทั้งหมด!')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'ยืนยันการลบรายการกิจกรรมนี้? ข้อมูลการสมัครแข่งขันที่เกี่ยวข้องจะถูกลบทิ้งทั้งหมด!');
     }
 </script>
 @endsection

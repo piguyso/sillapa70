@@ -164,9 +164,7 @@
     });
 
     function DelConfirm(id) {
-        if (confirm('คุณต้องการลบศูนย์การแข่งขันนี้ใช่หรือไม่? ข้อมูลกิจกรรมภายใต้ศูนย์นี้อาจได้รับผลกระทบ')) {
-            document.getElementById('delform' + id).submit();
-        }
+        return appConfirmForm('delform' + id, 'คุณต้องการลบศูนย์การแข่งขันนี้ใช่หรือไม่? ข้อมูลกิจกรรมภายใต้ศูนย์นี้อาจได้รับผลกระทบ');
     }
 </script>
 @endsection

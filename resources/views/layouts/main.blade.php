@@ -18,6 +18,7 @@
    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/form-system.css') }}">
   <!-- DataTables -->
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
@@ -460,5 +461,7 @@ function SaveConfirm($x)
             }, 5000);
         </script>
     @endif
+<script src="{{ asset('js/ui-feedback.js') }}"></script>
+<script src="{{ asset('js/image-upload-rules.js') }}"></script>
 </body>
 </html>

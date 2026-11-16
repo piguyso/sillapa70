@@ -1,129 +1,82 @@
 @extends('layouts.app')
-
 @section('content')
-<style>
-    #loading-overlay {
-        @apply fixed inset-0 z-[9999] flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-500;
-    }
-    .spinner {
-        @apply w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin;
-    }
-</style>
-
-
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sarabun text-slate-800">
-
-    <div class="bg-gradient-to-r from-slate-700 to-slate-900 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white relative overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="text-3xl md:text-5xl font-black mb-4 tracking-tight italic uppercase">
-                System Activation
-            </h1>
-            <p class="text-slate-300 text-lg md:text-xl opacity-90 font-medium">
-                <i class="ri-shield-flash-line mr-2"></i>ควบคุมการเปิด-ปิดฟังก์ชันต่างๆ ของระบบ (Maintenance Mode)
-            </p>
-        </div>
-        <i class="ri-toggle-line absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12"></i>
-    </div>
-
-    @if(Session::has('massage'))
-        <div class="mb-8 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 flex items-center gap-3 rounded-xl shadow-sm font-bold animate-fade-in">
-            <i class="ri-checkbox-circle-fill text-xl"></i> {{ Session::get('massage') }}
-        </div>
-    @endif
-
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="bg-gray-50/50 px-8 py-5 border-b border-gray-100">
-            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 uppercase tracking-wide">
-                <i class="ri-list-settings-line text-emerald-600"></i> Module Activation List
-            </h2>
-        </div>
-
-        <div class="p-8">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-separate border-spacing-y-3" id="table_system_active">
-                    <thead>
-                        <tr class="text-gray-400 text-[10px] uppercase tracking-[0.2em] font-black">
-                            <th class="px-6 py-2 text-center w-16">ID</th>
-                            <th class="px-6 py-2">โมดูล/ฟังก์ชัน</th>
-                            <th class="px-6 py-2">รายละเอียดเงื่อนไข</th>
-                            <th class="px-6 py-2 text-center">สถานะปัจจุบัน</th>
-                            <th class="px-6 py-2 text-center">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        @forelse($systemactive as $l)
-                        <tr class="group bg-white hover:bg-slate-50 transition-all border border-gray-100 shadow-sm rounded-2xl">
-                            <td class="px-6 py-6 text-center font-bold text-slate-300 italic border-l-4 border-transparent group-hover:border-emerald-500 rounded-l-2xl">
-                                {{$l->id}}
-                            </td>
-                            <td class="px-6 py-6">
-                                <div class="font-black text-gray-800 text-base leading-tight uppercase italic tracking-tight group-hover:text-emerald-700 transition-colors">
-                                    {{$l->systemname}}
-                                </div>
-                                <div class="text-[10px] text-gray-400 font-bold mt-1 uppercase italic">
-                                    Code: SYS-ACT-0{{$l->id}}
-                                </div>
-                            </td>
-                            <td class="px-6 py-6 text-gray-500 font-medium italic">
-                                {{$l->detail ?: 'ไม่มีรายละเอียดเพิ่มเติม'}}
-                            </td>
-                            <td class="px-6 py-6 text-center">
-                                @if($l->status == 1)
-                                    <span class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-red-100 shadow-sm">
-                                        <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span> ปิดระบบ
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
-                                        <span class="w-2 h-2 bg-emerald-600 rounded-full animate-pulse"></span> เปิดระบบ
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-6 text-center">
-                                @if(officerchk())
-                                <div class="flex justify-center gap-2">
-                                    <a href="{{ url('systemactive/'.$l->id.'/edit?action=edit') }}" 
-                                       class="w-12 h-12 flex items-center justify-center bg-white text-slate-400 border border-slate-200 rounded-2xl hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all shadow-sm group/btn">
-                                        <i class="ri-settings-4-line text-2xl group-hover/btn:rotate-90 transition-transform duration-500"></i>
-                                    </a>
-                                </div>
-                                @endif
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-400 italic bg-gray-50 rounded-2xl">
-                                <i class="ri-inbox-line text-4xl block mb-2"></i> ไม่พบข้อมูลโมดูลระบบ
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+@php
+$closed = fn($level,$subject,$scope,$id=0) => (bool) optional($rules->first(fn($r) => $r->competition_level===$level && $r->subject_type===$subject && $r->scope_type===$scope && (int)$r->scope_id===(int)$id))->is_closed;
+@endphp
+<div class="max-w-7xl mx-auto px-4 py-8 font-sarabun text-slate-800">
+ <div class="rounded-3xl p-8 mb-8 text-white shadow-xl" style="background:linear-gradient(135deg,var(--ui-secondary),var(--ui-primary))"><h1 class="text-3xl font-black">เปิด–ปิดการแก้ไขข้อมูล ครั้งที่ {{ config('app.event_number') }}</h1></div>
+ <div class="flex flex-wrap gap-3 mb-6" role="tablist"><x-form.button type="button" data-tab="network">ระดับเครือข่าย</x-form.button><x-form.button type="button" data-tab="district" variant="secondary">ระดับเขตพื้นที่</x-form.button></div>
+ <div id="panel-network" class="access-panel space-y-6">
+  <section class="bg-white border rounded-3xl p-6 shadow-sm"><h2 class="text-xl font-black mb-3">ควบคุมระบบระดับเครือข่ายทั้งหมด</h2>@include('systemactive.partials.toggle-row',['label'=>'Master Freeze','level'=>'network','subject'=>'master','scope'=>'all','scopeId'=>0,'isClosed'=>$closed('network','master','all')])</section>
+  <section class="bg-white border rounded-3xl p-6 shadow-sm"><h2 class="text-xl font-black mb-3">แอดมินเครือข่าย</h2>
+   @include('systemactive.partials.toggle-row',['label'=>'ทุกเครือข่าย','level'=>'network','subject'=>'network','scope'=>'all','scopeId'=>0,'isClosed'=>$closed('network','network','all')])
+   @foreach($schoolgroups as $group) @include('systemactive.partials.toggle-row',['label'=>$group->schoolgroup_name,'level'=>'network','subject'=>'network','scope'=>'network','scopeId'=>$group->id,'isClosed'=>$closed('network','network','network',$group->id)]) @endforeach
+  </section>
+  <section class="bg-white border rounded-3xl p-6 shadow-sm"><h2 class="text-xl font-black mb-3">โรงเรียน</h2>
+   @include('systemactive.partials.toggle-row',['label'=>'ทุกโรงเรียน','level'=>'network','subject'=>'school','scope'=>'all','scopeId'=>0,'isClosed'=>$closed('network','school','all')])
+   @foreach($schoolgroups as $group)
+    <details class="border-t py-3"><summary class="cursor-pointer font-black text-slate-700 flex items-center justify-between">{{ $group->schoolgroup_name }} <span class="text-xs text-slate-400">กดดูโรงเรียน</span></summary><div class="mt-2 pl-3 border-l-4" style="border-color:var(--ui-primary)">
+     @include('systemactive.partials.toggle-row',['label'=>'ทั้งเครือข่าย','level'=>'network','subject'=>'school','scope'=>'network','scopeId'=>$group->id,'isClosed'=>$closed('network','school','network',$group->id)])
+     @foreach($schools->where('school_group',$group->id) as $school) @include('systemactive.partials.toggle-row',['label'=>$school->school_name,'level'=>'network','subject'=>'school','scope'=>'school','scopeId'=>$school->id,'isClosed'=>$closed('network','school','school',$school->id),'parentKey'=>'network|school|network|'.$group->id]) @endforeach
+    </div></details>
+   @endforeach
+  </section>
+ </div>
+ <div id="panel-district" class="access-panel hidden space-y-6">
+  <section class="bg-white border rounded-3xl p-6 shadow-sm"><h2 class="text-xl font-black mb-3">แอดมินเครือข่าย</h2>
+   @include('systemactive.partials.toggle-row',['label'=>'ทุกเครือข่าย','level'=>'district','subject'=>'network','scope'=>'all','scopeId'=>0,'isClosed'=>$closed('district','network','all')])
+   @foreach($schoolgroups as $group) @include('systemactive.partials.toggle-row',['label'=>$group->schoolgroup_name,'level'=>'district','subject'=>'network','scope'=>'network','scopeId'=>$group->id,'isClosed'=>$closed('district','network','network',$group->id)]) @endforeach
+  </section>
+  <section class="bg-white border rounded-3xl p-6 shadow-sm"><h2 class="text-xl font-black mb-3">แอดมินศูนย์การแข่งขัน</h2>
+   @include('systemactive.partials.toggle-row',['label'=>'ทุกศูนย์การแข่งขัน','level'=>'district','subject'=>'center','scope'=>'all','scopeId'=>0,'isClosed'=>$closed('district','center','all')])
+   @foreach($centers as $center) @include('systemactive.partials.toggle-row',['label'=>$center->branch_name,'level'=>'district','subject'=>'center','scope'=>'center','scopeId'=>$center->id,'isClosed'=>$closed('district','center','center',$center->id)]) @endforeach
+  </section>
+ </div>
 </div>
-
 <script>
-    $(document).ready(function() {
-        if ($.fn.DataTable) {
-            var table = $('#table_system_active').DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                "pageLength": 25,
-                "dom": '<"flex justify-end mb-4"f>rt', // ซ่อน pagination เพราะข้อมูลมีน้อย
-                "language": {
-                   "search": "",
-                   "searchPlaceholder": "🔍 ค้นหาโมดูลระบบ...",
-                },
-                "initComplete": function(settings, json) {
-                    $('#loading-overlay').addClass('opacity-0');
-                    setTimeout(function() {
-                        $('#loading-overlay').remove();
-                    }, 500);
-                }
-            });
-        }
-    });
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.access-panel').forEach(p=>p.classList.add('hidden'));document.getElementById('panel-'+b.dataset.tab).classList.remove('hidden')}));
+const accessForms=()=>Array.from(document.querySelectorAll('.access-toggle-form'));
+const formIsClosed=form=>form&&form.querySelector('[name="is_closed"]').value==='0';
+const formByKey=key=>accessForms().find(form=>form.dataset.ruleKey===key);
+function refreshAccessHierarchy(){
+ const networkMasterClosed=formIsClosed(formByKey('network|master|all|0'));
+ accessForms().forEach(form=>{
+  const [level,subject,scope]=form.dataset.ruleKey.split('|'); let inherited=false;
+  if(level==='network'&&subject!=='master')inherited=networkMasterClosed;
+  if(!inherited&&scope!=='all')inherited=formIsClosed(formByKey([level,subject,'all','0'].join('|')));
+  if(!inherited&&form.dataset.parentKey)inherited=formIsClosed(formByKey(form.dataset.parentKey));
+  form.querySelector('.access-toggle-button').disabled=inherited;
+ });
+}
+document.querySelectorAll('.access-toggle-form').forEach(form=>form.addEventListener('submit',async event=>{
+ event.preventDefault();
+ const statusInput=form.querySelector('[name="is_closed"]');
+ const closing=statusInput.value==='1';
+ const confirmed=await appConfirm(closing?'ยืนยันล๊อคไม่ให้ใช้งาน?':'ยืนยันให้ใช้งานได้?',{danger:closing});
+ if(!confirmed)return;
+ const button=form.querySelector('.access-toggle-button');
+ const label=form.querySelector('.access-toggle-label');
+ const dot=form.querySelector('.access-toggle-dot');
+ button.disabled=true;
+ try{
+  const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest'}});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.message||'ไม่สามารถบันทึกสถานะได้');
+  (data.affected||[]).forEach(rule=>{
+   const key=[rule.competition_level,rule.subject_type,rule.scope_type,rule.scope_id].join('|');
+   const targetForm=Array.from(document.querySelectorAll('.access-toggle-form')).find(item=>item.dataset.ruleKey===key);
+   if(!targetForm)return;
+   const isClosed=Boolean(rule.is_closed), targetButton=targetForm.querySelector('.access-toggle-button'), targetDot=targetForm.querySelector('.access-toggle-dot');
+   targetForm.querySelector('[name="is_closed"]').value=isClosed?'0':'1';
+   targetForm.querySelector('.access-toggle-label').textContent=isClosed?'ล๊อคไม่ให้ใช้งาน':'ใช้งานได้';
+   targetButton.style.backgroundColor=isClosed?'#dc2626':'#16a34a';
+   targetDot.classList.toggle('bg-red-200',isClosed); targetDot.classList.toggle('bg-emerald-200',!isClosed);
+  });
+  refreshAccessHierarchy();
+ }catch(error){
+  await appAlert(error.message,{danger:true});
+ }finally{button.disabled=false;}
+}));
+refreshAccessHierarchy();
 </script>
 @endsection

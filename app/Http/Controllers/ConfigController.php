@@ -10,6 +10,8 @@ use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Services\ImageUploadService;
 class ConfigController extends Controller
 {
     /**
@@ -295,14 +297,13 @@ class ConfigController extends Controller
     public function copyActivities(Request $request)
     {
         $request->validate([
-            'source_year' => 'required|string|size:4',
+            'source_event_id' => 'required|integer|exists:events,id',
             'clear_existing' => 'nullable|string'
         ]);
 
-        $sourceYear = $request->source_year;
         $activeYear = active_year();
         $targetEvent = active_event();
-        $sourceEvent = Event::where('academic_year', $sourceYear)->first();
+        $sourceEvent = Event::find($request->source_event_id);
 
         if (! $targetEvent || ! $sourceEvent) {
             return response()->json([
@@ -311,7 +312,7 @@ class ConfigController extends Controller
             ], 422);
         }
 
-        if ($sourceYear == $activeYear) {
+        if ((int) $sourceEvent->id === (int) $targetEvent->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'ปีการศึกษาต้นทางและปลายทางต้องไม่ซ้ำกัน'
@@ -381,8 +382,14 @@ class ConfigController extends Controller
                 }
 
                 foreach ($activities as $act) {
-                    $newSubjectId = isset($subjectgroupMap[$act->activity_subject]) ? $subjectgroupMap[$act->activity_subject] : $act->activity_subject;
-                    $newBranchId = isset($branchMap[$act->activity_branch]) ? $branchMap[$act->activity_branch] : $act->activity_branch;
+                    if ($act->activity_subject && ! isset($subjectgroupMap[$act->activity_subject])) {
+                        throw new \RuntimeException('กลุ่มสาระของรายการแข่งขันไม่พบในข้อมูลต้นทาง');
+                    }
+                    if ($act->activity_branch && ! isset($branchMap[$act->activity_branch])) {
+                        throw new \RuntimeException('ศูนย์การแข่งขันของรายการแข่งขันไม่พบในข้อมูลต้นทาง');
+                    }
+                    $newSubjectId = $act->activity_subject ? $subjectgroupMap[$act->activity_subject] : $act->activity_subject;
+                    $newBranchId = $act->activity_branch ? $branchMap[$act->activity_branch] : $act->activity_branch;
 
                     $data = [
                         'event_id'                  => $targetEvent->id,
@@ -409,6 +416,17 @@ class ConfigController extends Controller
                     \Illuminate\Support\Facades\DB::table('activities')->insert($data);
                 }
             });
+
+            Log::notice('Competition structure transferred between events', [
+                'user_id' => Auth::id(),
+                'ip' => $request->ip(),
+                'source_event_id' => $sourceEvent->id,
+                'target_event_id' => $targetEvent->id,
+                'clear_existing' => $request->boolean('clear_existing'),
+                'subjectgroups_count' => $subjectgroups->count(),
+                'branches_count' => $branches->count(),
+                'activities_count' => $activities->count(),
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -481,7 +499,7 @@ class ConfigController extends Controller
     {
        // dd($request);
         $this->validate($request,[
-            'app_certificate' => 'nullable|mimes:JPG,jpg,jpeg,png|max:12048',
+            'app_certificate' => 'nullable|mimes:JPG,jpg,jpeg,png,webp|max:12048',
             'app_year' => 'nullable|integer|digits:4',
             'app_name' => 'nullable|string|max:255',
             'app_group' => 'nullable|string|max:255',
@@ -534,21 +552,17 @@ class ConfigController extends Controller
         }
 
         if ($request->filled('cropped_logo')) {
-            $image = $request->cropped_logo;  // data:image/png;base64,xxxx
-            $image = str_replace('data:image/png;base64,', '', $image);
-            $image = str_replace(' ', '+', $image);
-            $imageName = time().'_logo.png';
-            Storage::disk('public')->put(storage_year_path('upload', $imageName, $storageYear), base64_decode($image));
+            $imageName = app(ImageUploadService::class)->storeBase64Webp(
+                $request->cropped_logo, 'upload', (string) $storageYear, 'logo', $Configs->app_logo, 1200
+            );
         }else{
             $imageName = "";
         }
 
         if ($request->filled('cropped_qr')) {
-            $imageQr = $request->cropped_qr;  // data:image/png;base64,xxxx
-            $imageQr = str_replace('data:image/png;base64,', '', $imageQr);
-            $imageQr = str_replace(' ', '+', $imageQr);
-            $imageQrName = time().'_qr.png';
-            Storage::disk('public')->put(storage_year_path('upload', $imageQrName, $storageYear), base64_decode($imageQr));
+            $imageQrName = app(ImageUploadService::class)->storeBase64Webp(
+                $request->cropped_qr, 'upload', (string) $storageYear, 'qr', $Configs->survey_qr, 1200
+            );
         }else{
             $imageQrName = "";
         }

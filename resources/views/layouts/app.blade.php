@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/form-system.css') }}">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -249,7 +250,7 @@
     </style>
 
 </head>
-<body class="flex flex-col min-h-screen text-slate-800">
+<body class="flex flex-col min-h-screen text-slate-800" style="--ui-primary: {{ $themePrimary }}; --ui-secondary: {{ $themeSecondary }};">
 
     <nav class="bg-primary shadow-lg sticky top-0 z-50" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -620,5 +621,7 @@
             }, 5000);
         </script>
     @endif
+<script src="{{ asset('js/ui-feedback.js') }}?v={{ filemtime(public_path('js/ui-feedback.js')) }}"></script>
+<script src="{{ asset('js/image-upload-rules.js') }}"></script>
 </body>
 </html>

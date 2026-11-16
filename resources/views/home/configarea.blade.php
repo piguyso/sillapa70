@@ -71,7 +71,7 @@
                                               file:bg-orange-600 file:text-white
                                               hover:file:bg-orange-700 transition-all cursor-pointer shadow-sm" 
                                        id="cert_input" 
-                                       name="app_certificate" 
+                                       name="app_certificate" accept="image/jpeg,image/png,image/webp"
                                        onchange="previewImage(event)">
                                 <p class="mt-2 text-[10px] text-orange-600 font-bold italic leading-none">* ขนาดไฟล์ห้ามเกิน 2MB</p>
                             </div>
@@ -136,9 +136,15 @@
                                     </td>
                                     <td class="px-6 py-5 text-right rounded-r-2xl">
                                         @if(Auth::user()->position == 5)
-                                            <a href="{{url('systemactive/'.$l->id.'/edit?action=edit')}}" class="w-9 h-9 inline-flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                                                <i class="ri-settings-line"></i>
-                                            </a>
+                                            <form method="POST" action="{{ route('systemactive.network-school.update') }}" class="inline-block" onsubmit="event.preventDefault(); appConfirmSubmit(this, 'ยืนยันการเปลี่ยนสิทธิ์แก้ไขข้อมูลของโรงเรียน?', {danger: {{ $l->status ? 'false' : 'true' }} });">
+                                                @csrf @method('PUT')
+                                                <input type="hidden" name="scope_type" value="network">
+                                                <input type="hidden" name="scope_id" value="{{ Auth::user()->schoolgroup }}">
+                                                <input type="hidden" name="is_closed" value="{{ $l->status ? 0 : 1 }}">
+                                                <x-form.button type="submit" variant="secondary" :disabled="!empty($l->master_freeze)">
+                                                    <i class="ri-settings-line"></i> {{ $l->status ? 'ล๊อคไม่ให้ใช้งาน' : 'ใช้งานได้' }}
+                                                </x-form.button>
+                                            </form>
                                         @endif
                                     </td>
                                 </tr>

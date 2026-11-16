@@ -147,14 +147,14 @@
                     @if($activity->activity_status==0) 
                         <button type="submit" name="activity_chk" value='0' 
                                 class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-primary text-primary font-black rounded-2xl hover:bg-primary hover:text-white transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return confirm('ยืนยันการบันทึกคะแนนเพื่อจัดลำดับ?');">
+                                onClick="return appConfirmSubmit(this, 'ยืนยันการบันทึกคะแนนเพื่อจัดลำดับ?', { danger: false });">
                             <i class="ri-save-3-line text-xl"></i>
                             บันทึกคะแนนและจัดลำดับ
                         </button>
                         
                         <button type="submit" name="activity_chk" value='1' 
                                 class="w-full sm:w-auto px-8 py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 hover:shadow-2xl hover:shadow-red-200 transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return confirm('ยืนยันการประกาศผลการแข่งขัน? ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก');">
+                                onClick="return appConfirmSubmit(this, 'ยืนยันการประกาศผลการแข่งขัน? ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก');">
                             <i class="ri-notification-badge-line text-xl"></i>
                             ประกาศผลการแข่งขันสู่สาธารณะ
                         </button>
@@ -166,7 +166,7 @@
                         @if(auth::user()->position >= 10)
                        <button type="submit" name="activity_chk" value='2' 
                                 class="w-full sm:w-auto px-8 py-4 bg-red-600 border-2 border-red-700 text-white font-black rounded-2xl hover:bg-red-700 hover:scale-105 transition-all shadow-lg shadow-red-100 flex items-center justify-center gap-2" 
-                                onClick="return confirm('⚠️ ยืนยันการยกเลิกผลการแข่งขัน? ข้อมูลที่บันทึกจะหายไป');">
+                                onClick="return appConfirmSubmit(this, 'ยืนยันการยกเลิกผลการแข่งขัน? ข้อมูลที่บันทึกจะหายไป');">
                             <i class="ri-delete-bin-line text-xl"></i> 
                             ยกเลิกผลการแข่งขัน
                         </button>

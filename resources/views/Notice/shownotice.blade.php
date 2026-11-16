@@ -144,7 +144,7 @@
                             <label class="block text-sm font-bold text-gray-700 mb-2">ไฟล์แนบ (PDF หรือ รูปภาพ)</label>
                             <div class="relative group">
                                 <input type="file" name="notice_file[]" id="chooseFile" 
-                                    accept="image/*,.pdf" multiple
+                                    accept="image/jpeg,image/png,image/webp,.pdf" multiple
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     onchange="previewFile()">
                                 <div id="uploadPlaceholder" class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl py-6 px-4 text-center group-hover:border-primary transition-colors">

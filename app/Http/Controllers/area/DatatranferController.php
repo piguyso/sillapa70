@@ -49,6 +49,8 @@ class DatatranferController extends Controller
 
     public function store(Request $request)
     {
+        return $this->transferRankedWinners($request);
+
         $this->audit($request, 'data_transfer_started');
         // ตั้งค่าเริ่มต้น Progress เป็น 0
         Cache::put('transfer_progress', 0);
@@ -259,6 +261,161 @@ class DatatranferController extends Controller
             'user_id' => $request->user()->id,
             'ip' => $request->ip(),
         ]);
+    }
+
+    private function transferRankedWinners(Request $request)
+    {
+        $this->audit($request, 'data_transfer_started');
+
+        $stage = 'เตรียมข้อมูล';
+        $currentTeam = null;
+
+        try {
+
+        $eventId = active_event_id();
+        $year = active_year();
+        if (! $eventId) {
+            throw new \RuntimeException('ไม่พบรหัสครั้งการแข่งขันจาก URL ปัจจุบัน');
+        }
+
+        $stage = 'ค้นหาผู้ชนะอันดับ 1–3 ระดับเครือข่าย';
+        $schools = addschools_areas::with('getstudentname')
+            ->whereIn('activity_rank', [1, 2, 3])
+            ->where('activity_status', 1)
+            ->where('student_score', '>', 0)
+            ->orderBy('school_activity')
+            ->orderBy('activity_rank')
+            ->get();
+
+        if ($schools->isEmpty()) {
+            Cache::put('transfer_progress', 100, 60);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'ไม่พบผู้แข่งขันอันดับ 1–3 ที่ประกาศผลแล้ว ข้อมูลเดิมไม่ได้ถูกเปลี่ยนแปลง',
+                'transferred_teams' => 0,
+                'transferred_people' => 0,
+            ]);
+        }
+
+        $incomplete = $schools->filter(fn ($school) => $school->getstudentname->isEmpty())->values();
+        if ($incomplete->isNotEmpty()) {
+            $activityNames = Activities::whereIn('id', $incomplete->pluck('school_activity')->unique())
+                ->pluck('activity_name', 'id');
+            $schoolNames = School::whereIn('id', $incomplete->pluck('school')->unique())
+                ->pluck('school_name', 'id');
+            $details = $incomplete->map(fn ($school) => [
+                'team_id' => $school->id,
+                'school' => $schoolNames->get($school->school, 'ไม่พบชื่อโรงเรียน').' (ID '.$school->school.')',
+                'activity' => $activityNames->get($school->school_activity, 'ไม่พบชื่อกิจกรรม').' (ID '.$school->school_activity.')',
+                'rank' => $school->activity_rank,
+                'problem' => 'ไม่พบรายชื่อนักเรียนหรือครูในทีม',
+            ])->values();
+
+            return response()->json([
+                'status' => 'error',
+                'error_code' => 'TRANSFER_DATA_INCOMPLETE',
+                'stage' => 'ตรวจสอบความครบถ้วนก่อนโอน',
+                'message' => 'ยกเลิกการโอน เนื่องจากพบทีมอันดับ 1–3 ที่ไม่มีรายชื่อนักเรียนหรือครู จำนวน '.$details->count().' ทีม',
+                'team_ids' => $incomplete->pluck('id'),
+                'errors' => $details,
+            ], 422);
+        }
+
+        Cache::put('transfer_progress', 0, 60);
+        $peopleCount = 0;
+
+        $stage = 'บันทึกข้อมูลระดับเขตพื้นที่';
+        DB::transaction(function () use ($schools, $eventId, $year, &$peopleCount, &$stage, &$currentTeam): void {
+            $activityIds = $schools->pluck('school_activity')->unique()->values();
+            $stage = 'ปรับสถานะรายการแข่งขันระดับเขตพื้นที่';
+            Activities::whereIn('id', $activityIds)->update(['activity_status' => 0]);
+
+            $stage = 'ล้างข้อมูลผู้แข่งขันระดับเขตพื้นที่เดิม';
+            Addstudent::where('event_id', $eventId)->delete();
+            Addschool::where('event_id', $eventId)->delete();
+
+            foreach ($schools as $index => $sourceSchool) {
+                $stage = 'โอนทีมลำดับที่ '.($index + 1).' จาก '.$schools->count();
+                $currentTeam = [
+                    'team_id' => $sourceSchool->id,
+                    'school_id' => $sourceSchool->school,
+                    'activity_id' => $sourceSchool->school_activity,
+                    'rank' => $sourceSchool->activity_rank,
+                ];
+                $newSchoolId = DB::table('addschools')->insertGetId([
+                    'event_id' => $eventId,
+                    'year' => $year,
+                    'school' => $sourceSchool->school,
+                    'school_name' => $sourceSchool->school_name,
+                    'school_schoolgroup' => $sourceSchool->school_schoolgroup,
+                    'school_activity' => $sourceSchool->school_activity,
+                    'student_score' => 0,
+                    'activity_rank' => 0,
+                    'activity_status' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $studentRows = $sourceSchool->getstudentname->map(function ($person) use ($eventId, $year, $newSchoolId) {
+                    return [
+                        'event_id' => $eventId,
+                        'year' => $year,
+                        'title' => $person->title,
+                        'name' => $person->name,
+                        'lastname' => $person->lastname,
+                        'activity' => $person->activity,
+                        'school' => $newSchoolId,
+                        'type' => $person->type,
+                        'medel' => $person->medel,
+                        'student_image' => $person->student_image,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->all();
+
+                DB::table('addstudents')->insert($studentRows);
+                $peopleCount += count($studentRows);
+                Cache::put('transfer_progress', (int) ((($index + 1) / $schools->count()) * 100), 60);
+            }
+        });
+
+        Cache::put('transfer_progress', 100, 60);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'โอนผู้แข่งขันอันดับ 1–3 ไปยังระดับเขตพื้นที่เรียบร้อยแล้ว',
+            'transferred_teams' => $schools->count(),
+            'transferred_people' => $peopleCount,
+        ]);
+        } catch (\Throwable $exception) {
+            Cache::put('transfer_progress', 0, 60);
+            $errorId = 'TR-'.now()->format('Ymd-His').'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+
+            Log::error('Competition data transfer failed', [
+                'error_id' => $errorId,
+                'event_id' => active_event_id(),
+                'stage' => $stage,
+                'team' => $currentTeam,
+                'exception' => $exception,
+                'user_id' => $request->user()?->id,
+                'ip' => $request->ip(),
+            ]);
+
+            $technicalMessage = $exception instanceof \Illuminate\Database\QueryException
+                ? 'ฐานข้อมูลปฏิเสธคำสั่ง: '.$exception->getMessage()
+                : $exception->getMessage();
+
+            return response()->json([
+                'status' => 'error',
+                'error_code' => 'TRANSFER_FAILED',
+                'error_id' => $errorId,
+                'stage' => $stage,
+                'message' => 'โอนข้อมูลไม่สำเร็จ ระบบยกเลิกการเปลี่ยนแปลงทั้งหมดแล้ว',
+                'technical_message' => $technicalMessage,
+                'team' => $currentTeam,
+            ], 500);
+        }
     }
 }
 

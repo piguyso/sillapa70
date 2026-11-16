@@ -18,14 +18,16 @@ use App\systemactives;
 use App\addstudent;
 use App\addstudents_areas;
 use App\titles;
+use App\Services\CompetitionScoreService;
 class areaCentersillapaController extends Controller
 {
     public function __construct()
     {
       
         $this->middleware('auth');
+     $this->middleware('competition.access:network');
      //   $this->middleware('centermiddleware');
-     $this->middleware('areaweb');
+     $this->middleware(['areaweb', 'score.network', 'schoolgroup.context']);
         
 
     
@@ -90,10 +92,12 @@ class areaCentersillapaController extends Controller
     }
 
     public function centerviewactivityschool($id){
-        $addschool = addschools_areas::where('school_activity','=',$id)->where('school_schoolgroup',Auth::user()->schoolgroup)->orderBy('student_score','desc')->paginate(40);
+        $this->authorizeActivity((int) $id);
+        $addschool = addschools_areas::where('school_activity','=',$id)->where('school_schoolgroup',$this->currentSchoolgroupId())->orderBy('student_score','desc')->paginate(40);
           
 
-        $activity= activities::find($id);
+        $activity= activities::findOrFail($id);
+        $activity->activity_status = $addschool->first()->activity_status ?? 0;
         $student = addschools_areas::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
         $data = array(
             'addschool'=>$addschool,
@@ -105,7 +109,7 @@ class areaCentersillapaController extends Controller
     }
 
     public function centereditactiviy($id){
-        $activity = activities::find($id);
+        $activity = $this->authorizeActivity((int) $id);
         //  $subjectgroup = Subjectgroup::find($id);
           $branch = Branch::all();
           $class = Classes::all();
@@ -122,7 +126,7 @@ class areaCentersillapaController extends Controller
           return view('centersillapa.edit',$data);
     }
     public function centereditstudent($id){
-        addschools_areas::findOrFail($id);
+        $this->authorizeTeam((int) $id);
         $addschool = addschools_areas::where('id','=',$id)->get();
         $addstudent = addstudents_areas::where('school','=',$id)->where('type','=','0')->paginate(40);
         $addteacher = addstudents_areas::where('school','=',$id)->where('type','=','1')->paginate(40);
@@ -136,7 +140,7 @@ class areaCentersillapaController extends Controller
     }
     public function centereditstudentname($id){
         $addstudent = addstudents_areas::findOrFail($id);
-        addschools_areas::findOrFail($addstudent->school);
+        $this->authorizeTeam((int) $addstudent->school);
         $addschool = addschools_areas::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(
@@ -166,6 +170,21 @@ class areaCentersillapaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeActivity((int) $request->input('id'));
+        app(CompetitionScoreService::class)->process(
+            addschools_areas::class,
+            (int) $request->input('id'),
+            (array) $request->input('activity_score', []),
+            (int) $request->input('activity_chk'),
+            $this->currentSchoolgroupId(),
+            false,
+            true,
+        );
+
+        Session::flash('massage', 'บันทึกและจัดลำดับผลการแข่งขันเรียบร้อยแล้ว');
+        return redirect(url()->previous());
+
+        // Legacy score processing below is unreachable and will be removed after rollout.
       //  dd($request);
               //  $chkactivity_status = activities::find($request->id)->activity_status;
                // dd($chkactivity_status);
@@ -288,6 +307,8 @@ class areaCentersillapaController extends Controller
 
     public function updatescore(Request $request) //ไม่ได้ใช้แล้ว ไปใช้ข้างบนแทน
     {
+        $this->authorizeActivity((int) $request->id);
+        abort(410, 'กรุณาบันทึกและประกาศผลผ่านหน้าจัดการแข่งขัน เพื่อให้ระบบคำนวณอันดับใหม่');
        // dd($request);
         $activity = activities::find($request->id);
         $activity->activity_status = $request->activity_status;
@@ -304,6 +325,7 @@ class areaCentersillapaController extends Controller
           
         ]);
         $addstudent = addstudents_areas::findOrFail($id);
+        $this->authorizeTeam((int) $addstudent->school);
         $addstudent->name = $request->name;
         $addstudent->lastname = $request->lastname;
         $addstudent->title = $request->title;
@@ -342,6 +364,7 @@ class areaCentersillapaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorizeActivity((int) $id);
         $this->validate($request,[
             'activity_name'=>'required',
             'activity_branchroom'=>'required',
@@ -376,5 +399,33 @@ class areaCentersillapaController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function authorizeActivity(int $activityId): Activities
+    {
+        $activity = Activities::findOrFail($activityId);
+        if ((int) Auth::user()->position === 1
+            && (int) $activity->activity_branch !== (int) Auth::user()->branch) {
+            abort(403, 'ไม่มีสิทธิ์จัดการรายการแข่งขันของสาขานี้');
+        }
+
+        return $activity;
+    }
+
+    private function authorizeTeam(int $teamId): addschools_areas
+    {
+        $team = addschools_areas::findOrFail($teamId);
+        if ((int) $team->school_schoolgroup !== $this->currentSchoolgroupId()) {
+            abort(403, 'ไม่มีสิทธิ์จัดการทีมของเครือข่ายอื่น');
+        }
+        $this->authorizeActivity((int) $team->school_activity);
+
+        return $team;
+    }
+
+    private function currentSchoolgroupId(): int
+    {
+        return (int) (request()->attributes->get('schoolgroup_id')
+            ?: ((int) Auth::user()->position >= 10 ? session('area') : Auth::user()->schoolgroup));
     }
 }

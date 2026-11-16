@@ -143,7 +143,7 @@
                 <i class="ri-file-shield-2-line text-lg"></i> เกียรติบัตร (Certificate template)
             </button>
             <button type="button" onclick="switchTab('activities')" id="tab-btn-activities" class="tab-btn py-3 px-6 font-black text-sm rounded-xl text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
-                <i class="ri-folder-transfer-line text-lg"></i> ดึงข้อมูลกิจกรรม (Copy Activities)
+                <i class="ri-folder-transfer-line text-lg"></i> Transfer โครงสร้างการแข่งขัน
             </button>
         </div>
 
@@ -165,7 +165,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-black text-gray-400 uppercase italic">System Logo (Crop)</label>
-                                <input type="file" id="logo_input" accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                                <input type="file" id="logo_input" accept="image/jpeg,image/png,image/webp" class="ui-file text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                                 <p class="text-[10px] text-slate-400 italic">* แนะนำสัดส่วน 1:1 หรือวงกลม</p>
                             </div>
                         </div>
@@ -315,7 +315,7 @@
                             </div>
                             <div class="space-y-2 w-full">
                                 <label class="block text-sm font-black text-gray-400 uppercase italic">QR Code แบบสอบถาม</label>
-                                <input type="file" id="qr_input" accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 w-full">
+                                <input type="file" id="qr_input" accept="image/jpeg,image/png,image/webp" class="ui-file text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 w-full">
                                 <p class="text-[10px] text-slate-400 italic">* อัปโหลดรูปภาพ QR Code สำหรับแบบสอบถาม</p>
                             </div>
                         </div>
@@ -358,7 +358,7 @@
                             </div>
 
                             <div class="relative">
-                                <input type="file" name="app_certificate" id="cert_input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewCert(event)">
+                                <input type="file" name="app_certificate" id="cert_input" accept="image/jpeg,image/png,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewCert(event)">
                                 <div class="w-full py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs font-bold text-slate-500 group-hover:bg-slate-100 transition-all">
                                     <i class="ri-image-edit-line mr-1"></i> คลิกเพื่อเปลี่ยนไฟล์พื้นหลัง (.jpg, .png)
                                 </div>
@@ -402,7 +402,7 @@
                                         </span>
                                     </label>
                                     <input type="file" id="cert_area_{{ $m->id }}"
-                                           class="hidden" accept=".jpg,.jpeg,.png"
+                                           class="hidden" accept="image/jpeg,image/png,image/webp"
                                            onchange="submitAreaCert('{{ event_url('config/' . $m->id, $currentEvent->event_number) }}', this)">
                                     @endif
                                 </div>
@@ -433,32 +433,32 @@
             <div id="tab-content-activities" class="tab-content hidden animate-fade-in">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
                     <h2 class="text-xl font-black text-gray-800 flex items-center gap-2 border-b border-gray-50 pb-4 italic uppercase">
-                        <i class="ri-folder-transfer-line text-emerald-500"></i> คัดลอกข้อมูลกิจกรรมการแข่งขันไปยังปีปัจจุบัน
+                        <i class="ri-folder-transfer-line text-emerald-500"></i> Transfer ข้อมูลการแข่งขันจากครั้งก่อน
                     </h2>
                     
                     <div class="p-6 bg-emerald-50/30 rounded-2xl border border-emerald-100/50 space-y-4">
-                        <h3 class="font-black text-emerald-800 text-base">คำชี้แจงในการดึงข้อมูลกิจกรรม:</h3>
+                        <h3 class="font-black text-emerald-800 text-base">Transfer ครั้งเดียวครบทั้ง 5 ส่วน:</h3>
                         <p class="text-emerald-700 text-sm leading-relaxed">
-                            คุณสามารถดึงข้อมูลกิจกรรมการแข่งขัน (ตารางวิชาและกลุ่มกิจกรรม) จากปีการศึกษาเก่าที่มีอยู่ในระบบ มายังปีการศึกษาปัจจุบันได้โดยอัตโนมัติ เพื่อประหยัดเวลาในการสร้างกิจกรรมการแข่งขันใหม่ทีละรายการ
+                            กลุ่มสาระ, ศูนย์การแข่งขัน, รายการแข่งขัน, สถานที่/ห้อง และวัน/เวลา จะถูกคัดลอกพร้อมกันใน transaction เดียว โดยสร้างเป็นข้อมูลใหม่ของครั้งปลายทาง
                         </p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                         <div class="space-y-2">
-                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ปีการศึกษาต้นทาง (Source Year)</label>
-                            <select id="source_year_select" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
-                                <option value="" disabled selected>-- เลือกปีการศึกษาต้นทาง --</option>
-                                @foreach($years as $y)
-                                    @if($y->years != active_year())
-                                        <option value="{{ $y->years }}">ปีการศึกษา {{ $y->years }}</option>
+                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ครั้งการแข่งขันต้นทาง</label>
+                            <select id="source_event_select" class="ui-select font-bold">
+                                <option value="" disabled selected>-- เลือกครั้งการแข่งขันต้นทาง --</option>
+                                @foreach($events as $eventOption)
+                                    @if($eventOption->id != $currentEvent->id)
+                                        <option value="{{ $eventOption->id }}">ครั้งที่ {{ $eventOption->event_number }} / ปีการศึกษา {{ $eventOption->academic_year }}</option>
                                     @endif
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ปีการศึกษาปลายทาง (Target Year)</label>
-                            <input type="text" readonly value="ปีการศึกษา {{ active_year() }}" class="w-full px-4 py-3 rounded-2xl border border-gray-100 bg-slate-50 font-bold text-gray-500 shadow-inner text-center">
+                            <label class="block text-sm font-black text-gray-500 uppercase tracking-widest italic">ครั้งการแข่งขันปลายทาง</label>
+                            <input type="text" readonly value="ครั้งที่ {{ $currentEvent->event_number }} / ปีการศึกษา {{ active_year() }}" class="ui-input text-center font-bold">
                         </div>
 
                         <div class="md:col-span-2 p-4 bg-slate-50 rounded-2xl border border-slate-200">
@@ -479,7 +479,7 @@
                     @else
                         <div class="flex justify-end pt-4">
                             <button type="button" onclick="submitCopyActivities()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 transition-all flex items-center gap-2">
-                                <i class="ri-folder-transfer-line text-lg"></i> เริ่มดึงข้อมูลกิจกรรม
+                                <i class="ri-folder-transfer-line text-lg"></i> Transfer ข้อมูลทั้งชุด
                             </button>
                         </div>
                     @endif
@@ -683,7 +683,7 @@
             width: 512,
             height: 512
         });
-        const base64data = canvas.toDataURL('image/png');
+        const base64data = canvas.toDataURL('image/webp', 0.82);
         if (cropTarget === 'logo') {
             document.getElementById('img_preview_logo').src = base64data;
             document.getElementById('cropped_logo').value = base64data;
@@ -1049,18 +1049,21 @@
     }
 
     function submitCopyActivities() {
-        const sourceYear = document.getElementById('source_year_select').value;
+        const sourceSelect = document.getElementById('source_event_select');
+        const sourceEventId = sourceSelect.value;
+        const sourceLabel = sourceSelect.options[sourceSelect.selectedIndex]?.text || '';
         const clearExisting = document.getElementById('clear_existing_checkbox').checked ? '1' : '0';
 
-        if (!sourceYear) {
-            showCustomAlert('แจ้งเตือน', 'กรุณาเลือกปีการศึกษาต้นทางที่ต้องการดึงข้อมูล', 'warning');
+        if (!sourceEventId) {
+            appAlert('กรุณาเลือกครั้งการแข่งขันต้นทาง', { title: 'ข้อมูลไม่ครบ' });
             return;
         }
 
-        showCustomConfirm(
-            'ยืนยันการดึงข้อมูลกิจกรรม',
-            `คุณแน่ใจหรือไม่ว่าต้องการคัดลอกข้อมูลกิจกรรมการแข่งขันจากปี ${sourceYear} มายังปีปัจจุบัน?`,
-            function() {
+        appConfirm(
+            `ระบบจะ Transfer กลุ่มสาระ ศูนย์การแข่งขัน รายการแข่งขัน สถานที่/ห้อง และวัน/เวลา จาก ${sourceLabel} มายังครั้งที่ {{ $currentEvent->event_number }} พร้อมกัน`,
+            { title: 'ยืนยัน Transfer ข้อมูลทั้งชุด', confirmText: 'เริ่ม Transfer', danger: false }
+        ).then(function(confirmed) {
+            if (confirmed) {
                 const btn = document.querySelector('button[onclick="submitCopyActivities()"]');
                 const originalText = btn.innerHTML;
                 btn.disabled = true;
@@ -1073,7 +1076,7 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        source_year: sourceYear,
+                        source_event_id: sourceEventId,
                         clear_existing: clearExisting
                     })
                 })
@@ -1083,7 +1086,7 @@
                     btn.innerHTML = originalText;
                     if (data.success) {
                         showCustomAlert(
-                            "คัดลอกข้อมูลสำเร็จ",
+                            "Transfer ข้อมูลสำเร็จ",
                             `คัดลอกข้อมูลกิจกรรมเรียบร้อยแล้ว!\n- กลุ่มสาระการแข่งขัน: ${data.subjectgroups_count} รายการ\n- สถานที่แข่งขัน: ${data.branches_count} รายการ\n- กิจกรรมการแข่งขัน: ${data.activities_count} รายการ`,
                             'success',
                             function() {
@@ -1099,10 +1102,8 @@
                     btn.innerHTML = originalText;
                     showCustomAlert('เกิดข้อผิดพลาด', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง', 'error');
                 });
-            },
-            'เริ่มดึงข้อมูล',
-            false
-        );
+            }
+        });
     }
 </script>
 @endsection
