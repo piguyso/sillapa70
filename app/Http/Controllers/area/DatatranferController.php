@@ -24,6 +24,7 @@ use Auth;
 use DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache; // ** เพิ่มบรรทัดนี้
+use App\Services\TransferReadinessService;
 class DatatranferController extends Controller
 {
     /**
@@ -31,9 +32,9 @@ class DatatranferController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TransferReadinessService $readiness)
     {
-        return view('datatranfer.index');
+        return view('datatranfer.index', ['readiness' => $readiness->summary()]);
     }
 
   
@@ -278,11 +279,38 @@ class DatatranferController extends Controller
             throw new \RuntimeException('ไม่พบรหัสครั้งการแข่งขันจาก URL ปัจจุบัน');
         }
 
-        $stage = 'ค้นหาผู้ชนะอันดับ 1–3 ระดับเครือข่าย';
-        $schools = addschools_areas::with('getstudentname')
-            ->whereIn('activity_rank', [1, 2, 3])
-            ->where('activity_status', 1)
-            ->where('student_score', '>', 0)
+        $stage = 'ตรวจสอบการประกาศผลของทุกเครือข่าย';
+        $readiness = app(TransferReadinessService::class)->summary();
+        if (! $readiness['ready']) {
+            $pending = collect($readiness['networks'])->where('ready', false)->values();
+
+            return response()->json([
+                'status' => 'error',
+                'error_code' => 'TRANSFER_NOT_READY',
+                'stage' => 'ตรวจสอบการประกาศผลก่อนโอน',
+                'message' => $readiness['networks'] === []
+                    ? 'ยังไม่มีข้อมูลการแข่งขันระดับเครือข่าย'
+                    : 'ยังโอนไม่ได้ เนื่องจากมี '.$pending->count().' เครือข่ายที่ยังประกาศผลไม่ครบ ('.$readiness['pending_items'].' รายการ)',
+                'errors' => $pending->flatMap(fn ($network) => collect($network['pending'])->map(fn ($activity) => [
+                    'school' => $network['name'],
+                    'activity' => $activity,
+                    'rank' => '-',
+                    'problem' => 'ยังไม่ประกาศผล',
+                ]))->values(),
+            ], 422);
+        }
+
+        if ($readiness['district_teams'] > 0 && ! $request->boolean('confirm_replace')) {
+            return response()->json([
+                'status' => 'error',
+                'error_code' => 'TRANSFER_CONFIRM_REQUIRED',
+                'stage' => 'ยืนยันการแทนที่ข้อมูลระดับเขตพื้นที่',
+                'message' => 'มีข้อมูลระดับเขตพื้นที่อยู่แล้ว '.$readiness['district_teams'].' ทีม ต้องยืนยันก่อนแทนที่',
+            ], 409);
+        }
+
+        $stage = 'ค้นหาผู้ชนะอันดับ 1–3 และรายการที่ไม่มีการแข่งขันระดับเครือข่าย';
+        $schools = TransferReadinessService::applyTransferableScope(addschools_areas::with('getstudentname'))
             ->orderBy('school_activity')
             ->orderBy('activity_rank')
             ->get();
@@ -292,7 +320,7 @@ class DatatranferController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'ไม่พบผู้แข่งขันอันดับ 1–3 ที่ประกาศผลแล้ว ข้อมูลเดิมไม่ได้ถูกเปลี่ยนแปลง',
+                'message' => 'ไม่พบผู้แข่งขันอันดับ 1–3 หรือรายการที่ไม่มีการแข่งขันที่ประกาศผลแล้ว ข้อมูลเดิมไม่ได้ถูกเปลี่ยนแปลง',
                 'transferred_teams' => 0,
                 'transferred_people' => 0,
             ]);
@@ -316,7 +344,7 @@ class DatatranferController extends Controller
                 'status' => 'error',
                 'error_code' => 'TRANSFER_DATA_INCOMPLETE',
                 'stage' => 'ตรวจสอบความครบถ้วนก่อนโอน',
-                'message' => 'ยกเลิกการโอน เนื่องจากพบทีมอันดับ 1–3 ที่ไม่มีรายชื่อนักเรียนหรือครู จำนวน '.$details->count().' ทีม',
+                'message' => 'ยกเลิกการโอน เนื่องจากพบทีมที่ต้องโอนแต่ไม่มีรายชื่อนักเรียนหรือครู จำนวน '.$details->count().' ทีม',
                 'team_ids' => $incomplete->pluck('id'),
                 'errors' => $details,
             ], 422);
@@ -384,8 +412,10 @@ class DatatranferController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'โอนผู้แข่งขันอันดับ 1–3 ไปยังระดับเขตพื้นที่เรียบร้อยแล้ว',
+            'message' => 'โอนผู้แข่งขันอันดับ 1–3 และรายการที่ไม่มีการแข่งขันไปยังระดับเขตพื้นที่เรียบร้อยแล้ว ('
+                .$schools->count().' ทีม, '.$peopleCount.' คน)',
             'transferred_teams' => $schools->count(),
+            'no_contest_teams' => $schools->whereIn('activity_status', TransferReadinessService::NO_CONTEST_STATUSES)->count(),
             'transferred_people' => $peopleCount,
         ]);
         } catch (\Throwable $exception) {

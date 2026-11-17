@@ -10,8 +10,11 @@ use App\titles;
 use Session;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageUploadService;
+use App\Http\Controllers\Concerns\AuthorizesDistrictBranch;
 class AddstudentController extends Controller
 {
+    use AuthorizesDistrictBranch;
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +24,9 @@ class AddstudentController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('competition.access:district');
-        $this->middleware('areamiddleware');
+        // รายชื่อระดับเขตพื้นที่มาจากการโอนข้อมูลระดับเครือข่ายเป็นหลัก
+        // การเพิ่ม/แก้ไข/ลบ ทำได้เฉพาะศูนย์การแข่งขัน (1, เฉพาะสาขาตนเอง) และผู้ดูแลระบบ (10)
+        $this->middleware('score.district');
         //adminchk();
     }
     public function index()
@@ -30,8 +35,7 @@ class AddstudentController extends Controller
     }
     public function addaddstudent($id)
     {
-       // dd($id);
-        addschool::findOrFail($id);
+        $this->authorizeDistrictTeam($id);
         $addschool = addschool::where('id','=',$id)->get();
         $addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
         $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
@@ -64,7 +68,10 @@ class AddstudentController extends Controller
      */
     public function store(Request $request)
     {
-       // dd($request); นับจำนวนของนักเรียนและครูในฐานข้อมุล
+       // ทีมต้องอยู่ในสาขาของผู้ใช้ และกิจกรรมต้องเป็นของทีมนั้นเสมอ (ไม่เชื่อค่า activity จากฟอร์ม)
+       $team = $this->authorizeDistrictTeam($request->school);
+       $request->merge(['activity' => $team->school_activity]);
+       // นับจำนวนของนักเรียนและครูในฐานข้อมุล
        $chkstudent = addstudent::where('activity','=',$request->activity)->where('school','=',$request->school)->where('type','=','0')->count();
        $chkteacher = addstudent::where('activity','=',$request->activity)->where('school','=',$request->school)->where('type','=','1')->count();
 
@@ -131,7 +138,7 @@ class AddstudentController extends Controller
     public function edit($id)
     {
         $addstudent = addstudent::findOrFail($id);
-        addschool::findOrFail($addstudent->school);
+        $this->authorizeDistrictTeam($addstudent->school);
         $addschool = addschool::where('id','=',$addstudent->school)->get();
         $title = titles::all();
         $data = array(
@@ -159,7 +166,8 @@ class AddstudentController extends Controller
     ]);
 
     // 2. ค้นหาข้อมูลเดิม
-    $addstudent = addstudent::find($id);
+    $addstudent = addstudent::findOrFail($id);
+    $this->authorizeDistrictTeam($addstudent->school);
     $addstudent->name = $request->name;
     $addstudent->lastname = $request->lastname;
     $addstudent->title = $request->title;
@@ -178,7 +186,7 @@ class AddstudentController extends Controller
     Session::flash('massage', 'Data update Successfull..');
     
     // 5. Redirect กลับไปหน้าเดิม
-    return redirect('addaddstudent/' . $request->school);
+    return redirect('addaddstudent/' . $addstudent->school);
 }
 
     /**
@@ -189,7 +197,8 @@ class AddstudentController extends Controller
      */
     public function destroy($id)
     {
-        $addstudent = addstudent::find($id);
+        $addstudent = addstudent::findOrFail($id);
+        $this->authorizeDistrictTeam($addstudent->school);
         $addstudent->delete();
         Session::flash('massage','Data has been deleted..');
         return redirect(url()->previous());

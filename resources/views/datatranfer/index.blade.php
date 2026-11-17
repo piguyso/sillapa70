@@ -46,11 +46,57 @@
 
         <div id="alert-message" class="mb-6"></div>
 
+        {{-- สถานะการประกาศผลระดับเครือข่าย (ต้องครบทุกเครือข่ายก่อนโอน) --}}
+        <div class="mb-10 rounded-3xl border {{ $readiness['ready'] ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50' }} p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                <h2 class="text-lg font-black {{ $readiness['ready'] ? 'text-emerald-800' : 'text-amber-800' }}">
+                    @if($readiness['ready'])
+                        <i class="ri-checkbox-circle-line mr-1"></i> ทุกเครือข่ายประกาศผลครบแล้ว พร้อมโอนข้อมูล
+                    @elseif(empty($readiness['networks']))
+                        <i class="ri-information-line mr-1"></i> ยังไม่มีข้อมูลการแข่งขันระดับเครือข่าย
+                    @else
+                        <i class="ri-error-warning-line mr-1"></i> ยังโอนไม่ได้ — มี {{ $readiness['pending_networks'] }} เครือข่ายที่ยังประกาศผลไม่ครบ ({{ $readiness['pending_items'] }} รายการ)
+                    @endif
+                </h2>
+                <span class="text-sm text-slate-600">
+                    ทีมที่จะโอน {{ number_format($readiness['transferable_teams']) }} ทีม
+                    (ไม่มีการแข่งขัน {{ number_format($readiness['no_contest_teams']) }} ทีม)
+                </span>
+            </div>
+
+            @if(!empty($readiness['networks']))
+            <div class="overflow-x-auto rounded-2xl bg-white border border-slate-100">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 text-slate-500">
+                        <tr>
+                            <th class="px-4 py-2 text-left">เครือข่าย</th>
+                            <th class="px-4 py-2 text-center whitespace-nowrap">ประกาศแล้ว / ทั้งหมด</th>
+                            <th class="px-4 py-2 text-left">รายการที่ยังไม่ประกาศผล</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($readiness['networks'] as $network)
+                        <tr class="border-t border-slate-100">
+                            <td class="px-4 py-2 font-bold">
+                                <i class="{{ $network['ready'] ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-time-line text-amber-500' }} mr-1"></i>{{ $network['name'] }}
+                            </td>
+                            <td class="px-4 py-2 text-center">{{ $network['announced'] }} / {{ $network['activities'] }}</td>
+                            <td class="px-4 py-2 text-slate-600">
+                                {{ $network['ready'] ? '—' : implode(', ', $network['pending']) }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <div class="group">
-                <button type="button" id="btn-transfer" 
-                        class="w-full h-full flex flex-col items-center justify-center p-8 bg-blue-50 border-2 border-blue-100 rounded-3xl hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl group">
+                <button type="button" id="btn-transfer" @disabled(!$readiness['ready'])
+                        class="disabled:opacity-50 disabled:cursor-not-allowed w-full h-full flex flex-col items-center justify-center p-8 bg-blue-50 border-2 border-blue-100 rounded-3xl hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl group">
                     <div class="w-16 h-16 rounded-2xl bg-white text-blue-600 flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform group-hover:bg-white/20 group-hover:text-white">
                         <i class="ri-refresh-line text-3xl"></i>
                     </div>
@@ -105,18 +151,37 @@
 <script>
 $(document).ready(function() {
     // --- ปุ่ม Transfer ---
+    var readiness = @json($readiness);
+
     $('#btn-transfer').click(function() {
-        showCustomConfirm(
-            'ยืนยันการดึงข้อมูล',
-            'คุณต้องการดึงข้อมูลล่าสุดใช่หรือไม่?',
-            function() {
-                runProcess(
-                    "{{ secure_url(route('datatranfer.store', [], false)) }}",
-                    "{{ secure_url(route('datatranfer.progress', [], false)) }}",
-                    'กำลังดึงข้อมูลเข้าระบบ...'
-                );
+        if (!readiness.ready) {
+            appAlert('ยังโอนข้อมูลไม่ได้ เนื่องจากยังมีเครือข่ายที่ประกาศผลไม่ครบ กรุณาตรวจสอบตารางสถานะ');
+            return;
+        }
+
+        var message =
+            '<div style="text-align:left">' +
+            '✅ ทุกเครือข่ายประกาศผลครบแล้ว (' + readiness.networks.length + ' เครือข่าย)<br>' +
+            '• จะโอน <b>' + readiness.transferable_teams + ' ทีม</b> (อันดับ 1–3 และรายการที่ไม่มีการแข่งขัน ' + readiness.no_contest_teams + ' ทีม) พร้อมรายชื่อนักเรียนและครู<br>';
+        if (readiness.district_teams > 0) {
+            message += '<br><span style="color:#b91c1c;font-weight:700">⚠️ ข้อมูลระดับเขตพื้นที่เดิม ' + readiness.district_teams + ' ทีม จะถูกลบและแทนที่ทั้งหมด';
+            if (readiness.district_scored_teams > 0) {
+                message += ' รวมถึงคะแนน/ผลการแข่งขันระดับเขตที่บันทึกแล้ว ' + readiness.district_scored_teams + ' ทีม';
             }
-        );
+            message += '</span><br>';
+        }
+        message += '<br>แนะนำให้กด Backup ฐานข้อมูลก่อนโอน การกระทำนี้ย้อนกลับไม่ได้</div>';
+
+        appConfirm(message, { title: 'ยืนยันการโอนข้อมูลไประดับเขตพื้นที่', confirmText: 'ยืนยันโอนข้อมูล' }).then(function(ok) {
+            if (!ok) return;
+            runProcess(
+                "{{ secure_url(route('datatranfer.store', [], false)) }}",
+                "{{ secure_url(route('datatranfer.progress', [], false)) }}",
+                'กำลังโอนข้อมูลไประดับเขตพื้นที่...',
+                { confirm_replace: 1 },
+                true
+            );
+        });
     });
 
     // --- ปุ่ม Backup ---
@@ -145,7 +210,7 @@ $(document).ready(function() {
         );
     });
 
-    function runProcess(actionUrl, progressUrl, labelText) {
+    function runProcess(actionUrl, progressUrl, labelText, extraData, reloadOnSuccess) {
         // Reset UI
         $('#progress-container').fadeIn();
         $('#process-label').html(labelText);
@@ -159,13 +224,14 @@ $(document).ready(function() {
         $.ajax({
             url: actionUrl,
             type: "POST",
-            data: { _token: "{{ csrf_token() }}" },
+            data: Object.assign({ _token: "{{ csrf_token() }}" }, extraData || {}),
             success: function(response) {
                 $('#progress-bar').css('width', '100%').removeClass('progress-bar-animated');
                 $('#progress-text').text('100%');
                 $('#alert-message').html('<div class="p-4 mb-4 text-sm text-emerald-800 rounded-2xl bg-emerald-50 border border-emerald-100 font-bold animate-bounce"><i class="ri-checkbox-circle-line mr-1"></i> '+response.message+'</div>');
                 $('button').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
                 clearInterval(progressInterval);
+                if (reloadOnSuccess) setTimeout(function() { window.location.reload(); }, 2500);
             },
             error: function(xhr) {
                 var data = xhr.responseJSON || {};

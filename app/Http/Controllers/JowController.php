@@ -28,7 +28,8 @@ class JowController extends Controller
         $this->middleware('competition.access:district');
       
         $this->middleware('auth');
-        $this->middleware('centermiddleware');
+        // ข้อมูลกรรมการระดับเขตพื้นที่: เฉพาะศูนย์การแข่งขัน (1) และผู้ดูแลระบบ (10)
+        $this->middleware('score.district');
         $this->middleware('systemadmin')->only(['destroy']);
         
 

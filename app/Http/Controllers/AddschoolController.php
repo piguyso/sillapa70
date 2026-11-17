@@ -9,8 +9,11 @@ use App\addstudent;
 use App\Activities;
 use Session;
 use Auth;
+use App\Http\Controllers\Concerns\AuthorizesDistrictBranch;
 class AddschoolController extends Controller
 {
+    use AuthorizesDistrictBranch;
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +23,9 @@ class AddschoolController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('competition.access:district');
-        $this->middleware('areamiddleware');
+        // ทีมระดับเขตพื้นที่มาจากการโอนข้อมูลระดับเครือข่ายเป็นหลัก
+        // การลงทะเบียนเพิ่ม/ลบ ทำได้เฉพาะศูนย์การแข่งขัน (1, เฉพาะสาขาตนเอง) และผู้ดูแลระบบ (10)
+        $this->middleware('score.district');
         //adminchk();
     }
     public function index()
@@ -34,21 +39,11 @@ class AddschoolController extends Controller
     }
     public function addaddschool($id)
     {
- 
-        if(Auth::user()->position==10){
-            $schoolgroup = schoolgroup::all();
-            $addschool = addschool::where('school_activity','=',$id)->paginate(25);
-  
-        }
-        
-        else{
+        // ศูนย์การแข่งขันลงทะเบียนเพิ่มได้ทุกเครือข่าย แต่เฉพาะกิจกรรมในสาขาของตนเอง
+        $activity = $this->authorizeDistrictActivity($id);
+        $schoolgroup = schoolgroup::all();
+        $addschool = addschool::where('school_activity','=',$id)->paginate(25);
 
-            $schoolgroup = schoolgroup::where('id','=',Auth::user()->schoolgroup)->get();
-
-            $addschool = addschool::where('school_activity','=',$id)->where('school_schoolgroup','=',$schoolgroup[0]->id)->paginate(15);
-        }
-
-        $activity= activities::find($id);
         $student = addschool::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
         $data = array(
             'addschool'=>$addschool,
@@ -62,9 +57,9 @@ class AddschoolController extends Controller
 
     public function viewaddschool($id)
     {
+        $activity = $this->authorizeDistrictActivity($id);
         $schoolgroup = schoolgroup::all();
         $addschool = addschool::where('school_activity','=',$id)->paginate(15);
-        $activity= activities::find($id);
         $student = addschool::WITH("getstudentname")->where('school_activity','=',$id)->orderBy('id','desc')->get();
         $data = array(
             'addschool'=>$addschool,
@@ -96,13 +91,13 @@ class AddschoolController extends Controller
         $this->validate($request,[
             'school_schoolgroup'=>'required',
             'school_name'=>'required',
-
+            'school_activity'=>'required|integer',
         ]);
+        $activity = $this->authorizeDistrictActivity($request->school_activity);
 
-//dd($request);
         $chkschool = addschool::where('school','=',$request->school_name)->where('school_activity','=',$request->school_activity)->count();
-        $numschool = activities::find($request->school_activity)->activity_schoolteamnumber;
-        $activityteamnumber = activities::find($request->school_activity)->activity_teamnumber;
+        $numschool = $activity->activity_schoolteamnumber;
+        $activityteamnumber = $activity->activity_teamnumber;
         //dd($numschool);
         if($chkschool >= $numschool){
             Session::flash('massage','จำนวนทีมต่อโรงเรียนเกินที่กำหนด !!');
@@ -168,7 +163,7 @@ class AddschoolController extends Controller
      */
     public function destroy($id)
     {
-        $addschool = addschool::find($id);
+        $addschool = $this->authorizeDistrictTeam($id);
         $addschool->delete();
         addstudent::where('school',$id)->delete();
         Session::flash('massage','Data has been deleted..');
