@@ -35,7 +35,7 @@ public function printPDF(request $request){
     // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
      $addstudent = addstudent::where('school','=',$id)->paginate(65);
      $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
-     $year = Years::find(1)->get();
+     $year = Years::whereKey(1)->get();
     // dd($addschool[0]->getactivityname->activity_name);
      //dd(count($addstudent));
    $pic = Configs::all();
@@ -178,7 +178,7 @@ public function printstudent($id){
    $addstudent = addstudent::where('activity','=',$id)->paginate(65);
    $addschool = addschool::where('id','=',$addstudent[0]->school)->get();
    $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
-   $year = Years::find(1)->get();
+   $year = Years::whereKey(1)->get();
   // dd($addschool[0]->getactivityname->activity_name);
    //dd(count($addstudent));
    $pic = Configs::all();

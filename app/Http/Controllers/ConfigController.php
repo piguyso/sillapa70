@@ -522,7 +522,7 @@ class ConfigController extends Controller
 
             $fileupload = $request->file('app_certificate');
             if ($fileupload) {
-                $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
+                $fileupload_filename = safe_upload_filename($fileupload, false);
                 $fileupload->storeAs(storage_year_path('upload', '', $storageYear), $fileupload_filename, 'public');
                 $Configs->app_certificate = $fileupload_filename;
                 $Configs->save();
@@ -545,7 +545,7 @@ class ConfigController extends Controller
 
         $fileupload = $request->file('app_certificate');
         if($fileupload){
-            $fileupload_filename = time().'_'.$fileupload->getClientOriginalName();
+            $fileupload_filename = safe_upload_filename($fileupload, false);
             $fileupload->storeAs(storage_year_path('upload', '', $storageYear), $fileupload_filename, 'public');
         }else{
             $fileupload_filename='';

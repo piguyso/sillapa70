@@ -221,7 +221,7 @@ public function areaprintPDF(request $request){
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudents_areas::where('school','=',$id)->paginate(65);
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
-  $year = Years::find(1)->get();
+  $year = Years::whereKey(1)->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
 
@@ -358,7 +358,7 @@ public function areaprintPDF2(request $request){
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudents_areas::where('school','=',$id)->paginate(65);
      $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
-     $year = Years::find(1)->get();
+     $year = Years::whereKey(1)->get();
     // dd($addschool[0]->getactivityname->activity_name);
      //dd(count($addstudent));
    //$pic = Configs::all();
@@ -504,7 +504,7 @@ public function areaprintjowcerf($id){
  $jows = Jows_areas::where('jow_activity','=',$id)
  ->where('jow_area',session('area'))
  ->get();
- $year = Years::find(1)->get();
+ $year = Years::whereKey(1)->get();
 
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
@@ -587,7 +587,7 @@ public function areaprintjowcerf_showbg($id){
  $jows = Jows_areas::where('jow_activity','=',$id)
  ->where('jow_area',session('area'))
  ->get();
- $year = Years::find(1)->get();
+ $year = Years::whereKey(1)->get();
 
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
@@ -671,7 +671,7 @@ public function areaprintreportjowcerf($id){
 
  //$activity = activities::find($id);
  $jows = Jows_areas::where('id','=',$id)->get();
- $year = years::find(1)->get();
+ $year = years::whereKey(1)->get();
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
   $pdf = new PDF();
@@ -734,7 +734,7 @@ for($i=0;$i< count($jows);$i++) {
        
         //$activity = activities::find($id);
         $jows = Jows_areas::where('id','=',$id)->get();
-        $year = years::find(1)->get();
+        $year = years::whereKey(1)->get();
          //////////////////////////////////////////////////////////////////////////////////
          $filename="cerf.pdf";
          $pdf = new PDF();
@@ -808,7 +808,7 @@ public function areaprintjow2doccerf($id){
  
   // dd($addschool[0]->getactivityname->activity_name);
    //dd(count($addstudent));
- $year = years::find(1)->get();
+ $year = years::whereKey(1)->get();
   //$activity = activities::find($id);
   $jows = Jows_areas::where('jow_area','=',$id)->get();
    //////////////////////////////////////////////////////////////////////////////////
@@ -872,7 +872,7 @@ public function areaprintjow2doccerf($id){
         if ($pic->isEmpty()) $pic = Configs::where('schoolgroup',$id)->orderBy('app_year','desc')->get();
           // dd($addschool[0]->getactivityname->activity_name);
            //dd(count($addstudent));
-         $year = years::find(1)->get();
+         $year = years::whereKey(1)->get();
           //$activity = activities::find($id);
           $jows = Jows_areas::where('jow_area','=',$id)->get();
            //////////////////////////////////////////////////////////////////////////////////
@@ -974,7 +974,7 @@ public function printPDF(request $request){
  // $addteacher = addstudent::where('school','=',$id)->where('type','=','1')->paginate(20);
   $addstudent = addstudent::where('school','=',$id)->paginate(65);
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
-  $year = Years::find(1)->get();
+  $year = Years::whereKey(1)->get();
  // dd($addschool[0]->getactivityname->activity_name);
   //dd(count($addstudent));
 
@@ -1118,7 +1118,7 @@ public function printactivitycerf($id,$score,$inx){
   $pdf::AddFont('fonts/THSarabun.ttf','','fonts/thsarabunpsk.php');
   $pdf::SetFont('fonts/THSarabun.ttf','',18);
   $pdf::SetTitle('ไฟล์');
-  $year = Years::find(1)->get();
+  $year = Years::whereKey(1)->get();
 //  $pdf::SetLineWidth(0);
     
           if($score >=80){
@@ -1232,7 +1232,7 @@ public function printjowcerf($id){
  // dd($cerfiticatechk[0]->status);
  $activity = activities::find($id);
  $jows = jows::where('jow_activity','=',$id)->get();
- $year = Years::find(1)->get();
+ $year = Years::whereKey(1)->get();
 
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
@@ -1313,7 +1313,7 @@ if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
  // dd($cerfiticatechk[0]->status);
  $activity = activities::find($id);
  $jows = jows::where('jow_activity','=',$id)->get();
- $year = Years::find(1)->get();
+ $year = Years::whereKey(1)->get();
 
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
@@ -1396,7 +1396,7 @@ public function printjowdoccerf($id){
   $cerfiticatechk = Systemactives::where('systemname','=','certificate')->paginate(10);
  $activity = activities::find($id);
  $jows = jows::where('jow_activity','=',$id)->get();
- $years = years::find(1)->get();
+ $years = years::whereKey(1)->get();
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
   $pdf = new PDF();
@@ -1492,7 +1492,7 @@ public function printreportjowcerf($id){
 
  //$activity = activities::find($id);
  $jows = jows::where('id','=',$id)->get();
- $year = years::find(1)->get();
+ $year = years::whereKey(1)->get();
   //////////////////////////////////////////////////////////////////////////////////
   $filename="cerf.pdf";
   $pdf = new PDF();
@@ -1555,7 +1555,7 @@ for($i=0;$i< count($jows);$i++) {
        
         //$activity = activities::find($id);
         $jows = jows::where('id','=',$id)->get();
-        $year = years::find(1)->get();
+        $year = years::whereKey(1)->get();
          //////////////////////////////////////////////////////////////////////////////////
          $filename="cerf.pdf";
          $pdf = new PDF();
@@ -1797,7 +1797,7 @@ public function printjow2doccerf($id){
  
   // dd($addschool[0]->getactivityname->activity_name);
    //dd(count($addstudent));
- $year = years::find(1)->get();
+ $year = years::whereKey(1)->get();
   //$activity = activities::find($id);
   $jows = jows::where('jow_branch','=',$id)->get();
    //////////////////////////////////////////////////////////////////////////////////
@@ -1861,7 +1861,7 @@ public function printjow2doccerf($id){
         if ($pic->isEmpty()) $pic = Configs::orderBy('app_year','desc')->get();
           // dd($addschool[0]->getactivityname->activity_name);
            //dd(count($addstudent));
-         $year = years::find(1)->get();
+         $year = years::whereKey(1)->get();
           //$activity = activities::find($id);
           $jows = jows::where('jow_branch','=',$id)->get();
            //////////////////////////////////////////////////////////////////////////////////

@@ -228,10 +228,8 @@ class MyUserController extends Controller
     }
         public function centeruseredit($id)
     {
-        if(auth::user()->id != $id){
-          return("error!!.not permit");
-        }
-        $user = User::find($id);
+        abort_unless((int) Auth::id() === (int) $id, 403, 'แก้ไขได้เฉพาะบัญชีของตนเอง');
+        $user = User::findOrFail($id);
         $branch = branch::all();
         $schoolgroup = Schoolgroup::all();
         $school = school::where('school_group','=', Auth::user()->schoolgroup)->get();

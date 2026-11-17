@@ -13,6 +13,22 @@ class NoticeController extends Controller
     {
         $this->middleware('auth')->except(['index', 'show', 'notice_detail', 'areanotice_detail']);
     }
+
+    /**
+     * ดึงประกาศที่ผู้ใช้ปัจจุบันมีสิทธิ์จัดการ (เจ้าของประกาศ หรือผู้ดูแลระบบ position 10)
+     */
+    private function findOwnedNotice($id)
+    {
+        $notice = Notices::findOrFail($id);
+        $user = Auth::user();
+        abort_unless(
+            (int) $notice->owner_id === (int) $user->id || (int) $user->position === 10,
+            403,
+            'แก้ไขได้เฉพาะประกาศของตนเอง'
+        );
+
+        return $notice;
+    }
         /**
      * Display a listing of the resource.
      *
@@ -25,7 +41,7 @@ class NoticeController extends Controller
             ]);
 
             $file = $request->file('image');
-            $filename = md5(uniqid(rand(), true)) . '.' . $file->getClientOriginalExtension();
+            $filename = safe_upload_filename($file, false);
             $year = active_year();
             $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
 
@@ -128,12 +144,12 @@ class NoticeController extends Controller
             $year = active_year();
             if (is_array($fileUploads)) {
                 foreach ($fileUploads as $file) {
-                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $filename = safe_upload_filename($file);
                     $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                     $uploadedFilenames[] = $filename;
                 }
             } else {
-                $filename = time() . '_' . $fileUploads->getClientOriginalName();
+                $filename = safe_upload_filename($fileUploads);
                 $fileUploads->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                 $uploadedFilenames[] = $filename;
             }
@@ -175,7 +191,7 @@ class NoticeController extends Controller
     public function edit($id)
     {
         //dd($id);
-        $notice = Notices::where('id','=',$id)->get();
+        $notice = collect([$this->findOwnedNotice($id)]);
         $data = array(
             "notice"=>$notice,
         );
@@ -200,7 +216,7 @@ class NoticeController extends Controller
             'notice_file.*' => 'mimes:csv,docx,doc,txt,xlsx,xls,pdf,JPG,jpg,jpeg,png,webp,zip,rar|max:12048'
         ]);
 
-        $notice = Notices::findOrFail($id);
+        $notice = $this->findOwnedNotice($id);
         $notice->notice_text = $request->notice_text;
         $notice->notice_detail = $request->notice_detail;
 
@@ -210,12 +226,12 @@ class NoticeController extends Controller
             $year = active_year();
             if (is_array($fileUploads)) {
                 foreach ($fileUploads as $file) {
-                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $filename = safe_upload_filename($file);
                     $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                     $uploadedFilenames[] = $filename;
                 }
             } else {
-                $filename = time() . '_' . $fileUploads->getClientOriginalName();
+                $filename = safe_upload_filename($fileUploads);
                 $fileUploads->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
                 $uploadedFilenames[] = $filename;
             }
@@ -235,7 +251,7 @@ class NoticeController extends Controller
      */
     public function destroy($id)
     {
-        $data = Notices::find($id);
+        $data = $this->findOwnedNotice($id);
         $data->delete();
        // addstudent::where('school',$id)->delete();
         Session::flash('massage','ลบข้อมูลเรียบร้อยแล้ว..');

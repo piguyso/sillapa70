@@ -725,6 +725,29 @@ if (!function_exists('storage_year_path')) {
     }
 }
 
+if (!function_exists('safe_upload_filename')) {
+    /**
+     * สร้างชื่อไฟล์ที่ปลอดภัยสำหรับไฟล์อัปโหลด
+     * ใช้นามสกุลที่เดาจากเนื้อไฟล์จริง (ไม่เชื่อนามสกุลที่ผู้ใช้ส่งมา) เพื่อกันการอัปโหลด .php/.asp ฯลฯ
+     */
+    function safe_upload_filename(\Illuminate\Http\UploadedFile $file, $keepOriginalName = true) {
+        $blocked = ['php', 'phtml', 'phar', 'php3', 'php4', 'php5', 'php7', 'phps', 'asp', 'aspx', 'ashx', 'asmx', 'config', 'cer', 'shtml', 'exe', 'bat', 'cmd', 'js', 'html', 'htm', 'svg'];
+        $extension = strtolower((string) $file->guessExtension());
+        if ($extension === '' || in_array($extension, $blocked, true)) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['file' => 'ชนิดไฟล์ไม่ได้รับอนุญาต']);
+        }
+
+        $base = '';
+        if ($keepOriginalName) {
+            $base = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $base = preg_replace('/[^\p{L}\p{M}\p{N}_-]+/u', '_', $base);
+            $base = trim(mb_substr($base, 0, 80), '_');
+        }
+
+        return time() . '_' . bin2hex(random_bytes(4)) . ($base !== '' ? '_' . $base : '') . '.' . $extension;
+    }
+}
+
 if (!function_exists('storage_file_exists')) {
     function storage_file_exists($subDir, $fileName, $year = null) {
         if (empty($fileName)) {
