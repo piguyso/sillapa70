@@ -70,6 +70,16 @@ Route::get('area/studentregisterform/{id}','area\areaPrintdocController@studentr
 Route::get('area/teacherregisterform/{id}','area\areaPrintdocController@teacherregisterform')->middleware('auth');
 Route::get('area/jowregisterform/{id}','area\areaPrintdocController@jowregisterform')->middleware('auth');
 
+// รายงานตาราง (ผู้เข้าร่วม / โรงเรียน / รายการแข่งขัน) + Excel — เปิดสาธารณะ (ต้องอยู่ก่อน area/report/{id})
+Route::get('area/report/{type}/{id}/export','ParticipantReportController@networkExport')->where(['type' => 'participants|schools|activities', 'id' => '[0-9]+']);
+Route::get('area/report/{type}/{id}','ParticipantReportController@network')->where(['type' => 'participants|schools|activities', 'id' => '[0-9]+']);
+Route::get('report/{type}/export','ParticipantReportController@districtExport')->where('type', 'participants|schools|activities');
+Route::get('report/{type}','ParticipantReportController@district')->where('type', 'participants|schools|activities');
+// ลิงก์เก่า showall_print3 / showall_print6 พาไปหน้ารายงานใหม่
+Route::get('area/showall_print3/{id}','ParticipantReportController@legacyNetwork')->defaults('type', 'schools');
+Route::get('area/showall_print6/{id}','ParticipantReportController@legacyNetwork')->defaults('type', 'activities');
+Route::get('/showall_print3','ParticipantReportController@legacyDistrict')->defaults('type', 'schools');
+Route::get('/showall_print6','ParticipantReportController@legacyDistrict')->defaults('type', 'activities');
 Route::get('area/report/{id}','ReportController@areareport');
 route::get('area/reportviewactivity/{id}','ReportController@areajowviewactivity');
 route::get('area/reportviewjow/{id}','ReportController@areareportviewjow');
@@ -102,10 +112,8 @@ Route::get('area/showschooldetail/{id}/{school_group}','area\AreaController@show
 
 Route::get('area/showall_print/{id}','area\AreaController@showall_print');
 Route::get('area/showall_print2/{id}','area\AreaController@showall_print2');
-Route::get('area/showall_print3/{id}','area\AreaController@showall_print3');
 Route::get('area/showall_print4/{id}','area\AreaController@showall_print4'); // จำนวนทีมที่มากกว่า 3
 Route::get('area/showall_print5/{id}','area\AreaController@showall_print5');
-Route::get('area/showall_print6/{id}','area\AreaController@showall_print6');
 Route::get('area/showall_print7/{id}','area\AreaController@showall_print7');
 Route::get('area/showall_print8/{id}','area\AreaController@showall_print8');
 
@@ -217,10 +225,8 @@ Route::get('/viewall','homeController@viewall');
 Route::get('/showall1','homeController@showall1');
 Route::get('/showall_print','homeController@showall_print');
 Route::get('/showall_print2','homeController@showall_print2');
-Route::get('/showall_print3','homeController@showall_print3');
 Route::get('/showall_print4','homeController@showall_print4'); // จำนวนทีมที่มากกว่า 3
 Route::get('/showall_print5','homeController@showall_print5');
-Route::get('/showall_print6','homeController@showall_print6');
 Route::get('/showall_print7','homeController@showall_print7');
 Route::get('/showall_print8','homeController@showall_print8');
 Route::get('/printrandomz','homeController@printrandomz');

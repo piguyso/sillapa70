@@ -31,7 +31,7 @@
                 </a> รายชื่อทัั้งหมด
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -68,11 +68,11 @@
       @foreach($student as $s)
         
       <tr>
-                      <td>{{$s->getaddschool->activity_rank}}</td>
-                      <td> {{$s->getstudentactivity->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$s->getstudentactivity->activity_name}}</td>
-                       <td>{{$s->getstudentactivity->getclass->class_name}}</td>
-                       <td>{{$s->getaddschool->getschoolname->school_name}}</td>
+                      <td>{{$s->getaddschool?->activity_rank}}</td>
+                      <td> {{$s->getstudentactivity?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$s->getstudentactivity?->activity_name}}</td>
+                       <td>{{$s->getstudentactivity?->getclass->class_name}}</td>
+                       <td>{{$s->getaddschool?->getschoolname->school_name}}</td>
                        <td>
                         @if($s->type == 0)
                         {{$s->getstudenttitle->title}}
@@ -150,9 +150,9 @@
                        @foreach($addschool2 as $l)
                      <tr>
                       <td></td>
-                      <td>{{$l->getactivityname->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$l->getactivityname->activity_name}}</td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                      <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$l->getactivityname?->activity_name}}</td>
+                       <td>{{$l->getschoolname?->school_name}}</td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.apparea')
 
 @section('content')
 <div class="container">
@@ -31,7 +31,7 @@
                 </a> 
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -139,9 +139,9 @@
                        @foreach($addschool2 as $l)
                      <tr>
                       <td></td>
-                      <td>{{$l->getactivityname->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$l->getactivityname->activity_name}}</td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                      <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$l->getactivityname?->activity_name}}</td>
+                       <td>{{$l->getschoolname?->school_name}}</td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

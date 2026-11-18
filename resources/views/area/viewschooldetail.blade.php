@@ -9,7 +9,7 @@
                 {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{ session()->get('schoolgroup') }}
             </h2>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white">
-                @if(isset($addschool[0])) {{ $addschool[0]->getschoolname->school_name }} @else รายงานสรุปผลการแข่งขัน @endif
+                @if(isset($addschool[0])) {{ $addschool[0]->getschoolname?->school_name }} @else รายงานสรุปผลการแข่งขัน @endif
             </h1>
             <p class="mt-4 text-orange-100 font-bold italic uppercase tracking-widest text-sm text-white">
                 <i class="ri-pie-chart-2-line mr-1 text-white"></i> สรุปเหรียญรางวัลและอันดับการแข่งขัน ปีการศึกษา {{ session('app_year') }}
@@ -99,9 +99,9 @@
                             </td>
                             <td class="px-4 py-6 text-slate-800">
                                 <a href="{{ url('area/viewactivitydetail/'.$l->school_activity) }}" target="_blank" class="text-slate-800 font-black uppercase hover:text-orange-600 transition-colors text-slate-800">
-                                    {{$l->getactivityname->activity_name}}
+                                    {{$l->getactivityname?->activity_name}}
                                 </a>
-                                <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-tighter">{{$l->getactivityname->getclass->class_name}}</p>
+                                <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-tighter">{{$l->getactivityname?->getclass->class_name}}</p>
                             </td>
                             <td class="px-4 py-6 text-slate-800">
                                 <div class="grid grid-cols-1 gap-2 text-slate-800">
@@ -128,12 +128,12 @@
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
                                 <span class="text-lg font-black text-slate-800">
-                                    @if($l->activity_status == "1" || $l->activity_status == "99") {{ $l->student_score }} @else - @endif
+                                    @if(in_array((int) $l->activity_status, [1, 98, 99], true)) {{ $l->student_score }} @else - @endif
                                 </span>
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
-                                @if($l->activity_status == "1" || $l->activity_status == "99")
-                                    @php $medal = getmedel($l->student_score ?? ''); @endphp
+                                @if(in_array((int) $l->activity_status, [1, 98, 99], true))
+                                    @php $medal = in_array((int) $l->activity_status, [98, 99], true) ? 'เข้าร่วม' : getmedel($l->student_score ?? ''); @endphp
                                     <div class="flex flex-col items-center gap-1">
                                         <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-tighter shadow-sm
                                             @if($medal == 'เหรียญทอง') bg-yellow-400 text-yellow-900 
@@ -142,7 +142,7 @@
                                             @else bg-slate-100 text-slate-400 @endif">
                                             {{ $medal }}
                                         </span>
-                                        <span class="text-[10px] text-slate-400">อันดับที่ {{ $l->activity_rank }}</span>
+                                        <span class="text-[10px] text-slate-400">อันดับที่ {{ in_array((int) $l->activity_status, [98, 99], true) ? '-' : $l->activity_rank }}</span>
                                     </div>
                                 @else
                                     <span class="text-slate-300 font-normal italic">รอผลแข่งขัน</span>
@@ -150,7 +150,7 @@
                             </td>
                             <td class="px-4 py-6 text-right rounded-r-2xl text-slate-800">
                                 <div class="flex flex-col gap-1 items-end text-slate-800">
-                                    @if($l->activity_status == "1" || $l->activity_status == "99")
+                                    @if(in_array((int) $l->activity_status, [1, 99], true))
                                         <form method="post" target="_blank" action="{{url('area/printPDF')}}">
                                             {!!csrf_field()!!}
                                             <input type="hidden" name="id" value="{{$l->id}}"/>

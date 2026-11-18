@@ -9,7 +9,7 @@
                 {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}}
             </h2>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white">
-                เครือข่ายสถานศึกษา {{$schoolname[0]->getschoolgroup->schoolgroup_name ?? ''}}
+                เครือข่ายสถานศึกษา {{$schoolname[0]->getschoolgroup?->schoolgroup_name ?? ''}}
             </h1>
             <p class="mt-4 text-orange-100 font-bold italic uppercase tracking-widest text-sm text-white">
                 <i class="ri-community-line mr-1 text-white"></i> รายชื่อโรงเรียนสมาชิกและสรุปจำนวนทีมเข้าแข่งขัน

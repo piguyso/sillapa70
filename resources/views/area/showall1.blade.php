@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.apparea')
 
 @section('content')
 <div class="container">
@@ -18,7 +18,7 @@
                 </a> สรุปผลการแข่งขัน
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -66,8 +66,8 @@
                           ?>
                       </td>
                       <td></td>
-                       <td>{{$l->getactivityname->activity_name}}</td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                       <td>{{$l->getactivityname?->activity_name}}</td>
+                       <td>{{$l->getschoolname?->school_name}}</td>
                        <td>
                        @forelse($student as $s)
                       
@@ -111,13 +111,13 @@
                       
                        </td>
                        <!--
-                       <td>@if($l->getactivityname->activity_status == 1)
+                       <td>@if($l->getactivityname?->activity_status == 1)
                         {{$l->student_score}}
                         @else
                         -
                         @endif
                        </td>
-                       <td>@if($l->getactivityname->activity_status == 1)
+                       <td>@if($l->getactivityname?->activity_status == 1)
                          {{getmedel($l->student_score)}}
                          @else
                         -
@@ -125,7 +125,7 @@
                         </td>
                       
                         <td>
-                        @if($l->getactivityname->activity_status == 1)
+                        @if($l->getactivityname?->activity_status == 1)
                         <form id="printform" class="form-horizontal" method="post" action="{{url('printPDF')}}">
                           <input type="hidden" name="_method" value="POST"/>
                           <input type="hidden" name="id" value="{{$l->id}}"/>

@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="#" onclick="history.back(); return false;" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject->subjectgroup_name ??''}}->{{$activity->activity_name ??''}} จำนวนนักเรียน {{$activity->activity_studennumber ??''}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber??''}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber??''}} ทีม</div>
+              <div class="panel-heading"><a href="#" onclick="history.back(); return false;" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject?->subjectgroup_name ??''}}->{{$activity->activity_name ??''}} จำนวนนักเรียน {{$activity->activity_studennumber ??''}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber??''}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber??''}} ทีม</div>
 
               <div class="panel-body">
                   @if (session('status'))
@@ -58,8 +58,8 @@
                        
                         ?>
                        </td>
-                       <td>{{$l->getschoolgroup->schoolgroup_name??''}}</td>
-                       <td>{{$l->getschoolname->school_name ??''}}</td>
+                       <td>{{$l->getschoolgroup?->schoolgroup_name??''}}</td>
+                       <td>{{$l->getschoolname?->school_name ??''}}</td>
                       
                        <td>
                       @forelse($student as $s)
@@ -117,14 +117,14 @@
                        </td>
                        <td>
             
-                      {{getmedel($l->student_score ?? 0)}}
+                      {{ in_array((int) ($l->activity_status ?? 0), [98, 99], true) ? 'เข้าร่วม' : getmedel($l->student_score ?? 0) }}
                       
                     
                        </td>
                        <td>
                  
                   
-                        @if(($l->activity_status ?? 0) == 1 && ($l->student_score ?? 0) > 0)
+                        @if((($l->activity_status ?? 0) == 1 && ($l->student_score ?? 0) > 0) || (int) ($l->activity_status ?? 0) === 99)
                         
                      
                          <form id="printform" class="form-horizontal" method="post" target="_blank" action="{{url('area/printPDF')}}">

@@ -31,7 +31,7 @@
                 </a> รายชื่อโรงเรียนตัวแทนเครือข่าย
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -66,13 +66,13 @@
     
                     
       @foreach($student as $s)
-                  @if($s->getaddschool->activity_rank == 1??'0'||$s->getaddschool->activity_rank == 2??'0'||$s->getaddschool->activity_rank == 3??'0')
+                  @if($s->getaddschool?->activity_rank == 1??'0'||$s->getaddschool?->activity_rank == 2??'0'||$s->getaddschool?->activity_rank == 3??'0')
       <tr>
-                      <td>{{$s->getaddschool->activity_rank??''}}</td>
-                      <td> {{$s->getstudentactivity->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$s->getstudentactivity->activity_name}}</td>
-                       <td>{{$s->getstudentactivity->getclass->class_name}}</td>
-                       <td>{{$s->getaddschool->getschoolname->school_name}}</td>
+                      <td>{{$s->getaddschool?->activity_rank??''}}</td>
+                      <td> {{$s->getstudentactivity?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$s->getstudentactivity?->activity_name}}</td>
+                       <td>{{$s->getstudentactivity?->getclass->class_name}}</td>
+                       <td>{{$s->getaddschool?->getschoolname->school_name}}</td>
                        <td>
                         @if($s->type == 0)
                         {{$s->getstudenttitle->title}}

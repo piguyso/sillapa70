@@ -14,7 +14,7 @@
                 ปีการศึกษา {{ session('app_year') }}
             </h2>
             <h1 class="text-2xl md:text-4xl font-black tracking-tight uppercase italic text-white leading-tight text-white mb-4">
-                {{$activity->getactivitysubject->subjectgroup_name ??''}} <br class="md:hidden"> 
+                {{$activity->getactivitysubject?->subjectgroup_name ??''}} <br class="md:hidden"> 
                 <span class="text-orange-200">→</span> {{$activity->activity_name ??''}}
             </h1>
             <div class="flex flex-wrap gap-4 text-[11px] font-black uppercase italic tracking-widest text-white">
@@ -65,8 +65,8 @@
                                 {{ $x }}
                             </td>
                             <td class="px-4 py-6 text-slate-800">
-                                <p class="text-slate-800 font-black uppercase leading-tight text-slate-800">{{$l->getschoolname->school_name ??''}}</p>
-                                <span class="text-[9px] text-slate-400 mt-1 inline-block uppercase tracking-tighter">เครือข่าย: {{$l->getschoolgroup->schoolgroup_name??''}}</span>
+                                <p class="text-slate-800 font-black uppercase leading-tight text-slate-800">{{$l->getschoolname?->school_name ??''}}</p>
+                                <span class="text-[9px] text-slate-400 mt-1 inline-block uppercase tracking-tighter">เครือข่าย: {{$l->getschoolgroup?->schoolgroup_name??''}}</span>
                             </td>
                             <td class="px-4 py-6 text-slate-800">
                                 <div class="grid grid-cols-1 gap-4 text-slate-800">
@@ -94,23 +94,25 @@
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
                                 <span class="text-lg font-black text-slate-800">
-                                    @if($l->activity_status == "1" || $l->activity_status == "99") {{ $l->student_score }} @else - @endif
+                                    @if(in_array((int) $l->activity_status, [1, 98, 99], true)) {{ $l->student_score }} @else - @endif
                                 </span>
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
                                 <div class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full mx-auto font-black text-slate-800 text-slate-800 shadow-inner">
-                                    @if($l->activity_status == "1" || $l->activity_status == "99") {{ $l->activity_rank }} @else - @endif
+                                    @if(in_array((int) $l->activity_status, [1, 98, 99], true)) {{ $l->activity_rank }} @else - @endif
                                 </div>
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
-                                @if($l->activity_status == "1" || $l->activity_status == "99")
-                                    @php $medal = getmedel($l->student_score ?? ''); @endphp
+                                @if(in_array((int) $l->activity_status, [1, 98, 99], true))
+                                    @php $medal = in_array((int) $l->activity_status, [98, 99], true) ? 'เข้าร่วม' : getmedel($l->student_score ?? ''); @endphp
                                     @if($medal == 'เหรียญทอง')
                                     <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-yellow-400 text-yellow-900">{{ $medal }}</span>
                                     @elseif($medal == 'เหรียญเงิน')
                                     <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-slate-300 text-slate-800">{{ $medal }}</span>
                                     @elseif($medal == 'เหรียญทองแดง')
                                     <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm bg-orange-300 text-orange-900">{{ $medal }}</span>
+                                    @elseif($medal == 'เข้าร่วม')
+                                    <span class="px-3 py-1 rounded-lg text-[10px] font-black tracking-widest shadow-sm bg-blue-100 text-blue-700">เข้าร่วม</span>
                                     @endif
                                 @else
                                     <span class="text-slate-300 font-normal">-</span>
@@ -118,7 +120,7 @@
                             </td>
                             <td class="px-4 py-6 text-right rounded-r-2xl text-slate-800">
                                 <div class="flex flex-col gap-1 items-end text-slate-800">
-                                    @if($l->activity_status == "1" || $l->activity_status == "99")
+                                    @if(in_array((int) $l->activity_status, [1, 99], true))
                                         <form method="post" target="_blank" action="{{url('area/printPDF')}}">
                                             {!!csrf_field()!!}
                                             <input type="hidden" name="id" value="{{$l->id}}"/>
@@ -133,7 +135,7 @@
                                             <input type="hidden" name="x" value="{{$l->activity_rank}}"/>
                                             <button type="submit" class="w-full px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-600 hover:text-white transition-all text-[9px] font-black uppercase italic shadow-sm">With BG</button>
                                         </form>
-                                    @elseif($l->activity_status == "98")
+                                    @elseif((int) $l->activity_status === 98)
                                         <span class="text-[9px] text-red-400 italic font-bold">งดมอบเกียรติบัตร</span>
                                     @else
                                         <span class="text-[9px] text-slate-300 italic font-bold">รอประกาศผล</span>

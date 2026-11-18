@@ -51,20 +51,31 @@ class CompetitionScoreService
                 throw ValidationException::withMessages(['activity_score' => 'พบทีมที่ไม่ได้อยู่ในรายการแข่งขันนี้']);
             }
 
-            $rankedScores = array_filter($scores, fn (float $score): bool => $score > 0);
-            $scoreCounts = array_count_values(array_map(function (float $score): string {
+            arsort($scores, SORT_NUMERIC);
+
+            // ลำดับ 1-4 ห้ามมีคะแนนเท่ากัน; ลำดับ 5 ขึ้นไปเท่ากันได้และได้ลำดับร่วม (เช่น 5, 5, 7)
+            $format = function (float $score): string {
                 $formatted = rtrim(rtrim(number_format($score, 10, '.', ''), '0'), '.');
 
                 return $formatted === '' ? '0' : $formatted;
-            }, $rankedScores));
-            $duplicateScores = array_keys(array_filter($scoreCounts, fn (int $count): bool => $count > 1));
+            };
+            $groups = []; // คะแนน => [ลำดับเริ่มต้น, จำนวนทีม]
+            $position = 0;
+            foreach ($scores as $score) {
+                $position++;
+                if ($score <= 0) {
+                    continue;
+                }
+                $key = $format($score);
+                $groups[$key] ??= [$position, 0];
+                $groups[$key][1]++;
+            }
+            $duplicateScores = array_keys(array_filter($groups, fn (array $g): bool => $g[1] > 1 && $g[0] <= 4));
             if ($duplicateScores !== []) {
                 throw ValidationException::withMessages([
-                    'activity_score' => 'ไม่อนุญาตให้บันทึกคะแนนเท่ากัน กรุณาแก้คะแนนที่ซ้ำ: '.implode(', ', $duplicateScores),
+                    'activity_score' => 'ลำดับที่ 1-4 ห้ามมีคะแนนเท่ากัน กรุณาแก้คะแนนที่ซ้ำ: '.implode(', ', $duplicateScores),
                 ]);
             }
-
-            arsort($scores, SORT_NUMERIC);
         }
 
         DB::transaction(function () use ($teams, $scores, $action, $updateActivityStatus, $activityId): void {

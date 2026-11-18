@@ -31,7 +31,7 @@
                 </a> รายการแข่งขันที่ไม่มีผู้ลงทะเบียน
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -64,9 +64,9 @@
         
       <tr>
                       <td></td>
-                      <td>{{$s->getactivitysubject->subjectgroup_name}}</td>
+                      <td>{{$s->getactivitysubject?->subjectgroup_name}}</td>
                        <td><a href="{{url('area/areaviewactivitydetail').'/'.$area.'/'.$s->id}}">{{$s->activity_name}}</a></td>
-                       <td>{{$s->getclass->class_name}}</td>
+                       <td>{{$s->getclass?->class_name}}</td>
                        <td>ไม่มีผู้ส่ง</td>
        
                      </tr>
@@ -116,9 +116,9 @@
                        @foreach($addschool2 as $l)
                      <tr>
                       <td></td>
-                      <td>{{$l->getactivityname->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$l->getactivityname->activity_name}}</td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                      <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$l->getactivityname?->activity_name}}</td>
+                       <td>{{$l->getschoolname?->school_name}}</td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

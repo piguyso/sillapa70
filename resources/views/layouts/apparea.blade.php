@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $themePrimary = config('app.theme_primary') ?: session('theme_primary', '#78350f');
-        $themeSecondary = config('app.theme_secondary') ?: session('theme_secondary', '#b45309');
+        // สีประจำเว็บระดับเครือข่าย: กำหนดแยกจากสีของเว็บเขตพื้นที่ (theme ของงาน) เพื่อให้แยกออกชัดเจนว่าอยู่เว็บไหน
+        $themePrimary = '#c2410c';
+        $themeSecondary = '#7c2d12';
         $appName = config('app.name') ?: session('app_name', 'งานศิลปหัตถกรรมนักเรียน');
     @endphp
     <title>{{ $appName }}</title>
@@ -37,6 +38,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+@include('layouts._legacy-bootstrap')
 <style>
     /* ยกระดับการออกแบบระบบปุ่มควบคุมหน้า (Pagination) ให้สวยงามและมองเห็นง่าย */
     
@@ -258,7 +260,7 @@
                     <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center text-white gap-2 group">
                         <img class="h-10 w-auto bg-white rounded-full p-1" src="{{ asset('imgs/obec_icon2.png') }}" alt="Logo">
                         <span class="font-bold text-lg tracking-wide group-hover:text-amber-200 transition">
-                            {{ session('app_name').' '.session('app_group').' '.session('app_year') }}
+                            {{ session('app_name').' ระดับเครือข่ายสถานศึกษา ปีการศึกษา '.session('app_year') }}
                         </span>
                     </a>
                 </div>
@@ -273,12 +275,10 @@
                             <i class="ri-information-line mr-1"></i> ข้อมูลสารสนเทศ <i class="ri-arrow-down-s-line text-xs"></i>
                         </button>
                         <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
-                            <a href="{{ url('showall_print')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
-                            <a href="{{ url('showall_print2')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-group-line"></i> Print รายชื่อทั้งหมด</a>
-                            <a href="{{ url('showall_print3')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-government-line"></i> Print รายชื่อโรงเรียน</a>
-                            <a href="{{ url('showall_print6')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-list-check-3"></i> Print รายชื่อกิจกรรม</a>
+                            <a href="{{ url('area/showall_print/'.(session('area') ?: Auth::user()?->schoolgroup))}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
+                            <a href="{{ url('area/report/participants/'.(session('area') ?: Auth::user()?->schoolgroup)) }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-file-excel-2-line"></i> รายงานผู้เข้าร่วม (Excel)</a>
                             <div class="border-t border-gray-100 my-1"></div>
-                            <a href="{{ url('report')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-bold"><i class="ri-medal-line text-amber-500"></i> เกียรติบัตร</a>
+                            <a href="{{ url('area/report/'.(session('area') ?: Auth::user()?->schoolgroup))}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-bold"><i class="ri-medal-line text-amber-500"></i> เกียรติบัตร</a>
                         </div>
                     </div>
 
@@ -416,6 +416,11 @@
                                         <a href="{{ url('area/shownotice')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
                                             <i class="ri-notification-3-line text-orange-600 text-lg"></i> 
                                             เพิ่มประกาศแจ้งผู้เข้าร่วมแข่งขัน
+                                        </a>
+
+                                        <a href="{{ url('area/report/participants/'.(session('area') ?: Auth::user()?->schoolgroup)) }}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
+                                            <i class="ri-file-excel-2-line text-orange-600 text-lg"></i>
+                                            รายงานผู้เข้าร่วม (Excel)
                                         </a>
 
                                         <a href="{{ url('area/areaconfig')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">

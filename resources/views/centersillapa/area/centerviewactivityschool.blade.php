@@ -135,10 +135,10 @@
 
                             @if($addschool->count() <= 3)
                                 <button type="button" class="px-8 py-4 bg-slate-800 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="submitWithConfirm('98');">
-                                    ไม่มีการแข่งขัน (ไม่มอบเกียรติบัตร)
+                                    ประกาศผล + งดมอบเกียรติบัตร
                                 </button>
                                 <button type="button" class="px-8 py-4 bg-slate-700 text-white rounded-2xl font-black text-[10px] hover:bg-slate-900 transition-all uppercase italic tracking-widest text-white" onClick="submitWithConfirm('99');">
-                                    ไม่มีการแข่งขัน (มอบเกียรติบัตร)
+                                    ประกาศผล + มอบเกียรติบัตร
                                 </button>
                                 <button type="button" class="px-8 py-4 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-red-100 uppercase italic tracking-widest text-white" onClick="submitWithConfirm('2');">
                                     <i class="ri-close-circle-line mr-1 text-white"></i> ยกเลิกผลการแข่งขัน
@@ -185,11 +185,11 @@
             title = 'ยืนยันการประกาศผล';
             message = 'คุณต้องการยืนยันการประกาศผลการแข่งขันใช่หรือไม่?';
         } else if (status === '98') {
-            title = 'ประกาศผลแบบไม่มีการแข่งขัน';
-            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน (ไม่มอบเกียรติบัตร) ใช่หรือไม่?';
+            title = 'ประกาศผล + งดมอบเกียรติบัตร';
+            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน และ<b>งดมอบเกียรติบัตร</b> (พิมพ์เกียรติบัตรไม่ได้) ใช่หรือไม่?';
         } else if (status === '99') {
-            title = 'ประกาศผลแบบไม่มีการแข่งขัน';
-            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน (มอบเกียรติบัตร) ใช่หรือไม่?';
+            title = 'ประกาศผล + มอบเกียรติบัตร';
+            message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน และ<b>มอบเกียรติบัตร</b> (พิมพ์ได้ในระดับ "เข้าร่วม") ใช่หรือไม่?';
         } else if (status === '2') {
             title = 'ยืนยันการยกเลิกผลการแข่งขัน';
             message = '⚠️ ยืนยันยกเลิกผลการแข่งขัน? การกระทำนี้ไม่สามารถย้อนกลับได้!';

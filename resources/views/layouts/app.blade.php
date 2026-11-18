@@ -276,9 +276,7 @@
                         </button>
                         <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
                             <a href="{{ url('showall_print')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
-                            <a href="{{ url('showall_print2')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri-group-line"></i> Print รายชื่อทั้งหมด</a>
-                            <a href="{{ url('showall_print3')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri-government-line"></i> Print รายชื่อโรงเรียน</a>
-                            <a href="{{ url('showall_print6')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri-list-check-3"></i> Print รายชื่อกิจกรรม</a>
+                            <a href="{{ url('report/participants') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri-file-excel-2-line"></i> รายงานผู้เข้าร่วม (Excel)</a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <a href="{{ url('report')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-bold"><i class="ri-medal-line text-yellow-500"></i> เกียรติบัตร</a>
                         </div>

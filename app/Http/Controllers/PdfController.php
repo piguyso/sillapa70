@@ -214,7 +214,7 @@ public function areaprintPDF(request $request){
   $score = $request->student_score;
   $inx = $request->x;
   $addschool = addschools_areas::where('id','=',$id)->get();
-  abort_if($addschool->isEmpty() || (float) $addschool[0]->student_score <= 0, 403, 'ไม่สามารถพิมพ์เกียรติบัตรสำหรับผู้ไม่เข้าร่วมการแข่งขัน');
+  \App\Services\CertificateText::assertPrintable($addschool->first());
   $score = $addschool[0]->student_score;
   $inx = $addschool[0]->activity_rank;
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
@@ -234,27 +234,7 @@ public function areaprintPDF(request $request){
   $pdf::SetTitle('ไฟล์');
 //  $pdf::SetLineWidth(0);
     
-          if($score >=80){
-             $xscore = "เหรียญทอง";
-          }elseif($score >= 70){
-             $xscore = "เหรียญเงิน";
-            }elseif($score >= 60){
-              $xscore = "เหรียญทองแดง";
-           }elseif($score == 0){
-              $xscore = 'ไม่เข้าร่วม';
-          }else{
-             $xscore ='เข้าร่วม';
-          }
-
-          if($inx ==1){
-            $xinx = "ชนะเลิศ";
-          }elseif($inx == 2){
-            $xinx = "รองชนะเลิศอันดับ ๑";
-          }elseif($inx == 3){
-            $xinx = "รองชนะเลิศอันดับ ๒";
-          }else{
-            $xinx = '';
-          }
+          [$xscore, $xinx] = \App\Services\CertificateText::award($addschool[0]);
 //-------- 
 $pdf::SetMargins(0,0,0,0,true);
 $pdf::SetAutoPageBreak(TRUE, 0);
@@ -286,7 +266,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -351,7 +331,7 @@ public function areaprintPDF2(request $request){
   $score = $request->student_score;
   $inx = $request->x;
   $addschool = addschools_areas::where('id','=',$id)->get();
-  abort_if($addschool->isEmpty() || (float) $addschool[0]->student_score <= 0, 403, 'ไม่สามารถพิมพ์เกียรติบัตรสำหรับผู้ไม่เข้าร่วมการแข่งขัน');
+  \App\Services\CertificateText::assertPrintable($addschool->first());
   $score = $addschool[0]->student_score;
   $inx = $addschool[0]->activity_rank;
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
@@ -371,27 +351,7 @@ public function areaprintPDF2(request $request){
      $pdf::SetTitle('ไฟล์');
    //  $pdf::SetLineWidth(0);
        
-             if($score >=80){
-                $xscore = "เหรียญทอง";
-             }elseif($score >= 70){
-                $xscore = "เหรียญเงิน";
-               }elseif($score >= 60){
-                 $xscore = "เหรียญทองแดง";
-              }elseif($score == 0){
-                 $xscore = 'ไม่เข้าร่วม';
-             }else{
-                $xscore ='เข้าร่วม';
-             }
-   
-             if($inx ==1){
-               $xinx = "ชนะเลิศ";
-             }elseif($inx == 2){
-               $xinx = "รองชนะเลิศอันดับ ๑";
-             }elseif($inx == 3){
-               $xinx = "รองชนะเลิศอันดับ ๒";
-             }else{
-               $xinx = '';
-             }
+             [$xscore, $xinx] = \App\Services\CertificateText::award($addschool[0]);
    //-------- 
    $pdf::SetMargins(0,0,0,0,true);
    $pdf::SetAutoPageBreak(TRUE, 0);
@@ -431,7 +391,7 @@ if (file_exists($imagePath)) {
                $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/THSarabun.ttf','',20);
                
-               $pdf::Cell(0, 0,'เลขที่ ๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+               $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -963,11 +923,11 @@ public function printPDF(request $request){
   $score = $request->student_score;
   $inx = $request->x;
   $addschool = addschool::where('id','=',$id)->get();
+  \App\Services\CertificateText::assertPrintable($addschool->first());
 
 
  $score = $addschool[0]->student_score;
   $inx = $addschool[0]->activity_rank;
-  abort_if((float) $score <= 0, 403, 'ไม่สามารถพิมพ์เกียรติบัตรสำหรับผู้ไม่เข้าร่วมการแข่งขัน');
 
 
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
@@ -987,27 +947,7 @@ public function printPDF(request $request){
   $pdf::SetTitle('ไฟล์');
 //  $pdf::SetLineWidth(0);
     
-          if($score >=80){
-             $xscore = "เหรียญทอง";
-          }elseif($score >= 70){
-             $xscore = "เหรียญเงิน";
-            }elseif($score >= 60){
-              $xscore = "เหรียญทองแดง";
-           }elseif($score == 0){
-              $xscore = 'ไม่เข้าร่วม';
-          }else{
-             $xscore ='เข้าร่วม';
-          }
-
-          if($inx ==1){
-            $xinx = "ชนะเลิศ";
-          }elseif($inx == 2){
-            $xinx = "รองชนะเลิศอันดับ ๑";
-          }elseif($inx == 3){
-            $xinx = "รองชนะเลิศอันดับ ๒";
-          }else{
-            $xinx = '';
-          }
+          [$xscore, $xinx] = \App\Services\CertificateText::award($addschool[0]);
 //-------- 
 $pdf::SetMargins(0,0,0,0,true);
 $pdf::SetAutoPageBreak(TRUE, 0);
@@ -1039,7 +979,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -1100,7 +1040,7 @@ for($i=0;$i< count($addstudent);$i++) {
 /////////////////////////////////////////////////////
 public function printactivitycerf($id,$score,$inx){
   $addschool = addschool::where('id','=',$id)->get();
-  abort_if($addschool->isEmpty() || (float) $addschool[0]->student_score <= 0, 403, 'ไม่สามารถพิมพ์เกียรติบัตรสำหรับผู้ไม่เข้าร่วมการแข่งขัน');
+  \App\Services\CertificateText::assertPrintable($addschool->first());
   $score = $addschool[0]->student_score;
   $inx = $addschool[0]->activity_rank;
   //$addstudent = addstudent::where('school','=',$id)->where('type','=','0')->paginate(20);
@@ -1121,25 +1061,7 @@ public function printactivitycerf($id,$score,$inx){
   $year = Years::whereKey(1)->get();
 //  $pdf::SetLineWidth(0);
     
-          if($score >=80){
-             $xscore = "เหรียญทอง";
-          }elseif($score >= 70){
-             $xscore = "เหรียญเงิน";
-           }elseif($score == 0){
-              $xscore = 'ไม่เข้าร่วม';
-          }else{
-             $xscore =' ';
-          }
-
-          if($inx ==1){
-            $xinx = "ชนะเลิศ";
-          }elseif($inx == 2){
-            $xinx = "รองชนะเลิศอันดับ ๑";
-          }elseif($inx == 3){
-            $xinx = "รองชนะเลิศอันดับ ๒";
-          }else{
-            $xinx = ' ';
-          }
+          [$xscore, $xinx] = \App\Services\CertificateText::award($addschool[0]);
 //-------- หน้าขอซื้อ
 $pdf::SetMargins(0,0,0,0,true);
 $pdf::SetAutoPageBreak(TRUE, 0);
@@ -1162,7 +1084,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',32);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);

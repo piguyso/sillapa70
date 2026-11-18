@@ -58,7 +58,7 @@
                 <div class="flex items-center gap-2 text-sm p-3 bg-slate-50 rounded-xl hover:bg-orange-50 transition-all border border-transparent hover:border-orange-100">
                     <i class="ri-checkbox-circle-line text-orange-500"></i>
                     <a href="{{ url('area/viewactivitydetail/'.$b->school_activity) }}" class="text-slate-700 hover:text-orange-700 truncate">
-                        {{$b->getactivityname->activity_name}} <span class="text-slate-400 text-xs">({{$b->getactivityname->getclass->class_name}})</span>
+                        {{$b->getactivityname?->activity_name}} <span class="text-slate-400 text-xs">({{$b->getactivityname?->getclass->class_name}})</span>
                     </a>
                     @php
                         $to_time = strtotime(now());

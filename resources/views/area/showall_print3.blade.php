@@ -31,7 +31,7 @@
                 </a> รายชื่อโรงเรียนทั้งหมด
                 <?php 
              //   if(isset($addschool[0])){
-              //    echo $addschool[0]->getschoolname->school_name;
+              //    echo $addschool[0]->getschoolname?->school_name;
             //    }
                 ?>
               </div>
@@ -64,10 +64,10 @@
         
       <tr>
                       <td></td>
-                      <td> {{$s->getactivityname->getactivitysubject->subjectgroup_name ??'-'}}</td>
-                       <td>{{$s->getactivityname->activity_name ??'-'}}</td>
-                       <td>{{$s->getactivityname->getclass->class_name ??'-'}}</td>
-                       <td>{{$s->getschoolname->school_name??'-'}}</td>
+                      <td> {{$s->getactivityname?->getactivitysubject->subjectgroup_name ??'-'}}</td>
+                       <td>{{$s->getactivityname?->activity_name ??'-'}}</td>
+                       <td>{{$s->getactivityname?->getclass->class_name ??'-'}}</td>
+                       <td>{{$s->getschoolname?->school_name??'-'}}</td>
        
                      </tr>
  
@@ -116,9 +116,9 @@
                        @foreach($addschool2 as $l)
                      <tr>
                       <td></td>
-                      <td>{{$l->getactivityname->getactivitysubject->subjectgroup_name}}</td>
-                       <td>{{$l->getactivityname->activity_name}}</td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                      <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
+                       <td>{{$l->getactivityname?->activity_name}}</td>
+                       <td>{{$l->getschoolname?->school_name}}</td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

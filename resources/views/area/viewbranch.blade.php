@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.apparea')
 
 @section('content')
 <div class="container">
@@ -72,9 +72,9 @@
                                                 <li class="list-group-item list-group-item-success">ข้อมูลรายละเอียด</li>
 
                                                 <li class="list-group-item list-group-item-secondary">
-                                                  กลุ่มสาระการเรียนรู้ : {{$l->getactivitysubject->subjectgroup_name}}<br>
+                                                  กลุ่มสาระการเรียนรู้ : {{$l->getactivitysubject?->subjectgroup_name}}<br>
                                                   ศูนย์การแข่งขัน : {{$l->getactivitybranch->branch_name??''}}<br>
-                                                  ระดับชั้น : {{$l->getclass->class_name}}<br>
+                                                  ระดับชั้น : {{$l->getclass?->class_name}}<br>
                                                   จำนวนนักเรียน : {{$l->activity_studennumber}} คน<br>
                                                   จำนวนครูที่เข้าร่วม : {{$l->activity_teachernumber}} คน<br>
                                                   จำนวนทีมต่อโรงเรียน : {{$l->activity_schoolteamnumber}} ทีม<br>
@@ -116,7 +116,7 @@
                           ?>
                       </td>
                        <td><a href="{{ url('area/viewactivitydetail/'.$l->id) }}">{{$l->activity_name}}</a></td>
-                       <td>{{$l->getclass->class_name}}</td>
+                       <td>{{$l->getclass?->class_name}}</td>
                        <td>
                         
                         <?php
