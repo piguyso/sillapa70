@@ -105,6 +105,9 @@ class ParticipantReportService
         if (! empty($filters['subject'])) {
             $query->whereHas('getactivityname', fn ($q) => $q->where('activity_subject', (int) $filters['subject']));
         }
+        if (! empty($filters['class'])) {
+            $query->whereHas('getactivityname', fn ($q) => $q->where('activity_class', (int) $filters['class']));
+        }
         if ($type === 'participants' && ! empty($filters['top3'])) {
             $query->where('activity_status', 1)->whereBetween('activity_rank', [1, 3])->where('student_score', '>', 0);
         }

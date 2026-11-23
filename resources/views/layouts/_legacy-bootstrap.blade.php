@@ -30,5 +30,36 @@
     .glyphicon { font-style: normal; font-family: inherit; }
     .glyphicon-backward::before { content: "◀"; } .glyphicon-print::before { content: "🖨"; }
     .glyphicon-info-sign::before { content: "ℹ"; } .glyphicon-pencil::before { content: "✎"; }
+    /* modal แบบ Bootstrap: ซ่อนไว้จนกว่าจะกดเปิด */
+    .modal { display: none; position: fixed; inset: 0; z-index: 1050; overflow-y: auto; background: rgba(15,23,42,.55); padding: 24px 12px; }
+    .modal.show { display: block; }
+    .modal-dialog { max-width: 500px; margin: 40px auto; } .modal-dialog.modal-lg { max-width: 800px; }
+    .modal-content { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px rgba(15,23,42,.25); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; }
+    .modal-title { font-weight: 800; margin: 0; }
+    .modal-body { padding: 20px; } .modal-footer { padding: 12px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 8px; }
+    .modal .close { font-size: 28px; line-height: 1; background: none; border: 0; cursor: pointer; color: #64748b; }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .list-group { list-style: none; padding: 0; margin: 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+    .list-group-item { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; } .list-group-item:last-child { border-bottom: 0; }
+    .list-group-item-success { background: color-mix(in srgb, var(--ui-primary) 12%, white); font-weight: 700; } .list-group-item-secondary { background: #f8fafc; }
     @media print { nav, .no-print { display: none !important; } .jumbotron { background: none; color: #000; box-shadow: none; } }
 </style>
+
+<script>
+    // เปิด/ปิด modal แบบ Bootstrap (data-toggle="modal" / data-dismiss="modal") โดยไม่ต้องใช้ Bootstrap JS
+    (function () {
+        function closeAll() { document.querySelectorAll('.modal.show').forEach(function (m) { m.classList.remove('show'); }); document.body.style.overflow = ''; }
+        document.addEventListener('click', function (e) {
+            var open = e.target.closest('[data-toggle="modal"]');
+            if (open) {
+                e.preventDefault();
+                var m = document.querySelector(open.getAttribute('data-target'));
+                if (m) { m.classList.add('show'); document.body.style.overflow = 'hidden'; }
+                return;
+            }
+            if (e.target.closest('[data-dismiss="modal"]') || (e.target.classList && e.target.classList.contains('modal'))) { closeAll(); }
+        });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAll(); } });
+    })();
+</script>

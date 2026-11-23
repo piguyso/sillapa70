@@ -298,7 +298,6 @@
                             <i class="ri-information-line mr-1"></i> ข้อมูลสารสนเทศ <i class="ri-arrow-down-s-line text-xs"></i>
                         </button>
                         <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
-                            <a href="{{ url('area/showall_print/'.(session('area') ?: Auth::user()?->schoolgroup))}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri- Trophy-line"></i> Print อันดับ 1-3</a>
                             <a href="{{ url('area/report/participants/'.(session('area') ?: Auth::user()?->schoolgroup)) }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-medium"><i class="ri-file-excel-2-line"></i> รายงานผู้เข้าร่วม (Excel)</a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <a href="{{ url('area/report/'.(session('area') ?: Auth::user()?->schoolgroup))}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-secondary font-bold"><i class="ri-medal-line text-amber-500"></i> เกียรติบัตร</a>

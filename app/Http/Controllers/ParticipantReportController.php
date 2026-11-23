@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Activities;
+use App\Classes;
 use App\Schoolgroup;
 use App\Services\ParticipantReportService as Report;
 use App\Subjectgroup;
@@ -63,6 +64,7 @@ class ParticipantReportController extends Controller
     {
         $filters = [
             'subject' => $request->integer('subject') ?: null,
+            'class' => $request->integer('class') ?: null,
             'activity' => $request->integer('activity') ?: null,
             'schoolgroup' => $request->integer('schoolgroup') ?: null,
             'top3' => $request->boolean('top3'),
@@ -81,6 +83,7 @@ class ParticipantReportController extends Controller
         $filters = $this->filters($request, $level, $networkId);
         $activities = Activities::query()
             ->when($filters['subject'], fn ($q, $s) => $q->where('activity_subject', $s))
+            ->when($filters['class'], fn ($q, $c) => $q->where('activity_class', $c))
             ->orderBy('activity_subject')->orderBy('id')->get(['id', 'activity_name', 'activity_subject']);
         $base = $level === Report::LEVEL_NETWORK ? 'area/report/%s/'.$networkId : 'report/%s';
 
@@ -93,12 +96,13 @@ class ParticipantReportController extends Controller
             'columns' => $report->columns($type, $level),
             'rows' => $report->rows($type, $level, $filters),
             'subjects' => Subjectgroup::orderBy('id')->get(),
+            'classes' => Classes::orderBy('id')->get(),
             'activities' => $activities,
             'schoolgroups' => $level === Report::LEVEL_DISTRICT ? Schoolgroup::orderBy('id')->get() : collect(),
             'networkName' => $level === Report::LEVEL_NETWORK ? (Schoolgroup::find($networkId)->schoolgroup_name ?? '') : '',
             'tabUrls' => collect(Report::TYPES)->map(fn ($t, $k) => url(sprintf($base, $k)))->all(),
             'exportUrl' => url(sprintf($base, $type).'/export')
-                .'?'.http_build_query($request->only(['subject', 'activity', 'schoolgroup', 'top3'])),
+                .'?'.http_build_query($request->only(['subject', 'class', 'activity', 'schoolgroup', 'top3'])),
         ]);
     }
 

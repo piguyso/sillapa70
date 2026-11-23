@@ -33,11 +33,17 @@
         @endforeach
     </div>
 
-    <form method="get" class="no-print grid grid-cols-1 md:grid-cols-5 gap-3 items-end mb-4">
+    <form method="get" class="no-print grid grid-cols-1 md:grid-cols-6 gap-3 items-end mb-4">
         <x-form.select label="กลุ่มสาระ" name="subject" onchange="this.form.activity && (this.form.activity.value='');this.form.submit()">
             <option value="">ทั้งหมด</option>
             @foreach($subjects as $s)
                 <option value="{{ $s->id }}" @selected($filters['subject'] == $s->id)>{{ $s->subjectgroup_name }}</option>
+            @endforeach
+        </x-form.select>
+        <x-form.select label="ระดับชั้น" name="class" onchange="this.form.activity && (this.form.activity.value='');this.form.submit()">
+            <option value="">ทั้งหมด</option>
+            @foreach($classes as $c)
+                <option value="{{ $c->id }}" @selected($filters['class'] == $c->id)>{{ $c->class_name }}</option>
             @endforeach
         </x-form.select>
         @if($type !== 'activities')
