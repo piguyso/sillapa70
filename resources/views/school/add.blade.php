@@ -170,11 +170,13 @@
         @php
             $importResult = session('school_import_result');
             $importHasErrors = count($importResult['errors']) > 0 || collect($importResult['rows'])->contains(fn($row) => count($row['errors']) > 0);
+            $importable = collect($importResult['rows'])->filter(fn($row) => empty($row['skip']))->count();
+            $skipped = count($importResult['rows']) - $importable;
         @endphp
         <div class="mt-8 bg-white rounded-3xl shadow-sm border {{ $importHasErrors ? 'border-red-200' : 'border-emerald-200' }} overflow-hidden">
             <div class="px-6 py-5 {{ $importHasErrors ? 'bg-red-50 text-red-800' : 'bg-emerald-50 text-emerald-800' }}">
                 <h2 class="font-black text-lg">ผลการตรวจสอบไฟล์: {{ count($importResult['rows']) }} รายการ</h2>
-                <p class="text-sm mt-1">{{ $importHasErrors ? 'ยังนำเข้าไม่ได้ กรุณาแก้ไขข้อผิดพลาดแล้วอัปโหลดใหม่' : 'ข้อมูลถูกต้อง พร้อมนำเข้าฐานข้อมูล' }}</p>
+                <p class="text-sm mt-1">{{ $importHasErrors ? 'ยังนำเข้าไม่ได้ กรุณาแก้ไขข้อผิดพลาดแล้วอัปโหลดใหม่' : ($importable > 0 ? 'พร้อมนำเข้า '.$importable.' โรงเรียน' : 'ไม่มีโรงเรียนใหม่ให้นำเข้า').($skipped ? ' (ข้ามแถวที่ซ้ำ '.$skipped.' แถว)' : '') }}</p>
             </div>
 
             @foreach($importResult['errors'] as $error)
@@ -195,7 +197,9 @@
                                 @if(!empty($row['is_expansion']))<div class="text-xs text-amber-700 font-bold">ขยายโอกาส</div>@endif
                             </td>
                             <td class="p-3">
-                                @if($row['errors'])
+                                @if(!empty($row['skip']))
+                                    <span class="font-bold text-amber-600">ข้าม: {{ $row['skip'] }}</span>
+                                @elseif($row['errors'])
                                     <ul class="text-red-600 list-disc pl-4">@foreach($row['errors'] as $error)<li>{{ $error }}</li>@endforeach</ul>
                                 @else
                                     <span class="font-bold text-emerald-600">ถูกต้อง</span>
@@ -207,14 +211,14 @@
                 </table>
             </div>
 
-            @unless($importHasErrors)
+            @if(!$importHasErrors && $importable > 0)
                 <form method="POST" action="{{ route('school.import.store') }}" class="px-6 pb-6">
                     @csrf
                     <button type="submit" class="w-full rounded-xl bg-emerald-600 px-5 py-4 text-white font-black hover:bg-emerald-700">
-                        ยืนยันนำเข้า {{ count($importResult['rows']) }} โรงเรียน
+                        ยืนยันนำเข้า {{ $importable }} โรงเรียน
                     </button>
                 </form>
-            @endunless
+            @endif
         </div>
     @endif
 </div>

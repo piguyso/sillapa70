@@ -50,13 +50,14 @@ class SchoolImportService
             }
 
             $rowErrors = [];
+            $skipReason = null;
             $normalizedName = $this->normalizeName($name);
             if ($name === '') {
                 $rowErrors[] = 'ไม่ระบุชื่อโรงเรียน';
             } elseif ($existingNames->has($normalizedName)) {
-                $rowErrors[] = 'ชื่อโรงเรียนซ้ำกับฐานข้อมูล';
+                $skipReason = 'ชื่อโรงเรียนซ้ำกับฐานข้อมูล';
             } elseif (isset($seenNames[$normalizedName])) {
-                $rowErrors[] = 'ชื่อโรงเรียนซ้ำในไฟล์ (ซ้ำกับแถว '.$seenNames[$normalizedName].')';
+                $skipReason = 'ชื่อโรงเรียนซ้ำในไฟล์ (ซ้ำกับแถว '.$seenNames[$normalizedName].')';
             }
 
             if ($detail === '') {
@@ -93,6 +94,7 @@ class SchoolImportService
                 'extra_names' => collect($extraIds)->map(fn ($id) => $groups->get($id))->filter()->implode(', '),
                 'is_expansion' => $isExpansion,
                 'errors' => $rowErrors,
+                'skip' => $skipReason,
             ];
         }
 
@@ -113,15 +115,18 @@ class SchoolImportService
             $validGroups = Schoolgroup::pluck('id')->mapWithKeys(fn ($id) => [(int) $id => true]);
 
             foreach ($rows as $row) {
-                if (isset($existingLookup[$this->normalizeName($row['school_name'])])) {
-                    throw new \RuntimeException('พบชื่อโรงเรียนซ้ำก่อนนำเข้า: '.$row['school_name']);
-                }
                 if (! $validGroups->has((int) $row['school_group'])) {
                     throw new \RuntimeException('ไม่พบเครือข่ายของโรงเรียน: '.$row['school_name']);
                 }
             }
 
+            $imported = 0;
             foreach ($rows as $row) {
+                $key = $this->normalizeName($row['school_name']);
+                if (! empty($row['skip']) || isset($existingLookup[$key])) {
+                    continue;
+                }
+                $existingLookup[$key] = true;
                 $school = new School();
                 $school->school_name = $row['school_name'];
                 $school->school_detail = $row['school_detail'];
@@ -129,9 +134,10 @@ class SchoolImportService
                 $school->is_expansion = (bool) ($row['is_expansion'] ?? false);
                 $school->save();
                 $school->syncNetworks($row['extra_groups'] ?? [], (int) $row['school_group']);
+                $imported++;
             }
 
-            return count($rows);
+            return $imported;
         });
     }
 
