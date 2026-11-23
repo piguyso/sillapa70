@@ -13,18 +13,23 @@ class SchoolImportService
     public const HEADERS = ['school_name', 'school_detail', 'school_group_id'];
 
     /** คอลัมน์เสริม (ไม่บังคับ): เครือข่ายเพิ่มเติม (คั่นด้วยจุลภาค) และป้ายโรงเรียนขยายโอกาส (1 = ใช่) */
-    public const OPTIONAL_HEADERS = ['extra_group_ids', 'is_expansion'];
+    public const OPTIONAL_HEADERS = ['extra_group_ids', 'is_expansion', 'school_code'];
 
     public function inspect(UploadedFile $file): array
     {
         $sheet = IOFactory::load($file->getPathname())->getActiveSheet();
         $lastRow = min($sheet->getHighestDataRow(), 502);
-        $headers = array_map(fn ($value) => trim((string) $value), $sheet->rangeToArray('A1:E1')[0]);
-        $optional = array_slice($headers, 3, 2);
+        $headers = array_map(fn ($value) => trim((string) $value), $sheet->rangeToArray('A1:F1')[0]);
+        $optional = array_slice($headers, 3, 3);
         $headers = array_slice($headers, 0, 3);
         $errors = [];
 
-        $optionalOk = $optional === ['', ''] || $optional === self::OPTIONAL_HEADERS || $optional === [self::OPTIONAL_HEADERS[0], ''] || $optional === [self::OPTIONAL_HEADERS[0]];
+        $optionalOk = true;
+        foreach ($optional as $i => $h) {
+            if ($h !== '' && $h !== self::OPTIONAL_HEADERS[$i]) {
+                $optionalOk = false;
+            }
+        }
         if ($headers !== self::HEADERS || ! $optionalOk) {
             return ['rows' => [], 'errors' => ['หัวตารางไม่ถูกต้อง กรุณาใช้ไฟล์เทมเพลตจากระบบ']];
         }
@@ -37,13 +42,15 @@ class SchoolImportService
         $existingNames = School::pluck('school_name')
             ->mapWithKeys(fn ($name) => [$this->normalizeName($name) => true]);
         $seenNames = [];
+        $existingCodes = School::whereNotNull('school_code')->pluck('school_code')->flip();
+        $seenCodes = [];
         $rows = [];
 
         for ($rowNumber = 2; $rowNumber <= $lastRow; $rowNumber++) {
-            [$name, $detail, $groupId, $extraRaw, $expansionRaw] = array_pad(array_map(
+            [$name, $detail, $groupId, $extraRaw, $expansionRaw, $codeRaw] = array_pad(array_map(
                 fn ($value) => trim((string) $value),
-                $sheet->rangeToArray("A{$rowNumber}:E{$rowNumber}")[0],
-            ), 5, '');
+                $sheet->rangeToArray("A{$rowNumber}:F{$rowNumber}")[0],
+            ), 6, '');
 
             if ($name === '' && $detail === '' && $groupId === '' && $extraRaw === '') {
                 continue;
@@ -62,6 +69,19 @@ class SchoolImportService
 
             if ($detail === '') {
                 $rowErrors[] = 'ไม่ระบุรายละเอียดโรงเรียน';
+            }
+
+            $codeRaw = preg_replace('/\D/', '', str_replace(['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'], range(0, 9), $codeRaw));
+            if ($codeRaw !== '' && ! preg_match('/^\d{8}$/', $codeRaw)) {
+                $rowErrors[] = 'รหัสโรงเรียนต้องเป็นตัวเลข 8 หลัก';
+            } elseif ($codeRaw !== '' && $skipReason === null) {
+                if ($existingCodes->has($codeRaw)) {
+                    $skipReason = 'รหัสโรงเรียนซ้ำกับฐานข้อมูล';
+                } elseif (isset($seenCodes[$codeRaw])) {
+                    $skipReason = 'รหัสโรงเรียนซ้ำในไฟล์ (ซ้ำกับแถว '.$seenCodes[$codeRaw].')';
+                } else {
+                    $seenCodes[$codeRaw] = $rowNumber;
+                }
             }
 
             if (! ctype_digit($groupId) || ! $groups->has((int) $groupId)) {
@@ -93,6 +113,7 @@ class SchoolImportService
                 'extra_groups' => array_values(array_unique($extraIds)),
                 'extra_names' => collect($extraIds)->map(fn ($id) => $groups->get($id))->filter()->implode(', '),
                 'is_expansion' => $isExpansion,
+                'school_code' => $codeRaw,
                 'errors' => $rowErrors,
                 'skip' => $skipReason,
             ];
@@ -132,13 +153,45 @@ class SchoolImportService
                 $school->school_detail = $row['school_detail'];
                 $school->school_group = $row['school_group'];
                 $school->is_expansion = (bool) ($row['is_expansion'] ?? false);
+                $code = (string) ($row['school_code'] ?? '');
+                if ($code === '' || School::where('school_code', $code)->exists()) {
+                    $code = $this->nextPrivateCode();
+                }
+                $school->school_code = $code;
                 $school->save();
+                $this->createAccount($school);
                 $school->syncNetworks($row['extra_groups'] ?? [], (int) $row['school_group']);
                 $imported++;
             }
 
             return $imported;
         });
+    }
+
+    /** รหัสโรงเรียนเอกชน/ไม่มีใน SMIS: 86019xxx ต่อจากลำดับล่าสุด */
+    private function nextPrivateCode(): string
+    {
+        $max = (int) School::where('school_code', 'like', '86019%')->max('school_code');
+        return (string) max($max + 1, 86019001);
+    }
+
+    /** บัญชีโรงเรียน: username = รหัส 8 หลัก, รหัสผ่านเริ่มต้นเท่ากัน, บังคับเปลี่ยน */
+    private function createAccount(School $school): void
+    {
+        if (\App\User::where('email', $school->school_code)->exists()) {
+            return;
+        }
+        $u = new \App\User();
+        $u->name = $school->school_name;
+        $u->lastname = (string) $school->school_detail;
+        $u->email = $school->school_code;
+        $u->password = \Illuminate\Support\Facades\Hash::make($school->school_code);
+        $u->must_change_password = 1;
+        $u->position = 0;
+        $u->school_id = $school->id;
+        $u->schoolgroup = $school->school_group;
+        $u->branch = $school->id;
+        $u->save();
     }
 
     private function normalizeName(?string $name): string

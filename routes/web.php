@@ -159,6 +159,7 @@ Route::put('password/change-required', 'RequiredPasswordChangeController@update'
 Route::resource('branch','BranchController')->middleware(['auth', 'systemadmin']);
 Route::get('school-import/template', 'SchoolImportController@template')->middleware(['auth', 'systemadmin'])->name('school.import.template');
 Route::post('school-import/inspect', 'SchoolImportController@inspect')->middleware(['auth', 'systemadmin'])->name('school.import.inspect');
+Route::post('school-import/purge', 'SchoolImportController@purge')->middleware(['auth', 'systemadmin'])->name('school.import.purge');
 Route::post('school-import/store', 'SchoolImportController@store')->middleware(['auth', 'systemadmin'])->name('school.import.store');
 Route::resource('school','SchoolController')->middleware(['auth', 'systemadmin']);
 Route::resource('schoolgroup','SchoolgroupController')->middleware(['auth', 'systemadmin']);

@@ -27,10 +27,10 @@ class SchoolImportController extends Controller
         // ชีต 1: กรอกข้อมูลโรงเรียน (คอลัมน์ C เลือกรหัสเครือข่ายจากรายการได้)
         $sheet = $spreadsheet->getActiveSheet()->setTitle('Schools');
         $sheet->fromArray([array_merge(SchoolImportService::HEADERS, SchoolImportService::OPTIONAL_HEADERS)], null, 'A1');
-        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
         $sheet->getStyle('A1:C1')->getFill()->setFillType('solid')->getStartColor()->setRGB('FEF3C7');
-        $sheet->getStyle('D1:E1')->getFill()->setFillType('solid')->getStartColor()->setRGB('E2E8F0');
-        foreach (['A' => 35, 'B' => 45, 'C' => 20, 'D' => 24, 'E' => 16] as $col => $w) {
+        $sheet->getStyle('D1:F1')->getFill()->setFillType('solid')->getStartColor()->setRGB('E2E8F0');
+        foreach (['A' => 35, 'B' => 45, 'C' => 20, 'D' => 24, 'E' => 16, 'F' => 16] as $col => $w) {
             $sheet->getColumnDimension($col)->setWidth($w);
         }
         $sheet->freezePane('A2');
@@ -67,6 +67,7 @@ class SchoolImportController extends Controller
             ['school_group_id', 'ใช่', 'รหัสเครือข่ายหลัก เลือกจากรายการ หรือดูรหัสในชีต Networks'],
             ['extra_group_ids', 'ไม่บังคับ', 'รหัสเครือข่ายเพิ่มเติมของโรงเรียนที่สังกัดหลายเครือข่าย คั่นด้วยจุลภาค เช่น 3,5'],
             ['is_expansion', 'ไม่บังคับ', 'โรงเรียนขยายโอกาส (มีระดับมัธยม) พิมพ์ 1 ถ้าใช่ เว้นว่างถ้าไม่ใช่'],
+            ['school_code', 'ไม่บังคับ', 'รหัส SMIS 8 หลัก ถ้าเว้นว่าง ระบบกำหนดรหัส 86019xxx ให้ และสร้างบัญชีผู้ใช้โรงเรียน (username = รหัส, รหัสผ่านเริ่มต้นเท่ากัน)'],
             ['', '', 'ใส่ได้ครั้งละไม่เกิน 500 โรงเรียน และอย่าแก้ชื่อหัวตารางในชีต Schools'],
         ], null, 'A1');
         $guide->getStyle('A1:C1')->getFont()->setBold(true);
@@ -129,5 +130,45 @@ class SchoolImportController extends Controller
         }
 
         return redirect()->route('school.index')->with('massage', "นำเข้าโรงเรียนสำเร็จ {$count} แห่ง");
+    }
+
+    /** ลบโรงเรียนทั้งหมดเพื่อนำเข้าใหม่ (ลบไม่ได้ถ้ามีข้อมูลลงทะเบียน/นักเรียนอ้างอิง) */
+    public function purge(Request $request)
+    {
+        if (trim((string) $request->confirm_text) !== 'ลบโรงเรียนทั้งหมด') {
+            return back()->withErrors(['confirm_text' => 'ข้อความยืนยันไม่ถูกต้อง']);
+        }
+
+        $refs = [
+            'addschools' => 'school', 'addschools_areas' => 'school_id',
+            'addstudents' => 'school', 'addstudents_areas' => 'school_id',
+        ];
+        $blocking = [];
+        foreach ($refs as $table => $col) {
+            $n = \Illuminate\Support\Facades\DB::table($table)->count();
+            if ($n > 0) {
+                $blocking[] = "{$table} {$n} รายการ";
+            }
+        }
+        if ($blocking) {
+            return back()->withErrors(['confirm_text' => 'ลบไม่ได้ เพราะยังมีข้อมูลอ้างอิงโรงเรียน: '.implode(', ', $blocking)]);
+        }
+
+        $dir = storage_path('app/backups');
+        @mkdir($dir, 0775, true);
+        $db = \Illuminate\Support\Facades\DB::class;
+        file_put_contents($dir.'/schools_'.date('Ymd_His').'.json', json_encode([
+            'schools' => \Illuminate\Support\Facades\DB::table('schools')->get(),
+            'school_schoolgroup' => \Illuminate\Support\Facades\DB::table('school_schoolgroup')->get(),
+            'users' => \Illuminate\Support\Facades\DB::table('users')->where('position', 0)->get(),
+        ], JSON_UNESCAPED_UNICODE));
+
+        $count = \Illuminate\Support\Facades\DB::transaction(function () {
+            $db = \Illuminate\Support\Facades\DB::table('users')->where('position', 0)->delete();
+            \Illuminate\Support\Facades\DB::table('school_schoolgroup')->delete();
+            return \Illuminate\Support\Facades\DB::table('schools')->delete();
+        });
+
+        return redirect('school')->with('massage', "ลบโรงเรียน {$count} แห่งและบัญชีโรงเรียนแล้ว พร้อมนำเข้าใหม่ (สำรองไว้ที่ storage/app/backups)");
     }
 }
