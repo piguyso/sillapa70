@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+@include('layouts._theme-overrides')
 <style>
     /* ยกระดับการออกแบบระบบปุ่มควบคุมหน้า (Pagination) ให้สวยงามและมองเห็นง่าย */
     
@@ -212,7 +213,7 @@
         .scrollbar-thin::-webkit-scrollbar { width: 5px; }
         .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
         .scrollbar-thin::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: var(--ui-primary); }
 
         /* DataTables Styling */
         .dataTables_wrapper .dataTables_filter {
@@ -481,9 +482,9 @@
     <script>
         window.showCustomConfirm = function(title, message, onConfirm, okText = 'ยืนยัน', isDanger = true) {
             const iconBg = isDanger ? '#fef2f2' : '#ecfdf5';
-            const iconColor = isDanger ? '#ef4444' : '#10b981';
+            const iconColor = isDanger ? '#ef4444' : getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
             const iconClass = isDanger ? 'ri-error-warning-line' : 'ri-question-line';
-            const btnBg = isDanger ? '#dc2626' : '#059669';
+            const btnBg = isDanger ? '#dc2626' : getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
 
             const modalHtml = `
                 <div id="custom-confirm-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -529,9 +530,9 @@
 
             if (type === 'success') {
                 iconBg = '#ecfdf5';
-                iconColor = '#10b981';
+                iconColor = getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
                 iconClass = 'ri-checkbox-circle-line';
-                btnBg = '#059669';
+                btnBg = getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
             } else if (type === 'error' || type === 'danger') {
                 iconBg = '#fef2f2';
                 iconColor = '#ef4444';
@@ -576,7 +577,7 @@
         };
     </script>
     @if(Session::has('massage') || Session::has('success') || Session::has('status'))
-        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #10b981; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
+        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: var(--ui-primary); color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--ui-primary) 30%, transparent), 0 4px 6px -4px color-mix(in srgb, var(--ui-primary) 30%, transparent); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
             <i class="ri-checkbox-circle-fill" style="font-size: 20px;"></i>
             <span>{{ Session::get('massage') ?? Session::get('success') ?? Session::get('status') }}</span>
         </div>

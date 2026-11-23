@@ -53,25 +53,7 @@
                         @endif
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="school_group" class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">
-                            <i class="ri-node-tree text-emerald-500 mr-1"></i> เครือข่ายสถานศึกษา
-                        </label>
-                        <select id="school_group" name="school_group" required
-                                class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
-                            @foreach($schoolgroups as $schoolgroup)
-                                <option value="{{ $schoolgroup->id }}" @selected((int) old('school_group', $school->school_group) === (int) $schoolgroup->id)>
-                                    {{ $schoolgroup->schoolgroup_name }} ({{ $schoolgroup->schoolgroup_detail }})
-                                </option>
-                            @endforeach
-                        </select>
-
-                        @error('school_group')
-                            <p class="text-red-500 text-xs font-bold mt-1 flex items-center gap-1">
-                                <i class="ri-error-warning-line"></i> {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
+                    @include('school._networks')
 
                     <div class="space-y-2">
                         <label for="school_detail" class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">

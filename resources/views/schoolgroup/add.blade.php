@@ -66,6 +66,11 @@
                             @endif
                         </div>
 
+<x-form.select label="ประเภทเครือข่าย" name="group_type" required>
+    <option value="district" @selected(old('group_type', 'cluster') === 'district')>อำเภอ</option>
+    <option value="cluster" @selected(old('group_type', 'cluster') === 'cluster')>กลุ่มโรงเรียน</option>
+</x-form.select>
+
                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-lg">
                             <i class="ri-save-3-line text-xl"></i> บันทึกข้อมูล
                         </button>
@@ -102,7 +107,9 @@
                                             {{$l->schoolgroup_name}}
                                         </div>
                                         <div class="text-xs text-gray-400 font-bold mt-1 flex items-center gap-1 leading-relaxed">
-                                            <i class="ri-information-line"></i> {{$l->schoolgroup_detail ?: 'ไม่มีรายละเอียด'}}
+                                            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 font-black">{{ $l->type_name }}</span>
+                                            <span><i class="ri-school-line"></i> {{ $l->schools_count }} โรงเรียน</span>
+                                            <span><i class="ri-information-line"></i> {{$l->schoolgroup_detail ?: 'ไม่มีรายละเอียด'}}</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-6 text-center">

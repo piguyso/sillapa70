@@ -106,6 +106,7 @@ class SchoolImportService
                 $school->school_detail = $row['school_detail'];
                 $school->school_group = $row['school_group'];
                 $school->save();
+                $school->syncNetworks([], (int) $row['school_group']);
             }
 
             return count($rows);

@@ -33,7 +33,7 @@ class AddschoolController extends Controller
 
     }
     public function getschool($id){ /// ดึงข้อมูลช่ือโรงเรียนจากคอมโบบ๊อคเครือข่าย
-        $school = School::where('school_group','=',$id)->pluck("school_name","id");
+        $school = School::inNetwork($id)->pluck("school_name","id");
         return json_encode($school);
 
     }

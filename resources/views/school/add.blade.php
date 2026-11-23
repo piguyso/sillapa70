@@ -50,17 +50,7 @@
                             @endif
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">เครือข่ายสถานศึกษา</label>
-                            <select name="school_group" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700">
-                                @foreach($schoolgroup as $i)
-                                    <option value="{{$i->id}}">{{$i->schoolgroup_name}} ({{$i->schoolgroup_detail}})</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('school_group'))
-                                <p class="text-red-500 text-xs mt-1 font-bold italic">* {{ $errors->first('school_group') }}</p>
-                            @endif
-                        </div>
+                        @include('school._networks', ['school' => new \App\School, 'schoolgroups' => $schoolgroup])
 
                         <div class="space-y-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">ข้อมูลเพิ่มเติม</label>
@@ -142,8 +132,9 @@
                                     </td>
                                     <td class="px-6 py-6">
                                         <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black border border-emerald-100 uppercase italic">
-                                            {{$l->getschoolgroup->schoolgroup_name}}
+                                            {{ $l->schoolgroups->pluck("schoolgroup_name")->implode(", ") ?: optional($l->getschoolgroup)->schoolgroup_name }}
                                         </span>
+                                        @if($l->is_expansion)<span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-[10px] font-black border border-amber-100">ขยายโอกาส</span>@endif
                                     </td>
                                     <td class="px-6 py-6 text-center">
                                         @if(officerchk())

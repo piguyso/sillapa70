@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\School;
 use App\Schoolgroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Session;
 class SchoolController extends Controller
 {
@@ -17,9 +18,20 @@ class SchoolController extends Controller
     {
         $this->middleware('auth');
     }
+    private function rules(): array
+    {
+        return [
+            'school_name'=>'required',
+            'school_detail'=>'required',
+            'school_group'=>'required|exists:schoolgroups,id',
+            'networks'=>'nullable|array',
+            'networks.*'=>'integer|exists:schoolgroups,id',
+        ];
+    }
+
     public function index()
     {
-        $school = school::with('getschoolgroup')->orderBy('school_name')->get();
+        $school = school::with(['getschoolgroup','schoolgroups'])->orderBy('school_name')->get();
         $schoolgroup = schoolgroup::all();
         $data = array(
             'data'=>$school,
@@ -48,17 +60,14 @@ class SchoolController extends Controller
     public function store(Request $request)
     {
         adminchk();
-      $this->validate($request,[
-          'school_name'=>'required',
-          'school_detail'=>'required',
-        
-      ]);
+      $this->validate($request, $this->rules());
       $school = new school;
       $school->school_name = $request->school_name;
       $school->school_group = $request->school_group;
       $school->school_detail = $request->school_detail;
- 
+      $school->is_expansion = $request->boolean('is_expansion');
       $school->save();
+      $school->syncNetworks((array) $request->input('networks', []), (int) $request->school_group);
       Session::flash('massage','Success Create !!');
       return redirect('/school');
     }
@@ -103,17 +112,14 @@ class SchoolController extends Controller
     public function update(Request $request,$id)
     {
         adminchk();
-        $this->validate($request,[
-            'school_name'=>'required',
-            'school_detail'=>'required',
-            'school_group'=>'required|exists:schoolgroups,id',
-          
-        ]);
+        $this->validate($request, $this->rules());
         $school = school::findOrFail($id);
         $school->school_name = $request->school_name;
         $school->school_group = $request->school_group;
         $school->school_detail = $request->school_detail;
+        $school->is_expansion = $request->boolean('is_expansion');
         $school->save();
+        $school->syncNetworks((array) $request->input('networks', []), (int) $request->school_group);
         Session::flash('massage','Data update Successfull..');
         return redirect('school');
     }
@@ -126,7 +132,14 @@ class SchoolController extends Controller
      */
     public function destroy($id)
     {
-        $school = school::find($id);
+        $school = school::findOrFail($id);
+        $used = DB::table('addschools')->where('school_id', $id)->exists()
+            || DB::table('addschools_areas')->where('school_id', $id)->exists();
+        if ($used) {
+            Session::flash('error','ลบโรงเรียนไม่ได้ เพราะมีการลงทะเบียนแข่งขันแล้ว');
+            return redirect('school');
+        }
+        $school->schoolgroups()->detach();
         $school->delete();
         Session::flash('massage','Data has been deleted..');
         return redirect('school');

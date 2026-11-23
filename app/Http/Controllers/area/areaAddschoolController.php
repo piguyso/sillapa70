@@ -41,10 +41,10 @@ class areaAddschoolController extends Controller
 
         //เชคว่าเป็นเครือข่ายหรือโรงเรียนก่อน
         $groupId = $this->registrationGroupId();
-        $school = School::where('school_group', $groupId)
+        $school = School::inNetwork($groupId)
         ->pluck("school_name","id");
         if(Auth::user()->position == 0){
-        $school = School::where('school_group', $groupId)
+        $school = School::inNetwork($groupId)
         ->where('id',Auth::user()->school_id)
         ->pluck("school_name","id");
       /*  $school = School::where('school_group','=',$id)

@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        // สีประจำเว็บระดับเครือข่าย: กำหนดแยกจากสีของเว็บเขตพื้นที่ (theme ของงาน) เพื่อให้แยกออกชัดเจนว่าอยู่เว็บไหน
-        $themePrimary = '#c2410c';
-        $themeSecondary = '#7c2d12';
+        $themePrimary = config('app.theme_primary') ?: session('theme_primary', '#059669');
+        $themeSecondary = config('app.theme_secondary') ?: session('theme_secondary', '#0f172a');
         $appName = config('app.name') ?: session('app_name', 'งานศิลปหัตถกรรมนักเรียน');
     @endphp
     <title>{{ $appName }}</title>
@@ -39,6 +38,7 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 @include('layouts._legacy-bootstrap')
+@include('layouts._theme-overrides')
 <style>
     /* ยกระดับการออกแบบระบบปุ่มควบคุมหน้า (Pagination) ให้สวยงามและมองเห็นง่าย */
     
@@ -71,14 +71,14 @@
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background-color: #f3f4f6 !important;
         border-color: #9ca3af !important;
-        color: #059669 !important; /* สีเขียวหลัก */
+        color: var(--ui-primary) !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current,
     .dataTables_wrapper .dataTables_paginate .paginate_button.active {
-        background-color: #059669 !important; /* สีเขียวเด่นชัด */
+        background-color: var(--ui-primary) !important;
         color: #ffffff !important;
-        border-color: #059669 !important;
+        border-color: var(--ui-primary) !important;
         font-weight: 700 !important;
         box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
     }
@@ -128,7 +128,7 @@
     .pagination .page-link:hover {
         background-color: #f3f4f6 !important;
         border-color: #9ca3af !important;
-        color: #059669 !important;
+        color: var(--ui-primary) !important;
     }
 
     /* โหมดกำลังใช้งาน (Active) */
@@ -136,9 +136,9 @@
     nav[role="navigation"] .bg-emerald-600,
     nav[role="navigation"] .bg-primary,
     .pagination .page-item.active .page-link {
-        background-color: #059669 !important;
+        background-color: var(--ui-primary) !important;
         color: #ffffff !important;
-        border-color: #059669 !important;
+        border-color: var(--ui-primary) !important;
         font-weight: 700 !important;
         box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2), 0 2px 4px -1px rgba(5, 150, 105, 0.1) !important;
     }
@@ -283,7 +283,7 @@
                     </div>
 
                     @guest
-                        <a href="{{ route('login') }}" class="bg-secondary hover:bg-orange-800 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transition transform active:scale-95">
+                        <a href="{{ route('login') }}" class="bg-secondary hover:bg-emerald-800 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transition transform active:scale-95">
                             <i class="ri-login-circle-line mr-1"></i> Login
                         </a>
                     @else
@@ -328,7 +328,7 @@
                                         @if(Auth::user()->position == 10)
                                             <div class="my-3 border-t border-slate-100 mx-4"></div>
                                             <div class="px-4 py-1 mb-1">
-                                                <span class="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] italic">
+                                                <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] italic">
                                                     <i class="ri-shield-user-line mr-1"></i> Super Admin Control
                                                 </span>
                                             </div>
@@ -351,14 +351,14 @@
                                             <a href="{{ url('Notice')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-800 rounded-2xl transition-all">
                                                 <i class="ri-notification-3-line text-amber-600 text-lg"></i> จัดการประกาศ
                                             </a>
-                                            <a href="{{ url('config')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-orange-50 hover:text-orange-800 border-t border-orange-50 mt-2 rounded-2xl transition-all">
-                                                <i class="ri-settings-5-line text-orange-600 text-lg"></i> ตั้งค่าระบบ (Super Admin)
+                                            <a href="{{ url('config')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 border-t border-emerald-50 mt-2 rounded-2xl transition-all">
+                                                <i class="ri-settings-5-line text-emerald-600 text-lg"></i> ตั้งค่าระบบ (Super Admin)
                                             </a>
-                                            <a href="{{ url('systemactive')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-orange-700 hover:bg-orange-50 rounded-2xl transition-all">
-                                                <i class="ri-toggle-line text-orange-600 text-lg"></i> ปิด/เปิดระบบบันทึก
+                                            <a href="{{ url('systemactive')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-emerald-700 hover:bg-emerald-50 rounded-2xl transition-all">
+                                                <i class="ri-toggle-line text-emerald-600 text-lg"></i> ปิด/เปิดระบบบันทึก
                                             </a>
-                                            <a href="{{ url('datatranfer')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                                <i class="ri-download-cloud-2-line text-orange-500 text-lg"></i> ดึงข้อมูลจากเครือข่าย
+                                            <a href="{{ url('datatranfer')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                                <i class="ri-download-cloud-2-line text-emerald-500 text-lg"></i> ดึงข้อมูลจากเครือข่าย
                                             </a>
 
                                             <div class="my-3 border-t border-slate-100 mx-4"></div>
@@ -384,64 +384,64 @@
                                             <div class="border-t border-gray-100 my-2"></div>
                                           
 
-                                            <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-user-add-line text-orange-600 text-lg"></i> 
+                                            <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-user-add-line text-emerald-600 text-lg"></i> 
                                             บันทึกข้อมูลนักเรียน : {{ Auth::user()->name }} {{ Auth::user()->lastname}}
                                         </a>
 
-                                        <a href="{{ url('areajow')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-user-star-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('areajow')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-user-star-line text-emerald-600 text-lg"></i> 
                                             บันทึกรายชื่อกรรมการตัดสิน
                                         </a>
 
-                                        <a href="{{ url('area/addjow2')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-team-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/addjow2')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-team-line text-emerald-600 text-lg"></i> 
                                             บันทึกรายชื่อกรรมการดำเนินงาน
                                         </a>
 
                                         <div class="my-2 border-t border-gray-100 mx-4"></div>
 
-                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-trophy-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-trophy-line text-emerald-600 text-lg"></i> 
                                             บันทึกผลการแข่งขัน
                                         </a>
 
-                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-arrow-go-back-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-arrow-go-back-line text-emerald-600 text-lg"></i> 
                                             ยกเลิกผลการแข่งขัน
                                         </a>
 
                                         <div class="my-2 border-t border-gray-100 mx-4"></div>
 
-                                        <a href="{{ url('area/shownotice')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-notification-3-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/shownotice')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-notification-3-line text-emerald-600 text-lg"></i> 
                                             เพิ่มประกาศแจ้งผู้เข้าร่วมแข่งขัน
                                         </a>
 
-                                        <a href="{{ url('area/report/participants/'.(session('area') ?: Auth::user()?->schoolgroup)) }}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-file-excel-2-line text-orange-600 text-lg"></i>
+                                        <a href="{{ url('area/report/participants/'.(session('area') ?: Auth::user()?->schoolgroup)) }}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-file-excel-2-line text-emerald-600 text-lg"></i>
                                             รายงานผู้เข้าร่วม (Excel)
                                         </a>
 
-                                        <a href="{{ url('area/areaconfig')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-settings-4-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/areaconfig')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-settings-4-line text-emerald-600 text-lg"></i> 
                                             การตั้งค่าระบบ
                                         </a>
 
-                                        <a href="{{ url('area/areauser')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-user-settings-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/areauser')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-user-settings-line text-emerald-600 text-lg"></i> 
                                             จัดการข้อมูลผู้ใช้งาน
                                         </a>
                                         @endif
 
                                         @if(Auth::user()->position==0)
                                             
-                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-trophy-line text-orange-600 text-lg"></i> 
+                                        <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-trophy-line text-emerald-600 text-lg"></i> 
                                             บันทึกรายชื่อนักเรียน
                                         </a>
-                                        <a href="{{ url('shoolPrintCardArea/')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-800 rounded-2xl transition-all">
-                                            <i class="ri-id-card-line text-orange-600 text-lg"></i>
+                                        <a href="{{ url('shoolPrintCardArea/')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">
+                                            <i class="ri-id-card-line text-emerald-600 text-lg"></i>
                                             พิมพ์บัตร
                                         </a>
                                         @endif
@@ -520,9 +520,9 @@
     <script>
         window.showCustomConfirm = function(title, message, onConfirm, okText = 'ยืนยัน', isDanger = true) {
             const iconBg = isDanger ? '#fef2f2' : '#ecfdf5';
-            const iconColor = isDanger ? '#ef4444' : '#10b981';
+            const iconColor = isDanger ? '#ef4444' : getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
             const iconClass = isDanger ? 'ri-error-warning-line' : 'ri-question-line';
-            const btnBg = isDanger ? '#dc2626' : '#059669';
+            const btnBg = isDanger ? '#dc2626' : getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
 
             const modalHtml = `
                 <div id="custom-confirm-modal" style="position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); transition: all 0.2s;" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -568,9 +568,9 @@
 
             if (type === 'success') {
                 iconBg = '#ecfdf5';
-                iconColor = '#10b981';
+                iconColor = getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
                 iconClass = 'ri-checkbox-circle-line';
-                btnBg = '#059669';
+                btnBg = getComputedStyle(document.body).getPropertyValue('--ui-primary').trim();
             } else if (type === 'error' || type === 'danger') {
                 iconBg = '#fef2f2';
                 iconColor = '#ef4444';
@@ -615,7 +615,7 @@
         };
     </script>
     @if(Session::has('massage') || Session::has('success') || Session::has('status'))
-        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: #10b981; color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
+        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; align-items: center; gap: 12px; background-color: var(--ui-primary); color: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--ui-primary) 30%, transparent), 0 4px 6px -4px color-mix(in srgb, var(--ui-primary) 30%, transparent); font-family: 'Sarabun', sans-serif; font-weight: bold; font-size: 14px; animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.3s ease;">
             <i class="ri-checkbox-circle-fill" style="font-size: 20px;"></i>
             <span>{{ Session::get('massage') ?? Session::get('success') ?? Session::get('status') }}</span>
         </div>

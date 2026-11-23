@@ -1,5 +1,5 @@
 :root {
-    --ui-primary: #059669;
+    --ui-primary: #059669; /* ค่าเริ่มต้น: layout เขียนทับด้วยสี theme ที่ตั้งค่าไว้ */
     --ui-secondary: #0f172a;
     --ui-danger: #dc2626;
     --ui-radius: 0.875rem;

@@ -112,10 +112,7 @@ class HomeController extends Controller
     ->groupBy('activity_subject')
     ->pluck('total','activity_subject');
    
-    $schoolgroupcount  = DB::table('schools')
-    ->select('school_group', DB::raw('count(*) as total'))
-    ->groupBy('school_group')
-    ->pluck('total','school_group');
+    $schoolgroupcount  = DB::table('school_schoolgroup')->select('schoolgroup_id', DB::raw('count(*) as total'))->groupBy('schoolgroup_id')->pluck('total','schoolgroup_id');
 
     $branchactivitycount = DB::table('Activities')
     ->select('activity_branch', DB::raw('count(*) as total'))
@@ -293,10 +290,7 @@ public function index2()
     ->groupBy('activity_subject')
     ->pluck('total','activity_subject');
    
-    $schoolgroupcount  = DB::table('schools')
-    ->select('school_group', DB::raw('count(*) as total'))
-    ->groupBy('school_group')
-    ->pluck('total','school_group');
+    $schoolgroupcount  = DB::table('school_schoolgroup')->select('schoolgroup_id', DB::raw('count(*) as total'))->groupBy('schoolgroup_id')->pluck('total','schoolgroup_id');
 
     $branchactivitycount = DB::table('Activities')
     ->select('activity_branch', DB::raw('count(*) as total'))
@@ -456,10 +450,7 @@ public function index2()
     ->groupBy('activity_subject')
     ->pluck('total','activity_subject');
    
-    $schoolgroupcount  = DB::table('schools')
-    ->select('school_group', DB::raw('count(*) as total'))
-    ->groupBy('school_group')
-    ->pluck('total','school_group');
+    $schoolgroupcount  = DB::table('school_schoolgroup')->select('schoolgroup_id', DB::raw('count(*) as total'))->groupBy('schoolgroup_id')->pluck('total','schoolgroup_id');
 
     $schoolgroupactivitycount = DB::table('addschools')
     ->select('school_schoolgroup', DB::raw('count(*) as total'))
@@ -785,7 +776,7 @@ $activityNames = Addschool::select('school_activity')
 
   public function showschool($id){
       $activeYear = active_year();
-      $school = school::where('school_group','=',$id)->paginate(1000);
+      $school = school::inNetwork($id)->paginate(1000);
       $schoolcount = DB::table('addschools')
       ->select('school_name', DB::raw('count(*) as total'))
       ->where('year', $activeYear)

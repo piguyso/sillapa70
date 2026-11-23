@@ -104,10 +104,7 @@ if ($rows->isEmpty()) {
 $activityfinish = $rows->pluck('total', 'activity_subject')->toArray();
 
     ////////////////////////
-    $schoolgroupcount  = DB::table('schools')
-    ->select('school_group', DB::raw('count(*) as total'))
-    ->groupBy('school_group')
-    ->pluck('total','school_group');
+    $schoolgroupcount  = DB::table('school_schoolgroup')->select('schoolgroup_id', DB::raw('count(*) as total'))->groupBy('schoolgroup_id')->pluck('total','schoolgroup_id');
 
     $branchactivitycount = DB::table('Activities')
     ->select('activity_branch', DB::raw('count(*) as total'))
@@ -297,7 +294,7 @@ $schoolcountactivity = DB::table('addschools_areas')
 
   public function showschool($id){
       $activeYear = active_year();
-      $school = school::where('school_group','=',$id)->paginate(1000);
+      $school = school::inNetwork($id)->paginate(1000);
       $schoolcount = DB::table('addschools_areas')
       ->select('school_name', DB::raw('count(*) as total'))
         ->where('school_schoolgroup',session('area'))

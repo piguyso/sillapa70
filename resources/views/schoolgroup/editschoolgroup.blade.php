@@ -67,6 +67,10 @@
                             </p>
                         @endif
                     </div>
+<x-form.select label="ประเภทเครือข่าย" name="group_type" required>
+    <option value="district" @selected(old('group_type', $schoolgroup->group_type) === 'district')>อำเภอ</option>
+    <option value="cluster" @selected(old('group_type', $schoolgroup->group_type) === 'cluster')>กลุ่มโรงเรียน</option>
+</x-form.select>
                 </div>
 
                 <div class="pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-4">

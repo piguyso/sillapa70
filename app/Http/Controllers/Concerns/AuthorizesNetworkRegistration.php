@@ -17,7 +17,7 @@ trait AuthorizesNetworkRegistration
 
     private function authorizedRegistrationSchool(int $schoolId): School
     {
-        $query = School::whereKey($schoolId)->where('school_group', $this->registrationGroupId());
+        $query = School::whereKey($schoolId)->inNetwork($this->registrationGroupId());
         if ((int) Auth::user()->position === 0) {
             $query->whereKey((int) Auth::user()->school_id);
         }

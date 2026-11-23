@@ -83,7 +83,7 @@ class SystemactiveController extends Controller
             $scopeId = (int) $request->input('scope_id');
             $ownsTarget = ($scope === 'network' && $scopeId === (int) $request->user()->schoolgroup)
                 || ($scope === 'school' && School::whereKey($scopeId)
-                    ->where('school_group', $request->user()->schoolgroup)->exists());
+                    ->inNetwork($request->user()->schoolgroup)->exists());
             abort_unless($ownsTarget, 403, 'จัดการได้เฉพาะโรงเรียนในเครือข่ายของตนเอง');
 
             $masterClosed = CompetitionAccessRule::where('event_id', active_event_id())
@@ -137,7 +137,7 @@ class SystemactiveController extends Controller
             foreach (Schoolgroup::pluck('id') as $groupId) $targets[] = $target('network', 'school', 'network', $groupId);
             foreach (School::pluck('id') as $schoolId) $targets[] = $target('network', 'school', 'school', $schoolId);
         } elseif ($data['competition_level'] === 'network' && $data['subject_type'] === 'school' && $data['scope_type'] === 'network') {
-            foreach (School::where('school_group', $data['scope_id'])->pluck('id') as $schoolId) $targets[] = $target('network', 'school', 'school', $schoolId);
+            foreach (School::inNetwork($data['scope_id'])->pluck('id') as $schoolId) $targets[] = $target('network', 'school', 'school', $schoolId);
         } elseif ($data['competition_level'] === 'district' && $data['subject_type'] === 'network' && $data['scope_type'] === 'all') {
             foreach (Schoolgroup::pluck('id') as $groupId) $targets[] = $target('district', 'network', 'network', $groupId);
         } elseif ($data['competition_level'] === 'district' && $data['subject_type'] === 'center' && $data['scope_type'] === 'all') {
@@ -158,8 +158,12 @@ class SystemactiveController extends Controller
             $parents[] = [$data['competition_level'], $data['subject_type'], 'all', 0];
         }
         if ($data['competition_level'] === 'network' && $data['subject_type'] === 'school' && $data['scope_type'] === 'school') {
-            $groupId = (int) School::whereKey($data['scope_id'])->value('school_group');
-            $parents[] = ['network', 'school', 'network', $groupId];
+            // โรงเรียนอาจสังกัดหลายเครือข่าย: บล็อกเฉพาะเมื่อ "ทุก" เครือข่ายของโรงเรียนถูกปิดอยู่
+            $networkIds = DB::table('school_schoolgroup')->where('school_id', (int) $data['scope_id'])->pluck('schoolgroup_id');
+            $openNetwork = $networkIds->contains(fn ($gid) => ! CompetitionAccessRule::where('event_id', active_event_id())
+                ->where('competition_level', 'network')->where('subject_type', 'school')
+                ->where('scope_type', 'network')->where('scope_id', $gid)->where('is_closed', true)->exists());
+            abort_if($networkIds->isNotEmpty() && ! $openNetwork, 423, 'ต้องเปิดหัวกลุ่มก่อน จึงจะเปลี่ยนสถานะลูกกลุ่มได้');
         }
         foreach ($parents as [$level, $subject, $scope, $id]) {
             $closed = CompetitionAccessRule::where('event_id', active_event_id())

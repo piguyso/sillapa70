@@ -30,7 +30,7 @@ class MyUserController extends Controller
       $branch = branch::all();
       $schoolgroup = Schoolgroup::all();
       $user = user::all();
-      $school = school::where('school_group','=', env('APP_SCHOOLGROUP','0'))->get();
+      $school = school::inNetwork(env('APP_SCHOOLGROUP','0'))->get();
       $resetSchools = School::whereIn('id', User::where('position', 0)->whereNotNull('school_id')->pluck('school_id'))
           ->orderBy('school_name')->get(['id', 'school_name']);
       $resetNetworks = Schoolgroup::whereIn('id', User::where('position', 5)->pluck('schoolgroup'))
@@ -116,7 +116,7 @@ class MyUserController extends Controller
         $user = User::find($id);
         $branch = branch::all();
         $schoolgroup = Schoolgroup::all();
-        $school = school::where('school_group','=', env('APP_SCHOOLGROUP','0'))->get();
+        $school = school::inNetwork(env('APP_SCHOOLGROUP','0'))->get();
         $data = array(
           'data'=>$user,
           'id'=>$id,
@@ -201,7 +201,7 @@ class MyUserController extends Controller
       $branch = branch::all();
       $schoolgroup = Schoolgroup::all();
       $user = user::where('schoolgroup',Auth::user()->schoolgroup)->paginate(25);
-      $school = school::where('school_group','=', env('APP_SCHOOLGROUP','0'))->get();
+      $school = school::inNetwork(env('APP_SCHOOLGROUP','0'))->get();
       $data  = array(
         'data' => $user,
         'branch'=> $branch,
@@ -216,7 +216,7 @@ class MyUserController extends Controller
         $user = User::where('schoolgroup', $schoolgroupId)->findOrFail($id);
         $branch = branch::all();
         $schoolgroup = Schoolgroup::all();
-        $school = school::where('school_group','=', Auth::user()->schoolgroup)->get();
+        $school = school::inNetwork(Auth::user()->schoolgroup)->get();
         $data = array(
           'data'=>$user,
           'id'=>$id,
@@ -232,7 +232,7 @@ class MyUserController extends Controller
         $user = User::findOrFail($id);
         $branch = branch::all();
         $schoolgroup = Schoolgroup::all();
-        $school = school::where('school_group','=', Auth::user()->schoolgroup)->get();
+        $school = school::inNetwork(Auth::user()->schoolgroup)->get();
         $data = array(
           'data'=>$user,
           'id'=>$id,
