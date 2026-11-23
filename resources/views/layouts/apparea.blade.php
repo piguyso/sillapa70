@@ -31,13 +31,21 @@
                     colors: { 
                         primary: @json($themePrimary),
                         primaryDark: @json($themePrimary),
-                        secondary: @json($themeSecondary)
+                        secondary: @json($themeSecondary),
+                        // ชุดสีสำหรับเว็บนี้: ทุกคลาสที่ใช้สีเหล่านี้ (emerald/orange/amber/blue/indigo/teal/pink/purple) จะตาม theme
+                        @foreach(['emerald', 'orange', 'amber', 'blue', 'indigo', 'teal', 'pink', 'purple'] as $family)
+                        {{ $family }}: @json(theme_palette($themePrimary)),
+                        @endforeach
                     }
                 }
             }
         }
     </script>
 
+    {{-- jQuery + DataTables ต้องโหลดใน head เพื่อให้สคริปต์ของหน้า ($(document).ready, .DataTable) ใช้งานได้ --}}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
@@ -45,7 +53,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 @include('layouts._legacy-bootstrap')
 @include('layouts._theme-overrides')
-@include('layouts._theme-overrides-network')
 <style>
     /* ยกระดับการออกแบบระบบปุ่มควบคุมหน้า (Pagination) ให้สวยงามและมองเห็นง่าย */
     
@@ -256,6 +263,7 @@
         }
     </style>
 
+@include('layouts._pagination')
 </head>
 <body class="flex flex-col min-h-screen text-slate-800" style="--ui-primary: {{ $themePrimary }}; --ui-secondary: {{ $themeSecondary }};">
 
@@ -514,9 +522,6 @@
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
     
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>

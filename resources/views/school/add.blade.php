@@ -230,6 +230,11 @@
                 "language": {
                    "search": "",
                    "searchPlaceholder": "🔍 ค้นหาชื่อโรงเรียน หรือเครือข่าย...",
+                   "info": "แสดง _START_ - _END_ จากทั้งหมด _TOTAL_ โรงเรียน",
+                   "infoEmpty": "ไม่พบข้อมูล",
+                   "infoFiltered": "(กรองจาก _MAX_ โรงเรียน)",
+                   "zeroRecords": "ไม่พบโรงเรียนที่ค้นหา",
+                   "paginate": { "previous": "ก่อนหน้า", "next": "ถัดไป" },
                 },
                 "initComplete": function(settings, json) {
                     $('#loading-overlay').addClass('opacity-0');

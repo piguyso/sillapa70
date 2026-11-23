@@ -852,3 +852,29 @@ if (!function_exists('online_count')) {
         }
     }
 }
+
+if (!function_exists('theme_palette')) {
+    /**
+     * สร้างชุดเฉด 50-900 จากสี theme (hex) ใช้แทนชุดสีของ Tailwind ทั้งเว็บ
+     * 600 = สี theme, เฉดอ่อนผสมขาว, เฉดเข้มผสมดำ
+     */
+    function theme_palette(string $hex): array {
+        $hex = ltrim($hex, '#');
+        if (!preg_match('/^[0-9a-fA-F]{6}$/', $hex)) {
+            $hex = '059669';
+        }
+        [$r, $g, $b] = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
+        $mix = function (float $toward, int $target) use ($r, $g, $b) {
+            return sprintf('#%02x%02x%02x',
+                (int) round($r + ($target - $r) * $toward),
+                (int) round($g + ($target - $g) * $toward),
+                (int) round($b + ($target - $b) * $toward));
+        };
+
+        return [
+            '50' => $mix(0.94, 255), '100' => $mix(0.86, 255), '200' => $mix(0.70, 255), '300' => $mix(0.50, 255),
+            '400' => $mix(0.28, 255), '500' => $mix(0.12, 255), '600' => '#'.strtolower($hex),
+            '700' => $mix(0.15, 0), '800' => $mix(0.30, 0), '900' => $mix(0.45, 0), '950' => $mix(0.60, 0),
+        ];
+    }
+}

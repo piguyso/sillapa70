@@ -14,9 +14,9 @@
 
 <div class="space-y-2 mt-4">
     <label class="ui-label">เครือข่ายเพิ่มเติม (โรงเรียนที่สังกัดหลายเครือข่ายแข่งขันได้ทั้งสองเครือข่าย)</label>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto p-3 border border-gray-200 rounded-2xl bg-gray-50">
+    <div class="grid grid-cols-1 gap-2 max-h-56 overflow-y-auto p-3 border border-gray-200 rounded-2xl bg-gray-50">
         @foreach($schoolgroups as $g)
-            <label class="flex items-center gap-2 text-sm font-bold text-gray-700">
+            <label class="flex items-center gap-2 text-sm font-bold text-gray-700 whitespace-nowrap">
                 <input type="checkbox" name="networks[]" value="{{ $g->id }}" @checked(in_array((int) $g->id, $selectedIds, true))>
                 {{ $g->schoolgroup_name }} <span class="text-xs text-gray-400">({{ \App\Schoolgroup::TYPES[$g->group_type] ?? 'กลุ่มโรงเรียน' }})</span>
             </label>
