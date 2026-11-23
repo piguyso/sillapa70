@@ -89,8 +89,15 @@ class SchoolImportController extends Controller
             'school_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:2048'],
         ]);
 
+        $upload = $request->file('school_file');
+        if (! $upload->isValid() || ! is_file($upload->getPathname())) {
+            \Illuminate\Support\Facades\Log::error('school import: uploaded temp file missing', ['path' => $upload->getPathname(), 'error' => $upload->getErrorMessage()]);
+
+            return back()->withErrors(['school_file' => 'เซิร์ฟเวอร์เก็บไฟล์ที่อัปโหลดไม่ได้ (โฟลเดอร์ temp ของ PHP ไม่มีสิทธิ์เขียน) กรุณาแจ้งผู้ดูแลเซิร์ฟเวอร์']);
+        }
+
         try {
-            $result = $service->inspect($request->file('school_file'));
+            $result = $service->inspect($upload);
         } catch (\Throwable $exception) {
             \Illuminate\Support\Facades\Log::error('school import inspect failed', ['e' => $exception]);
 
