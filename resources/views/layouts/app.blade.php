@@ -480,6 +480,9 @@
                     <span>ผู้เข้าชมทั้งหมด: <strong class="font-black">{{ number_format(visitor_count()) }}</strong> ครั้ง</span>
                 </div>
             </div>
+            @if(filled(config('app.area')))
+                <p class="text-gray-700 text-sm font-bold mb-2"><i class="ri-map-pin-2-line text-primary mr-1"></i>{{ config('app.area') }}</p>
+            @endif
             <p class="text-gray-500 text-sm font-bold">© COPYRIGHT 2026, ALL RIGHTS RESERVED</p>
             <p class="text-gray-400 text-xs mt-1">Version 1.2.0 (Develop by <a href="https://www.facebook.com/piguyso" class="text-primary hover:underline">piguyso</a>)</p>
         </div>

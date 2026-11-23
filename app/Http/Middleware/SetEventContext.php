@@ -73,6 +73,7 @@ class SetEventContext
             'app.name' => ($config && $config->app_name) ? $config->app_name : config('app.name'),
             'app.group' => $config->app_group ?? '',
             'app.area' => $config->app_area ?? '',
+            'app.network_label' => $config->network_label ?? '',
             'app.theme_primary' => $themePrimary,
             'app.theme_secondary' => $themeSecondary,
         ]);

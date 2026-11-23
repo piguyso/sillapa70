@@ -181,6 +181,10 @@
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Application Area / Location</label>
                             <input type="text" name="app_area" value="{{ $l->app_area }}" class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
                         </div>
+                        <div class="md:col-span-2">
+                            <x-form.input label="ชื่อเรียกระดับเครือข่าย" name="network_label" :value="$l->network_label ?: 'เครือข่ายสถานศึกษา'" maxlength="100" list="network_label_options" placeholder="เครือข่ายสถานศึกษา" help="ระบบมี 3 ระดับ คือ ระดับโรงเรียน ระดับเครือข่าย (หรือกลุ่มโรงเรียน แล้วแต่กรณี) และระดับเขตพื้นที่การศึกษา ช่องนี้ใช้ตั้งชื่อเรียกระดับเครือข่ายที่เขียนไว้ในหน้าเว็บ เมนู เอกสาร PDF เกียรติบัตร และ Excel ไม่เปลี่ยนชื่อเครือข่ายที่มาจากฐานข้อมูล ค่าเริ่มต้นคือ เครือข่ายสถานศึกษา" />
+                            <datalist id="network_label_options"><option value="เครือข่ายสถานศึกษา"><option value="กลุ่มโรงเรียน"><option value="กลุ่มโรงเรียน/เครือข่ายสถานศึกษา"></datalist>
+                        </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Application Slogan / Motto (คำขวัญระบบ)</label>
                             <input type="hidden" name="app_slogan" id="app_slogan" value="{{ $l->app_slogan }}">

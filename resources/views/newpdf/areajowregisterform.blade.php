@@ -79,10 +79,9 @@
 <header>
     <img src ="imgs\obec.jpg" width="50px" style="float: left";  
 >
-ใบลงทะเบียนกรรมการตัดสิน  {{ session('app_name') }}ระดับเครือข่ายสถานศึกษา ปีการศึกษา {{session('app_year') }} <br>
+ใบลงทะเบียนกรรมการตัดสิน  {{ session('app_name') }}ระดับเครือข่ายสถานศึกษา {{ \App\Schoolgroup::find(Auth::user()->schoolgroup)->schoolgroup_name ?? '' }} ปีการศึกษา {{session('app_year') }} <br>
             กลุ่มสาระการเรียนรู้ {{$activity->getactivitysubject->subjectgroup_name}} กิจกรรม {{$activity->activity_name}} {{$activity->getclass->class_name}}
            <br>
-          เครือข่ายสถานศึกษา{{Auth::user()->lastname}} 
           <br> วันที่ _________ เดือน __________________ พ.ศ. _________  
             
         </header>

@@ -9,7 +9,7 @@
                 {{ session('app_name')}}
             </h1>
             <h2 class="text-xl sm:text-2xl font-bold text-orange-100 italic mb-4">
-                ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
+                {{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
             </h2>
             <div class="flex justify-center">
                 <div class="text-xs sm:text-sm border border-white/30 rounded-full px-4 py-1 flex items-center bg-white/10 backdrop-blur-sm">
@@ -167,7 +167,7 @@
                     <tbody class="divide-y divide-slate-50 text-slate-600 text-slate-800">
                         @foreach($schoolgroup as $l)
                         <tr class="hover:bg-amber-50/30 text-slate-800">
-                            <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/showschool/'.$l->id) }}" class="hover:text-amber-700">เครือข่าย{{$l->schoolgroup_name}}</a></td>
+                            <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/showschool/'.$l->id) }}" class="hover:text-amber-700">{{$l->schoolgroup_name}}</a></td>
                             <td class="px-6 py-3 text-right text-amber-900 font-black italic text-slate-800">{{$schoolgroupcount[$l->id] ?? 0}} โรงเรียน</td>
                         </tr>
                         @endforeach

@@ -47,6 +47,7 @@ class ConfigController extends Controller
                 $newConfig->app_slogan = $latestConfig->app_slogan;
                 $newConfig->app_group = $latestConfig->app_group;
                 $newConfig->app_area = $latestConfig->app_area;
+                $newConfig->network_label = $latestConfig->network_label;
                 $newConfig->app_certificate = $latestConfig->app_certificate;
                 $newConfig->app_logo = $latestConfig->app_logo;
                 $newConfig->link_criteria = $latestConfig->link_criteria;
@@ -84,6 +85,7 @@ class ConfigController extends Controller
                     $clone->app_slogan = $src->app_slogan;
                     $clone->app_group = $src->app_group;
                     $clone->app_area = $src->app_area;
+                    $clone->network_label = $src->network_label;
                     $clone->app_certificate = $src->app_certificate; // รูปพื้นหลังเดิม (จนกว่าจะ upload ใหม่)
                     $clone->app_logo = $src->app_logo;
                     $clone->link_criteria = $src->link_criteria;
@@ -504,6 +506,7 @@ class ConfigController extends Controller
             'app_name' => 'nullable|string|max:255',
             'app_group' => 'nullable|string|max:255',
             'app_area' => 'nullable|string|max:255',
+            'network_label' => 'nullable|string|max:100',
             'link_criteria' => 'nullable|url|max:2048',
             'link_ai' => 'nullable|url|max:2048',
             'link_survey' => 'nullable|url|max:2048',
@@ -590,6 +593,10 @@ class ConfigController extends Controller
         }
         if ($request->has('app_area')) {
             $Configs->app_area = $request->app_area;
+        }
+        if ($request->has('network_label')) {
+            $label = trim((string) $request->network_label);
+            $Configs->network_label = ($label === '' || $label === 'เครือข่ายสถานศึกษา') ? null : $label;
         }
         if ($request->has('app_year')) {
             $Configs->app_year = $request->app_year;

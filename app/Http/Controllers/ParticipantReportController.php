@@ -112,7 +112,7 @@ class ParticipantReportController extends Controller
         $columns = $report->columns($type, $level);
         $rows = $report->rows($type, $level, $filters);
         $levelName = $level === Report::LEVEL_NETWORK
-            ? 'ระดับเครือข่าย '.(Schoolgroup::find($networkId)->schoolgroup_name ?? '')
+            ? (Schoolgroup::find($networkId)->schoolgroup_name ?? '')
             : 'ระดับเขตพื้นที่การศึกษา';
         $headers = array_merge(['ลำดับ'], array_column($columns, 'label'));
         $lastCol = Coordinate::stringFromColumnIndex(count($headers));
@@ -135,7 +135,7 @@ class ParticipantReportController extends Controller
             foreach ($columns as $col) {
                 $v = $row[$col['key']] ?? null;
                 $v = $col['kind'] === 'list' ? implode("\n", (array) $v) : $v;
-                $cells[] = is_string($v) ? strtr($v, ['๐' => '0', '๑' => '1', '๒' => '2', '๓' => '3', '๔' => '4', '๕' => '5', '๖' => '6', '๗' => '7', '๘' => '8', '๙' => '9']) : $v;
+                $cells[] = is_string($v) ? network_label_text(strtr($v, ['๐' => '0', '๑' => '1', '๒' => '2', '๓' => '3', '๔' => '4', '๕' => '5', '๖' => '6', '๗' => '7', '๘' => '8', '๙' => '9'])) : $v;
             }
             $sheet->fromArray($cells, null, "A{$r}", true);
             $r++;

@@ -6,10 +6,10 @@
     <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white overflow-hidden border-b-8 border-orange-500">
         <div class="relative z-10 text-white">
             <h2 class="text-xl md:text-2xl font-bold opacity-90 italic mb-2 text-white leading-none">
-                {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}}
+                {{ session('app_name')}} {{session()->get('schoolgroup')}}
             </h2>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white">
-                เครือข่ายสถานศึกษา {{$schoolname[0]->getschoolgroup?->schoolgroup_name ?? ''}}
+                 {{$schoolname[0]->getschoolgroup?->schoolgroup_name ?? ''}}
             </h1>
             <p class="mt-4 text-orange-100 font-bold italic uppercase tracking-widest text-sm text-white">
                 <i class="ri-community-line mr-1 text-white"></i> รายชื่อโรงเรียนสมาชิกและสรุปจำนวนทีมเข้าแข่งขัน

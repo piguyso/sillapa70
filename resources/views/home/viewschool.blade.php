@@ -15,7 +15,7 @@
                 <i class="ri-arrow-left-line text-xl"></i>
             </a>
             <h2 class="text-xl font-bold text-gray-800">
-                เครือข่ายสถานศึกษา{{ $schoolname[0]->getschoolgroup->schoolgroup_name ?? '' }}
+                {{ $schoolname[0]->getschoolgroup->schoolgroup_name ?? '' }}
             </h2>
         </div>
 

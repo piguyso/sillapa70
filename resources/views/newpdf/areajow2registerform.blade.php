@@ -80,7 +80,7 @@
     <img src ="imgs\obec.jpg" width="50px" style="float: left";  
 >
 ใบลงทะเบียนกรรมการดำเนินงาน {{ session('app_name') }} ระดับเครือข่ายสถานศึกษาปีการศึกษา {{session('app_year') }} <br>
-            เครือข่ายสถานศึกษา {{$school_group->schoolgroup_name}}
+             {{$school_group->schoolgroup_name}}
         
           <br> วันที่ _________ เดือน __________________ พ.ศ. _________  
             

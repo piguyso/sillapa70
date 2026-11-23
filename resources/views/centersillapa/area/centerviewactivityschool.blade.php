@@ -6,7 +6,7 @@
     <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white overflow-hidden border-b-8 border-orange-500">
         <div class="relative z-10 text-white">
             <h2 class="text-xl md:text-2xl font-bold opacity-90 italic mb-2 text-white">
-                {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{Auth::user()->getschoolgroup->schoolgroup_name}}
+                {{ session('app_name')}} {{Auth::user()->getschoolgroup->schoolgroup_name}}
             </h2>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none">
                 บันทึกผลการแข่งขัน
@@ -62,7 +62,7 @@
                                     {{$x}}
                                 </td>
                                 <td class="px-4 py-5">
-                                    <p class="text-[10px] text-slate-400 uppercase tracking-tighter">เครือข่าย {{$l->getschoolgroup->schoolgroup_name}}</p>
+                                    <p class="text-[10px] text-slate-400 uppercase tracking-tighter"> {{$l->getschoolgroup->schoolgroup_name}}</p>
                                     <a href="{{url('area/addaddstudent/'.$l->id)}}" class="text-slate-800 hover:text-orange-600 font-black italic uppercase transition-colors">
                                         {{$l->getschoolname->school_name}}
                                     </a>

@@ -9,7 +9,7 @@
                 <i class="ri-printer-line mr-2"></i>พิมพ์เกียรติบัตรกรรมการดำเนินงาน
             </h1>
             <p class="text-orange-50 text-lg md:text-xl opacity-90 font-medium">
-                {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
+                {{ session('app_name')}} {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
             </p>
         </div>
         <i class="ri-medal-fill absolute -right-10 -bottom-10 text-[15rem] opacity-10 rotate-12"></i>

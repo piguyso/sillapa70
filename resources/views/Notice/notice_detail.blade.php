@@ -7,7 +7,7 @@
         <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-3">
             <i class="ri-notification-3-line"></i>
             @guest
-                {{ session('app_name') }} ระดับเครือข่ายสถานศึกษา {{ session()->get('schoolgroup') }} {{ 'ปีการศึกษา '. session('app_year') }}
+                {{ session('app_name') }} {{ session()->get('schoolgroup') }} {{ 'ปีการศึกษา '. session('app_year') }}
             @else
                 {{ session('app_name') }} ระดับเครือข่ายสถานศึกษา {{ 'ปีการศึกษา '. session('app_year') }}
             @endif

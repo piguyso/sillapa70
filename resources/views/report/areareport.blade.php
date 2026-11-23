@@ -10,12 +10,12 @@
               @guest
                       
  
-                       {{ session('app_name')}}ระดับเครือข่ายสถานศึกษา{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
+                       {{ session('app_name')}}{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
                          
                      @else
                         
  
-                          {{ session('app_name')}}ระดับเครือข่ายสถานศึกษา{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
+                          {{ session('app_name')}}{{session()->get('schoolgroup')}} {{ 'ปีการศึกษา '. session('app_year') }}
                         
                      @endif
 

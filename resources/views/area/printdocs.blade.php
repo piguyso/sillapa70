@@ -6,7 +6,7 @@
         <div class="px-6 py-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h1 class="text-xl font-black text-slate-800"><i class="ri-printer-line text-primary mr-2"></i>พิมพ์เอกสาร</h1>
-                <p class="text-sm text-slate-500">เครือข่าย {{ $network->schoolgroup_name ?? '' }} · ปีการศึกษา {{ active_year() }} · เฉพาะรายการที่มีทีมลงทะเบียน</p>
+                <p class="text-sm text-slate-500"> {{ $network->schoolgroup_name ?? '' }} · ปีการศึกษา {{ active_year() }} · เฉพาะรายการที่มีทีมลงทะเบียน</p>
             </div>
             <a href="{{ url('area/'.session('area')) }}" class="ui-btn ui-btn-secondary"><i class="ri-home-4-line"></i> หน้าหลัก</a>
         </div>

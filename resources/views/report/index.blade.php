@@ -9,7 +9,7 @@
                 <i class="ri-medal-fill mr-2"></i>ระบบพิมพ์เกียรติบัตรออนไลน์
             </h1>
             <p class="text-pink-50 text-lg md:text-xl opacity-90 font-medium">
-                {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
+                {{ session('app_name')}} {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
             </p>
         </div>
         <i class="ri-award-fill absolute -right-10 -bottom-10 text-[18rem] opacity-10 rotate-12"></i>

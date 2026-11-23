@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->append(\App\Http\Middleware\EnsureActiveEventForWrites::class);
         $middleware->append(\App\Http\Middleware\TranslateToThaiNumbers::class);
+        $middleware->append(\App\Http\Middleware\ApplyNetworkLabel::class);
         $middleware->append(\App\Http\Middleware\TrackVisitors::class);
         $middleware->alias([
             'centermiddleware' => \App\Http\Middleware\mymiddleware::class,

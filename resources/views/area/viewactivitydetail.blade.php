@@ -7,9 +7,9 @@
         <div class="relative z-10 text-white">
             <h2 class="text-lg md:text-xl font-bold opacity-90 italic mb-2 text-white leading-none">
                 @guest
-                    {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}}
+                    {{ session('app_name')}} {{session()->get('schoolgroup')}}
                 @else
-                    {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{session()->get('schoolgroup')}}
+                    {{ session('app_name')}} {{session()->get('schoolgroup')}}
                 @endguest
                 ปีการศึกษา {{ session('app_year') }}
             </h2>

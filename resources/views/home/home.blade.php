@@ -118,7 +118,7 @@
                         <span class="w-8 h-8 rounded-full bg-green-100 text-primary flex items-center justify-center mr-3">
                             <i class="ri-share-circle-line"></i>
                         </span>
-                        <span class="text-gray-700 font-medium group-hover:text-primary">เครือข่าย {{$s->schoolgroup_name}}</span>
+                        <span class="text-gray-700 font-medium group-hover:text-primary"> {{$s->schoolgroup_name}}</span>
                     </a>
                 @empty
                     <div class="col-span-3 text-center text-gray-400 py-4">- ไม่พบข้อมูล -</div>
@@ -334,7 +334,7 @@
                     <tbody class="divide-y divide-gray-50">
                         @forelse($schoolgroup as $l)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2"><a href="{{ url('showschool/'.$l->id) }}" class="text-gray-700 hover:text-secondary">เครือข่าย{{$l->schoolgroup_name}}</a></td>
+                            <td class="px-4 py-2"><a href="{{ url('showschool/'.$l->id) }}" class="text-gray-700 hover:text-secondary">{{$l->schoolgroup_name}}</a></td>
                             <td class="px-4 py-2 text-center font-bold text-gray-600">{{ isset($schoolgroupcount[$l->id]) ? $schoolgroupcount[$l->id] : 0 }} โรงเรียน ({{ $activityBySchoolGroup[$l->id] ?? 0 }} กิจกรรม)</td>
                         </tr>
                         @empty

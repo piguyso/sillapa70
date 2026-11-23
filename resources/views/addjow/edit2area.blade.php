@@ -6,7 +6,7 @@
     <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white overflow-hidden border-b-8 border-orange-500">
         <div class="relative z-10 text-white">
             <h2 class="text-lg md:text-xl font-bold opacity-90 italic mb-2 text-white">
-                {{ session('app_name')}} ระดับเครือข่ายสถานศึกษา {{Auth::user()->getschoolgroup->schoolgroup_name}}
+                {{ session('app_name')}} {{Auth::user()->getschoolgroup->schoolgroup_name}}
             </h2>
             <h1 class="text-2xl md:text-4xl font-black tracking-tight uppercase italic text-white leading-none">
                 แก้ไขกรรมการดำเนินงาน

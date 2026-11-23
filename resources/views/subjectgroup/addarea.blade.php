@@ -9,7 +9,7 @@
                 {{ session('app_name')}}
             </h1>
             <p class="text-orange-100 text-lg md:text-xl opacity-90 font-medium italic">
-                <i class="ri-book-open-line mr-2"></i>ระดับเครือข่ายสถานศึกษา {{Auth::user()->getschoolgroup->schoolgroup_name}} {{ 'ปีการศึกษา '. session('app_year') }}
+                <i class="ri-book-open-line mr-2"></i>{{Auth::user()->getschoolgroup->schoolgroup_name}} {{ 'ปีการศึกษา '. session('app_year') }}
             </p>
             <div class="mt-4 inline-block bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-sm font-bold border border-white/30 italic">
                 รายการแข่งขันตามสาระการเรียนรู้

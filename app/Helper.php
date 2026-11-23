@@ -13,6 +13,14 @@ use App\Configyear;
 
 $header1='งานศิลปหัตถกรรมนักเรียนครั้งที่ ๗๐';
 $header2='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑';
+/** แทนคำว่าเครือข่ายสถานศึกษา/เครือข่าย ด้วยชื่อเรียกที่ตั้งไว้ใน config (ใช้ใน PDF/Excel) */
+function network_label_text($text){
+  return \App\Http\Middleware\ApplyNetworkLabel::apply(is_null($text) ? null : (string) $text);
+}
+/** ข้อความบนเกียรติบัตร: ใช้ชื่อเรียกเครือข่ายที่ตั้งไว้ และแปลงเลขเป็นเลขไทย */
+function certificate_text($text){
+  return thainumDigit(network_label_text($text));
+}
 function thainumDigit($num){
   return str_replace(array( '0' , '1' , '2' , '3' , '4' , '5' , '6' ,'7' , '8' , '9' ),
   array( "๐" , "๑" , "๒" , "๓" , "๔" , "๕" , "๖" , "๗" , "๘" , "๙" ),

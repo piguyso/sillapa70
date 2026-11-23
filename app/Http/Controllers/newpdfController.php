@@ -42,7 +42,7 @@ class newpdfController extends Controller
         );
      
 
-        $pdf = PDF2::loadView('newpdf.printtop', $data);
+        $pdf = PDF2::loadHTML(network_label_text(view('newpdf.printtop', $data)->render()));
   
        // return $pdf->download('itsolutionstuff.pdf');
        //return view('newpdf.studentregisterform',$data);
@@ -65,7 +65,7 @@ class newpdfController extends Controller
         );
      
 
-        $pdf = PDF2::loadView('newpdf.studentregisterform', $data);
+        $pdf = PDF2::loadHTML(network_label_text(view('newpdf.studentregisterform', $data)->render()));
   
        // return $pdf->download('itsolutionstuff.pdf');
        //return view('newpdf.studentregisterform',$data);
@@ -88,7 +88,7 @@ class newpdfController extends Controller
         );
      
 
-        $pdf = PDF2::loadView('newpdf.studentregisterform', $data);
+        $pdf = PDF2::loadHTML(network_label_text(view('newpdf.studentregisterform', $data)->render()));
   
        // return $pdf->download('itsolutionstuff.pdf');
        //return view('newpdf.studentregisterform',$data);
@@ -111,7 +111,7 @@ class newpdfController extends Controller
       );
    
       
-      $pdf = PDF2::loadView('newpdf.jowregisterform', $data);
+      $pdf = PDF2::loadHTML(network_label_text(view('newpdf.jowregisterform', $data)->render()));
 
      // return $pdf->download('itsolutionstuff.pdf');
      //return view('newpdf.studentregisterform',$data);
@@ -136,7 +136,7 @@ class newpdfController extends Controller
     );
  
     
-    $pdf = PDF2::loadView('newpdf.jow2registerform', $data);
+    $pdf = PDF2::loadHTML(network_label_text(view('newpdf.jow2registerform', $data)->render()));
 
    // return $pdf->download('itsolutionstuff.pdf');
    //return view('newpdf.studentregisterform',$data);
@@ -163,7 +163,7 @@ class newpdfController extends Controller
     );
  
     
-    $pdf = PDF2::loadView('newpdf.areajow2registerform', $data);
+    $pdf = PDF2::loadHTML(network_label_text(view('newpdf.areajow2registerform', $data)->render()));
 
    // return $pdf->download('itsolutionstuff.pdf');
    //return view('newpdf.studentregisterform',$data);
@@ -187,7 +187,7 @@ public function showprintrandomz($id){
   );
 
 
-  $pdf = PDF2::loadView('newpdf.showprintrandomz', $data);
+  $pdf = PDF2::loadHTML(network_label_text(view('newpdf.showprintrandomz', $data)->render()));
 
  // return $pdf->download('itsolutionstuff.pdf');
  //return view('newpdf.studentregisterform',$data);
@@ -211,7 +211,7 @@ public function showprintpointdoc($id){
   );
 
 
-  $pdf = PDF2::loadView('newpdf.showprintpointdoc', $data);
+  $pdf = PDF2::loadHTML(network_label_text(view('newpdf.showprintpointdoc', $data)->render()));
 
  // return $pdf->download('itsolutionstuff.pdf');
  //return view('newpdf.studentregisterform',$data);
@@ -235,7 +235,7 @@ public function printspeedmath($id){
   );
 
 
-  $pdf = PDF2::loadView('newpdf.printspeedmath', $data);
+  $pdf = PDF2::loadHTML(network_label_text(view('newpdf.printspeedmath', $data)->render()));
 
  // return $pdf->download('itsolutionstuff.pdf');
  //return view('newpdf.studentregisterform',$data);

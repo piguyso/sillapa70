@@ -131,7 +131,7 @@
                         <div class="overflow-hidden">
                             <p class="text-[9px] font-black text-orange-200 uppercase tracking-wider leading-none">Official ID Card</p>
                             <p class="text-[11px] font-black text-white leading-tight truncate">{{ session('app_name') }} {{session('app_year')}}</p>
-                            <p class="text-[11px] font-black text-white leading-tight truncate">ระดับเครือข่ายสถานศึกษา {{Auth::user()->getschoolgroup->group_name ?? ''}}</p>
+                            <p class="text-[11px] font-black text-white leading-tight truncate">{{Auth::user()->getschoolgroup->group_name ?? ''}}</p>
                         </div>
                     </div>
                     <div class="mt-4 flex justify-center relative">

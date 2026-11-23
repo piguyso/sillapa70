@@ -297,7 +297,7 @@
                     @forelse($schoolgroup as $l)
                      <tr>
                        <td>{{$num}}</td>
-                       <td><a href="{{ url('showschool/'.$l->id) }}">เครือข่ายสถานศึกษา{{$l->schoolgroup_name}}</a></td>
+                       <td><a href="{{ url('showschool/'.$l->id) }}">{{$l->schoolgroup_name}}</a></td>
                        <td>
                         
                        

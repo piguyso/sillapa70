@@ -9,7 +9,7 @@
                 <i class="ri-printer-line mr-2 text-indigo-300"></i>พิมพ์เกียรติบัตรกรรมการตัดสิน
             </h1>
             <p class="text-indigo-100 text-lg md:text-xl opacity-90 font-medium">
-                {{ session('app_name')}} เครือข่ายสถานศึกษา {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
+                {{ session('app_name')}}  {{session()->get('schoolgroup')}} ปีการศึกษา {{ session('app_year') }}
             </p>
         </div>
         <i class="ri-award-fill absolute -right-10 -bottom-10 text-[15rem] text-white opacity-5 rotate-12"></i>

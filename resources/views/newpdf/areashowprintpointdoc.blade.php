@@ -35,10 +35,9 @@
     <div class="heading">
         <img src="{{ public_path('imgs/obec.jpg') }}" alt="ตราสัญลักษณ์">
         <strong>แบบบันทึกคะแนนการแข่งขัน</strong><br>
-        {{ session('app_name') }} ระดับเครือข่ายสถานศึกษา ปีการศึกษา {{ session('app_year') }}<br>
+        {{ session('app_name') }} ระดับเครือข่ายสถานศึกษา {{ \App\Schoolgroup::find(Auth::user()->schoolgroup)->schoolgroup_name ?? '' }} ปีการศึกษา {{ session('app_year') }}<br>
         กลุ่มสาระการเรียนรู้ {{ $activity->getactivitysubject->subjectgroup_name ?? '-' }}
         กิจกรรม {{ $activity->activity_name ?? '-' }} {{ $activity->getclass->class_name ?? '' }}<br>
-        เครือข่ายสถานศึกษา {{ Auth::user()->lastname }}<br>
         วันที่ _________ เดือน __________________ พ.ศ. _________
     </div>
 

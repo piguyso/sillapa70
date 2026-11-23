@@ -19,7 +19,7 @@
 <div class="max-w-[1600px] mx-auto px-4 py-6">
     <h1 class="text-xl font-black text-slate-800 mb-1">
         {{ $types[$type]['title'] }}
-        {{ $level === 'network' ? 'ระดับเครือข่าย '.$networkName : 'ระดับเขตพื้นที่การศึกษา' }}
+        {{ $level === 'network' ? $networkName : 'ระดับเขตพื้นที่การศึกษา' }}
     </h1>
     <p class="text-sm text-slate-500 mb-3">
         ปีการศึกษา {{ active_year() }} ·

@@ -69,7 +69,7 @@ class areaPrintdocController extends Controller
                 );
 
 
-                $pdf = PDF2::loadView('newpdf.areashowprintpointdoc', $data);
+                $pdf = PDF2::loadHTML(network_label_text(view('newpdf.areashowprintpointdoc', $data)->render()));
 
                 // return $pdf->download('itsolutionstuff.pdf');
                 //return view('newpdf.studentregisterform',$data);
@@ -93,7 +93,7 @@ class areaPrintdocController extends Controller
         );
      
 
-        $pdf = PDF2::loadView('newpdf.areastudentregisterform', $data);
+        $pdf = PDF2::loadHTML(network_label_text(view('newpdf.areastudentregisterform', $data)->render()));
   
        // return $pdf->download('itsolutionstuff.pdf');
        //return view('newpdf.studentregisterform',$data);
@@ -117,7 +117,7 @@ class areaPrintdocController extends Controller
         );
      
 
-        $pdf = PDF2::loadView('newpdf.areastudentregisterform', $data);
+        $pdf = PDF2::loadHTML(network_label_text(view('newpdf.areastudentregisterform', $data)->render()));
   
        // return $pdf->download('itsolutionstuff.pdf');
        //return view('newpdf.studentregisterform',$data);
@@ -142,7 +142,7 @@ class areaPrintdocController extends Controller
       );
    
       
-      $pdf = PDF2::loadView('newpdf.areajowregisterform', $data);
+      $pdf = PDF2::loadHTML(network_label_text(view('newpdf.areajowregisterform', $data)->render()));
 
      // return $pdf->download('itsolutionstuff.pdf');
      //return view('newpdf.studentregisterform',$data);
