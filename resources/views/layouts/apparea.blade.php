@@ -46,6 +46,14 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
+    <script>
+        if (window.jQuery && jQuery.fn.dataTable) {
+            jQuery.extend(true, jQuery.fn.dataTable.defaults, {
+                language: { emptyTable: 'ไม่พบข้อมูล', zeroRecords: 'ไม่พบข้อมูลที่ค้นหา', infoEmpty: 'ไม่มีข้อมูล' }
+            });
+            jQuery.fn.dataTable.ext.errMode = 'none';
+        }
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">

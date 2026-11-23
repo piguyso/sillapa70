@@ -77,8 +77,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="4" class="py-20 text-center text-gray-400 italic">ไม่พบข้อมูลกรรมการดำเนินงาน</td></tr>
-                        @endforelse
+@endforelse
                     </tbody>
                 </table>
             </div>

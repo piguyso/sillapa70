@@ -167,8 +167,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="8" class="px-4 py-10 text-center text-gray-400">ไม่พบข้อมูล</td></tr>
-                        @endforelse
+@endforelse
                     </tbody>
                 </table>
             </div>
@@ -181,13 +180,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
 
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script>
 // ฟังก์ชัน Export Excel แบบแยกคอลัมน์และกรองคอลัมน์ที่ไม่ต้องการออก
 function exportTableToExcel(tableID, filename = ''){

@@ -45,8 +45,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="2" class="py-10 text-center text-gray-400 italic">ไม่พบข้อมูล</td></tr>
-                        @endforelse
+@endforelse
                     </tbody>
                 </table>
             </div>
@@ -80,8 +79,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="2" class="py-10 text-center text-gray-400 italic">ไม่พบข้อมูล</td></tr>
-                        @endforelse
+@endforelse
                     </tbody>
                 </table>
             </div>
@@ -115,8 +113,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="2" class="py-10 text-center text-gray-400 italic">ไม่พบข้อมูล</td></tr>
-                        @endforelse
+@endforelse
                     </tbody>
                 </table>
             </div>

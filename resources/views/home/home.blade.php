@@ -116,7 +116,7 @@
                 @forelse($schoolgroup as $s)
                     <a href="{{url('area/'.$s->id)}}" target="_self" class="flex items-center p-3 rounded-lg hover:bg-green-50 transition border border-transparent hover:border-green-100">
                         <span class="w-8 h-8 rounded-full bg-green-100 text-primary flex items-center justify-center mr-3">
-                            <i class="ri-arrow-right-line"></i>
+                            <i class="ri-share-circle-line"></i>
                         </span>
                         <span class="text-gray-700 font-medium group-hover:text-primary">เครือข่าย {{$s->schoolgroup_name}}</span>
                     </a>
@@ -425,12 +425,6 @@
         </div>
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>   
 
 <script>

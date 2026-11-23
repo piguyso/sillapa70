@@ -125,86 +125,44 @@
 
 {{-- --- ส่วนของ SCRIPTS: จัดเรียงลำดับใหม่และดึง Library เฉพาะที่จำเป็น --- --}}
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
 
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script>
     $(document).ready(function() {
-        if ($.fn.DataTable) {
-            var table = $('#table_all_participants').DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                "pageLength": 50,
-                "deferRender": true, // ช่วยให้ Browser ไม่ค้างเวลาข้อมูลเยอะ
-                "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
-                "buttons": [
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="ri-file-excel-line mr-2"></i> ส่งออก Excel',
-                        className: 'bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg border-none'
-                    }
-                ],
-                "language": {
-                    "search": "",
-                    "searchPlaceholder": "🔍 ค้นหาข้อมูล...",
-                    "processing": "กำลังประมวลผล...", // ข้อความขณะค้นหา/เปลี่ยนหน้า
-                    "loadingRecords": "กำลังโหลดข้อมูล...", 
-                },
-                // เมื่อวาดตารางเสร็จ (ทุกอย่างพร้อม) ให้ปิด Overlay
-                "initComplete": function(settings, json) {
-                    $('#loading-overlay').addClass('opacity-0');
-                    setTimeout(function() {
-                        $('#loading-overlay').remove(); // ลบทิ้งเพื่อไม่ให้ขวางหน้าจอ
-                    }, 500);
-                }
-            });
+        var $tbl = $('#table_all_participants');
+        var hideOverlay = function() {
+            $('#loading-overlay').addClass('opacity-0');
+            setTimeout(function() { $('#loading-overlay').remove(); }, 500);
+        };
+        if (!$.fn.DataTable) { hideOverlay(); return; }
+        if ($.fn.DataTable.isDataTable($tbl)) { $tbl.DataTable().destroy(); }
 
-            table.buttons().container().appendTo('#excel_tools_area');
+        var options = {
+            "autoWidth": false,
+            "pageLength": 50,
+            "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
+            "language": {
+                "search": '<i class="ri-search-line dt-search-icon"></i>',
+                "searchPlaceholder": "ค้นหารายชื่อ, โรงเรียน หรือรายการ...",
+                "emptyTable": "ไม่พบข้อมูล",
+                "zeroRecords": "ไม่พบข้อมูลที่ค้นหา",
+                "info": "แสดง _START_ - _END_ จาก _TOTAL_ รายการ",
+                "infoEmpty": "ไม่มีข้อมูล"
+            },
+            "initComplete": hideOverlay
+        };
+        if ($.fn.DataTable.Buttons) {
+            options.buttons = [{
+                extend: 'excelHtml5',
+                text: '<i class="ri-file-excel-2-line mr-2"></i> ส่งออกไฟล์ EXCEL ทั้งหมด',
+                className: 'bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-2xl font-black text-sm shadow-xl shadow-emerald-100 transition-all flex items-center border-none',
+                title: 'รายชื่อผู้เข้าร่วมการแข่งขันทั้งหมด_{{ date("d-m-Y") }}',
+                exportOptions: { columns: [0, 1, 2, 3, 4, 5] }
+            }];
         }
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        // ตรวจสอบความพร้อมของ Library
-        if ($.fn.DataTable && $.fn.DataTable.Buttons) {
-            
-            // ล้าง Instance เดิมเพื่อป้องกันการโหลดซ้ำ
-            if ($.fn.DataTable.isDataTable('#table_all_participants')) {
-                $('#table_all_participants').DataTable().destroy();
-            }
 
-            var table = $('#table_all_participants').DataTable({
-                "responsive": true,
-                "autoWidth": false,
-                "pageLength": 50, // แสดง 50 รายการต่อหน้าเพื่อความรวดเร็ว
-                "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
-                "buttons": [
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="ri-file-excel-2-line mr-2"></i> ส่งออกไฟล์ EXCEL ทั้งหมด',
-                        className: 'bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-2xl font-black text-sm shadow-xl shadow-emerald-100 transition-all flex items-center border-none transform hover:-translate-y-1',
-                        title: 'รายชื่อผู้เข้าร่วมการแข่งขันทั้งหมด_{{ date("d-m-Y") }}',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5] // เลือกคอลัมน์ที่จะ Export
-                        }
-                    }
-                ],
-                "language": {
-                   "search": '<i class="ri-search-line dt-search-icon"></i>', 
-                   "searchPlaceholder": "ค้นหารายชื่อ, โรงเรียน หรือรายการ...",
-                }
-            });
-
-            // ฉีดปุ่ม Excel เข้าไปในตำแหน่ง excel_tools_area
-            table.buttons().container().appendTo('#excel_tools_area');
-
-        } else {
-            console.error("DataTables Buttons Library ไม่สามารถโหลดได้สำเร็จ");
-        }
+        var table = $tbl.DataTable(options);
+        if (table.buttons) { table.buttons().container().appendTo('#excel_tools_area'); }
+        hideOverlay();
     });
 </script>
 @endsection
