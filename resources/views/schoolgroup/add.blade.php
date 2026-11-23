@@ -176,7 +176,7 @@
                 "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
                 "language": {
                    "search": "",
-                   "searchPlaceholder": "🔍 ค้นหาชื่อเครือข่าย...",
+                   "searchPlaceholder": "ค้นหาชื่อเครือข่าย...",
                 },
                 "initComplete": function(settings, json) {
                     $('#loading-overlay').addClass('opacity-0');

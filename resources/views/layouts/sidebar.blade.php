@@ -186,7 +186,7 @@
                   <span>ออนไลน์: {{ number_format(online_count()) }} คน</span>
               </div>
               <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-                  <span style="color: #6c757d;">👁️</span>
+                  <span style="color: #6c757d;"><i class="far fa-eye"></i></span>
                   <span>ผู้เข้าชม: {{ number_format(visitor_count()) }} ครั้ง</span>
               </div>
           </div>

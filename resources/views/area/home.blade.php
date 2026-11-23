@@ -99,7 +99,7 @@
                             <td class="px-6 py-4 text-center text-slate-400 border-l-4 border-transparent group-hover:border-orange-500 rounded-l-2xl">{{$num1}}</td>
                             <td class="px-6 py-4 text-slate-800 uppercase tracking-tight">
                                 <a href="{{ url('area/showschooldetail/'.$l->school_name.'/0') }}" class="hover:text-orange-600 transition-colors">
-                                    {{$selectschool[$l->school_name] ?? ''}}
+                                    <x-school-name :id="$l->school_name" :name="$selectschool[$l->school_name] ?? ''" />
                                 </a>
                             </td>
                             <td class="px-6 py-4 text-center text-amber-500 bg-amber-50/30">{{$l->Gold}}</td>

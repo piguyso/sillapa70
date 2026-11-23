@@ -11,7 +11,7 @@
                     <i class="ri-arrow-left-s-line text-2xl text-white"></i>
                 </a>
                 <span class="px-3 py-1 bg-emerald-500 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm text-white">
-                    {{$addschool[0]->getschoolname->school_name}}
+                    <x-school-name :school="$addschool[0]->getschoolname" />
                 </span>
             </div>
             <h1 class="text-2xl md:text-4xl font-black mb-4 italic uppercase tracking-tight text-white leading-tight">

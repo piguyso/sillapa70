@@ -67,7 +67,7 @@
                       </td>
                       <td></td>
                        <td>{{$l->getactivityname?->activity_name}}</td>
-                       <td>{{$l->getschoolname?->school_name}}</td>
+                       <td><x-school-name :school="$l->getschoolname" /></td>
                        <td>
                        @forelse($student as $s)
                       

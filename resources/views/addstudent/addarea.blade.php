@@ -31,7 +31,7 @@
                 </a>
                 <div class="italic">
                     <h3 class="text-lg font-black text-slate-800 leading-none">
-                        {{$addschool[0]->getschoolname->school_name}} 
+                        <x-school-name :school="$addschool[0]->getschoolname" /> 
                         <span class="text-orange-500 mx-2">→</span> 
                         {{$addschool[0]->getactivityname->activity_name}}
                     </h3>
@@ -245,7 +245,7 @@
     function DelConfirm(id) {
         showCustomConfirm(
             'ยืนยันการลบรายชื่อ',
-            '⚠️ คุณต้องการลบรายชื่อผู้เข้าร่วมนี้ออกจากระบบใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนี้จะไม่สามารถกู้คืนได้</span>',
+            'คุณต้องการลบรายชื่อผู้เข้าร่วมนี้ออกจากระบบใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนี้จะไม่สามารถกู้คืนได้</span>',
             function() {
                 document.getElementById('delform' + id).submit();
             }

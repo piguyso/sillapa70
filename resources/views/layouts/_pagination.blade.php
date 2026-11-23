@@ -60,7 +60,10 @@
         display: inline-flex !important; align-items: center; gap: 8px; margin: 0; white-space: nowrap;
         min-width: 0 !important; height: auto !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important;
     }
-    .dataTables_wrapper div.dataTables_filter input { width: auto !important; height: auto !important; margin: 0 !important; padding: 9px 14px !important; }
+    .dataTables_wrapper div.dataTables_filter input {
+        width: auto !important; height: auto !important; margin: 0 !important; padding: 9px 14px 9px 38px !important;
+        background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 13px center !important;
+    }
     .dataTables_wrapper table.dataTable, .dataTables_wrapper .dataTables_scroll { clear: both; }
     @media (max-width: 640px) {
         .dataTables_wrapper div.dataTables_length, .dataTables_wrapper div.dataTables_filter { float: none !important; width: 100% !important; }

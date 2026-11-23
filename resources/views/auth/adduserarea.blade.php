@@ -65,7 +65,7 @@
                                 <span class="text-[9px] text-slate-400 mt-1 inline-block uppercase italic">Phone: {{$l->phonenumber ?: '-'}}</span>
                             </td>
                             <td class="px-4 py-5 text-slate-800">
-                                {{$l->name.' '.$l->lastname}}
+                                <span class="inline-flex items-center gap-2"><x-school-logo :school="$l->getschool" size="sm" />{{$l->name.' '.$l->lastname}}</span>
                             </td>
                             <td class="px-4 py-5">
                                 <div class="flex flex-col gap-1">
@@ -117,7 +117,7 @@
                 ],
                 "language": {
                     "search": "",
-                    "searchPlaceholder": "🔍 ค้นหาข้อมูล...",
+                    "searchPlaceholder": "ค้นหาข้อมูล...",
                     "processing": "กำลังประมวลผล...", // ข้อความขณะค้นหา/เปลี่ยนหน้า
                     "loadingRecords": "กำลังโหลดข้อมูล...", 
                 },

@@ -104,7 +104,7 @@
                 "dom": '<"flex justify-end mb-4"f>rt',
                 "language": {
                     "search": "",
-                    "searchPlaceholder": "🔍 พิมพ์ชื่อกิจกรรมหรือกรรมการเพื่อค้นหา..."
+                    "searchPlaceholder": "พิมพ์ชื่อกิจกรรมหรือกรรมการเพื่อค้นหา..."
                 }
             });
         }

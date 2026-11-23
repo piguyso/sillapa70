@@ -72,7 +72,7 @@
                       <td> {{$s->getstudentactivity?->getactivitysubject->subjectgroup_name}}</td>
                        <td>{{$s->getstudentactivity?->activity_name}}</td>
                        <td>{{$s->getstudentactivity?->getclass->class_name}}</td>
-                       <td>{{$s->getaddschool?->getschoolname->school_name}}</td>
+                       <td><x-school-name :school="$s->getaddschool?->getschoolname" /></td>
                        <td>
                         @if($s->type == 0)
                         {{$s->getstudenttitle->title}}
@@ -152,7 +152,7 @@
                       <td></td>
                       <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
                        <td>{{$l->getactivityname?->activity_name}}</td>
-                       <td>{{$l->getschoolname?->school_name}}</td>
+                       <td><x-school-name :school="$l->getschoolname" /></td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

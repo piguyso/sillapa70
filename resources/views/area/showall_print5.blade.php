@@ -141,7 +141,7 @@
                       <td></td>
                       <td>{{$l->getactivityname?->getactivitysubject->subjectgroup_name}}</td>
                        <td>{{$l->getactivityname?->activity_name}}</td>
-                       <td>{{$l->getschoolname?->school_name}}</td>
+                       <td><x-school-name :school="$l->getschoolname" /></td>
                        <td>{{$s->getstudentname}}</td>
                        <td></td>
                      </tr>

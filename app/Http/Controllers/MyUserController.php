@@ -46,6 +46,41 @@ class MyUserController extends Controller
         'resetNetworks'=>$resetNetworks,
         'resetCenters'=>$resetCenters,
       );
+      $schoolsWithUser = User::where('position', 0)->whereNotNull('school_id')->pluck('school_id')->filter(fn ($v) => is_int($v) || is_string($v))->flip();
+      $networksWithUser = User::where('position', 5)->whereNotNull('schoolgroup')->pluck('schoolgroup')->filter(fn ($v) => is_int($v) || is_string($v))->flip();
+      // ศูนย์ที่มีบัญชีแล้ว: เทียบทั้งรหัสและชื่อศูนย์ เพราะศูนย์ถูกคัดลอกเป็นแถวใหม่ทุกงานแข่งขัน (บัญชีเดิมอาจชี้รหัสศูนย์ของงานก่อน)
+      $centerUserBranchIds = User::where('position', 1)->whereNotNull('branch')->pluck('branch')->filter(fn ($v) => is_int($v) || is_string($v))->values();
+      $centerUserNames = Branch::withoutGlobalScopes()->whereIn('id', $centerUserBranchIds)->pluck('branch_name')->filter(fn ($v) => is_string($v) && $v !== '')->flip();
+      $centersWithUser = $centerUserBranchIds->flip();
+      $data['registerData'] = [
+        'school' => School::with('schoolgroups')->orderBy('school_name')->get()->map(fn ($s) => [
+          'id' => $s->id,
+          'label' => $s->school_name.($s->school_code ? ' ('.$s->school_code.')' : ''),
+          'name' => $s->school_name,
+          'lastname' => (string) $s->school_detail,
+          'username' => (string) $s->school_code,
+          'logo' => $s->logo_url,
+          'hasUser' => $schoolsWithUser->has($s->id),
+        ])->values(),
+        'network' => Schoolgroup::orderBy('id')->get()->map(fn ($g) => [
+          'id' => $g->id,
+          'label' => $g->schoolgroup_name,
+          'name' => 'เครือข่ายสถานศึกษา',
+          'lastname' => (string) $g->schoolgroup_name,
+          'username' => 'area'.str_pad((string) $g->id, 2, '0', STR_PAD_LEFT),
+          'logo' => null,
+          'hasUser' => $networksWithUser->has($g->id),
+        ])->values(),
+        'center' => Branch::orderBy('id')->get()->map(fn ($b) => [
+          'id' => $b->id,
+          'label' => $b->branch_name,
+          'name' => 'ศูนย์การแข่งขัน',
+          'lastname' => (string) $b->branch_name,
+          'username' => 'center'.str_pad((string) $b->id, 2, '0', STR_PAD_LEFT),
+          'logo' => null,
+          'hasUser' => $centersWithUser->has($b->id) || $centerUserNames->has($b->branch_name),
+        ])->values(),
+      ];
       return view('auth.adduser',$data);
 	  }
     }
@@ -69,30 +104,68 @@ class MyUserController extends Controller
      */
     public function store(Request $request)
     {
-     // dd($request);
       adminchk();
-      $this->validate($request,[
-          'name'=>'required',
-          'lastname'=>'required',
-          'phonenumber'=>'required|numeric',
-          'email'=>'required',
-          'password'=>'required',
-          'position' => 'required',
+      $request->validate([
+          'account_type' => 'required|in:school,network,center,admin',
+          'target_id' => 'required_unless:account_type,admin|nullable|integer',
+          'name' => 'required|string|max:191',
+          'lastname' => 'required|string|max:191',
+          'phonenumber' => 'nullable|string|max:30',
+          'email' => 'required|string|max:191|unique:users,email',
+          'password' => 'nullable|string|min:4|max:100',
+          'must_change_password' => 'nullable|boolean',
+      ], [
+          'target_id.required_unless' => 'กรุณาเลือกหน่วยงานที่จะผูกกับบัญชี',
+          'email.unique' => 'Username นี้มีผู้ใช้แล้ว',
       ]);
+
       $user = new User;
+      $type = $request->account_type;
+      $targetId = (int) $request->target_id;
+
+      if ($type === 'school') {
+        $school = School::findOrFail($targetId);
+        if (User::where('position', 0)->where('school_id', $school->id)->exists()) {
+          return back()->withInput()->withErrors(['target_id' => 'โรงเรียนนี้มีบัญชีผู้ใช้แล้ว (1 โรงเรียนมี 1 บัญชี)']);
+        }
+        $user->position = 0;
+        $user->school_id = $school->id;
+        $user->schoolgroup = $school->school_group;
+        $user->branch = $school->id; // ระบบเดิมเก็บรหัสโรงเรียนในคอลัมน์ branch ของบัญชีโรงเรียน
+      } elseif ($type === 'network') {
+        $group = Schoolgroup::findOrFail($targetId);
+        if (User::where('position', 5)->where('schoolgroup', $group->id)->exists()) {
+          return back()->withInput()->withErrors(['target_id' => 'เครือข่ายนี้มีบัญชีผู้ใช้แล้ว (1 เครือข่ายมี 1 บัญชี)']);
+        }
+        $user->position = 5;
+        $user->schoolgroup = $group->id;
+        $user->branch = (int) (User::where('position', 5)->value('branch') ?: 1);
+      } elseif ($type === 'center') {
+        $branch = Branch::findOrFail($targetId);
+        $sameCenterIds = Branch::withoutGlobalScopes()->where('branch_name', $branch->branch_name)->pluck('id')->push($branch->id);
+        if (User::where('position', 1)->whereIn('branch', $sameCenterIds)->exists()) {
+          return back()->withInput()->withErrors(['target_id' => 'ศูนย์การแข่งขันนี้มีบัญชีผู้ใช้แล้ว (1 ศูนย์มี 1 บัญชี)']);
+        }
+        $user->position = 1;
+        $user->branch = $branch->id;
+        $user->schoolgroup = 0;
+      } else {
+        $user->position = 10;
+        $user->branch = 0;
+        $user->schoolgroup = 0;
+      }
+
       $user->name = $request->name;
       $user->lastname = $request->lastname;
-      $user->phonenumber = $request->phonenumber;
-      $user->position = $request ->position;
-      $user->email = $request->email;
-      $user->branch = $request->branch;
-      $user->schoolgroup = $request->schoolgroup;
-      $user->password = bcrypt($request->password);
+      $user->phonenumber = (string) $request->phonenumber;
+      $user->email = trim($request->email);
+      $user->password = \Illuminate\Support\Facades\Hash::make($request->filled('password') ? $request->password : $user->email);
+      $user->must_change_password = $request->boolean('must_change_password', true);
       $user->save();
-      Session::flash('massage','สร้างผู้ใช้ใหม่สำเร็จ..');
+
+      Session::flash('massage', 'สร้างผู้ใช้ใหม่สำเร็จ: '.$user->email.($request->filled('password') ? '' : ' (รหัสผ่านเริ่มต้นเท่ากับ Username)'));
       return redirect('/myuser');
     }
-
     /**
      * Display the specified resource.
      *

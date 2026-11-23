@@ -28,7 +28,7 @@
         .col-md-offset-4 { margin-left: 33.3333%; }
     }
     .glyphicon { font-style: normal; font-family: inherit; }
-    .glyphicon-backward::before { content: "◀"; } .glyphicon-print::before { content: "🖨"; }
+    .glyphicon-backward::before { content: "◀"; } .glyphicon-print::before { content: none; }
     .glyphicon-info-sign::before { content: "ℹ"; } .glyphicon-pencil::before { content: "✎"; }
     /* modal แบบ Bootstrap: ซ่อนไว้จนกว่าจะกดเปิด */
     .modal { display: none; position: fixed; inset: 0; z-index: 1050; overflow-y: auto; background: rgba(15,23,42,.55); padding: 24px 12px; }

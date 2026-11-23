@@ -73,7 +73,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-6 font-black text-gray-700 italic uppercase">
-                                {{ $s->getschoolname->school_name }}
+                                <x-school-name :school="$s->getschoolname" />
                             </td>
                         </tr>
                         @endforeach

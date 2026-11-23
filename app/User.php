@@ -17,6 +17,9 @@ class User extends Authenticatable
     public function getbranch(){
         return $this->hasone('App\Branch','id','branch');
     }
+    public function getschool(){
+        return $this->hasOne('App\School','id','school_id');
+    }
     public function getschoolgroup(){
         return $this->hasone('App\Schoolgroup','id','schoolgroup');
     }

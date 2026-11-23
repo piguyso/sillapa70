@@ -947,7 +947,7 @@
     function confirmDeleteEvent() {
         showCustomConfirm(
             'ยืนยันการลบครั้งการแข่งขัน',
-            'คุณต้องการลบการแข่งขันครั้งที่ {{ $currentEvent->event_number }} (ปีการศึกษา {{ $currentEvent->academic_year }}) ใช่หรือไม่?\n⚠️ ข้อมูลการตั้งค่าและรายการทั้งหมดที่ผูกกับครั้งนี้จะถูกลบถาวร!',
+            'คุณต้องการลบการแข่งขันครั้งที่ {{ $currentEvent->event_number }} (ปีการศึกษา {{ $currentEvent->academic_year }}) ใช่หรือไม่?\nข้อมูลการตั้งค่าและรายการทั้งหมดที่ผูกกับครั้งนี้จะถูกลบถาวร!',
             function() {
                 const form = document.getElementById('deleteEventForm');
                 if (form) form.submit();

@@ -76,7 +76,7 @@
 
                             <td class="px-6 py-6 font-black text-gray-800 italic uppercase">
                                 <a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}" target="_blank" class="hover:text-primary hover:underline transition-all">
-                                    {{$selectschool[$l->school_name]}}
+                                    <x-school-name :id="$l->school_name" :name="$selectschool[$l->school_name] ?? ''" />
                                 </a>
                             </td>
 

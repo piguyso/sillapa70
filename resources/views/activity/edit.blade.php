@@ -144,8 +144,8 @@
                             </div>
                             <div class="w-full md:w-1/3">
                                 <select name="activity_status" class="block w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-black text-gray-700 shadow-sm focus:ring-4 focus:ring-emerald-500/10">
-                                    <option value="1" @if($activity->activity_status==1) selected @endif>✅ ประกาศผลแล้ว (Closed)</option>
-                                    <option value="0" @if($activity->activity_status==0) selected @endif>⏳ ยังไม่ได้ประกาศผล (Pending)</option>
+                                    <option value="1" @if($activity->activity_status==1) selected @endif>ประกาศผลแล้ว (Closed)</option>
+                                    <option value="0" @if($activity->activity_status==0) selected @endif>ยังไม่ได้ประกาศผล (Pending)</option>
                                 </select>
                             </div>
                         </div>

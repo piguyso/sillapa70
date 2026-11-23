@@ -58,7 +58,7 @@
                             </td>
                             <td class="px-6 py-6 text-slate-800">
                                 <a href="{{ url('area/showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="text-lg font-black text-slate-800 uppercase hover:text-orange-600 transition-colors tracking-tight text-slate-800">
-                                    {{$l->school_name}}
+                                    <x-school-name :school="$l" />
                                 </a>
                                 <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest leading-none text-slate-800">Chumphon Primary Educational Area Office</p>
                             </td>

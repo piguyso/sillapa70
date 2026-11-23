@@ -13,6 +13,16 @@ use App\Configyear;
 
 $header1='งานศิลปหัตถกรรมนักเรียนครั้งที่ ๗๐';
 $header2='สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต ๑';
+/** ตารางรหัสโรงเรียน -> URL โลโก้ (โหลดครั้งเดียวต่อ request) */
+function school_logo_url_by_id($id)
+{
+  static $map = null;
+  if ($map === null) {
+    $map = \Illuminate\Support\Facades\Cache::remember('school_logo_files', 300, fn () => \Illuminate\Support\Facades\DB::table('schools')->whereNotNull('school_logo')->pluck('school_logo', 'id')->all());
+  }
+  $file = $map[(int) $id] ?? null;
+  return $file ? get_secure_file_url('upload', $file) : null;
+}
 /** แทนคำว่าเครือข่ายสถานศึกษา/เครือข่าย ด้วยชื่อเรียกที่ตั้งไว้ใน config (ใช้ใน PDF/Excel) */
 function network_label_text($text){
   return \App\Http\Middleware\ApplyNetworkLabel::apply(is_null($text) ? null : (string) $text);

@@ -92,7 +92,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-6 font-black text-gray-700 italic uppercase">
-                                {{$s->getaddschool->getschoolname->school_name}}
+                                <x-school-name :school="$s->getaddschool->getschoolname" />
                             </td>
                             <td class="px-6 py-6">
                                 @if($s->type == 0)

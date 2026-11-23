@@ -18,7 +18,7 @@
               <div class="panel-heading">
                 <a href="{{ url('area/centerviewactivityschool/'.$addschool[0]->school_activity) }}" class="btn btn-info btn-md" onclick="">
                 <span class="glyphicon glyphicon-backward"></span>
-                </a> {{$addschool[0]->getschoolname->school_name}}->{{$addschool[0]->getactivityname->activity_name}}</div>
+                </a> <x-school-name :school="$addschool[0]->getschoolname" />->{{$addschool[0]->getactivityname->activity_name}}</div>
           
               <div class="panel-body">
               

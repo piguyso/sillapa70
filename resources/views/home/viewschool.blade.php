@@ -53,7 +53,7 @@
                                         <i class="ri-school-line text-xl"></i>
                                     </div>
                                     <a href="{{ url('showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg">
-                                        {{$l->school_name}}
+                                        <x-school-name :school="$l" />
                                     </a>
                                 </div>
                             </td>

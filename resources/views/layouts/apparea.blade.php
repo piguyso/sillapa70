@@ -317,9 +317,13 @@
                     @else
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 text-white hover:bg-primaryDark px-3 py-2 rounded-md text-sm font-medium transition">
+                                @if(Auth::user()->school_id && school_logo_url_by_id(Auth::user()->school_id))
+                                    <img src="{{ school_logo_url_by_id(Auth::user()->school_id) }}" alt="" class="bg-white rounded-full w-8 h-8 object-contain shadow-sm">
+                                @else
                                 <span class="bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-sm">
                                     {{ substr(Auth::user()->name, 0, 1) }}
                                 </span>
+                                @endif
                                 <div class="text-left leading-tight hidden lg:block">
                                     <div class="font-bold">{{ Auth::user()->name }}</div>
                                     <div class="text-[10px] text-amber-200 uppercase tracking-tighter">{{ position(Auth::user()->position) }}</div>

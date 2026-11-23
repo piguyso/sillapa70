@@ -98,7 +98,7 @@
                 "dom": '<"flex justify-end mb-4"f>rt',
                 "language": {
                     "search": "",
-                    "searchPlaceholder": "🔍 ค้นหารายชื่อกรรมการ..."
+                    "searchPlaceholder": "ค้นหารายชื่อกรรมการ..."
                 }
             });
         }

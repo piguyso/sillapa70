@@ -65,7 +65,7 @@
                                 {{ $x }}
                             </td>
                             <td class="px-4 py-6 text-slate-800">
-                                <p class="text-slate-800 font-black uppercase leading-tight text-slate-800">{{$l->getschoolname?->school_name ??''}}</p>
+                                <p class="text-slate-800 font-black uppercase leading-tight text-slate-800"><x-school-name :school="$l->getschoolname" /></p>
                                 <span class="text-[9px] text-slate-400 mt-1 inline-block uppercase tracking-tighter">เครือข่าย: {{$l->getschoolgroup?->schoolgroup_name??''}}</span>
                             </td>
                             <td class="px-4 py-6 text-slate-800">

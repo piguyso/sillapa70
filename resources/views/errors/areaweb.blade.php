@@ -39,7 +39,7 @@
 
                 <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 mb-8">
                     <p class="text-xl md:text-2xl font-black text-slate-700 leading-relaxed">
-                        ⚠️ ขออภัย... ขณะนี้แอดมินเขตพื้นที่ <br class="hidden md:block">
+                        ขออภัย... ขณะนี้แอดมินเขตพื้นที่ <br class="hidden md:block">
                         <span class="text-red-600">" ปิดใช้งานระบบในส่วนนี้ "</span>
                     </p>
                 </div>

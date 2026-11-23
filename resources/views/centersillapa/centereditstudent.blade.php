@@ -19,7 +19,7 @@
         </a>
         
         <div class="text-white flex-1">
-            <h2 class="text-xl font-bold leading-none mb-1 tracking-wide text-white">{{$addschool[0]->getschoolname->school_name}}</h2>
+            <h2 class="text-xl font-bold leading-none mb-1 tracking-wide text-white"><x-school-name :school="$addschool[0]->getschoolname" /></h2>
             <p class="text-emerald-100 text-sm italic uppercase tracking-widest opacity-90 text-white leading-none">
                 <i class="ri-flag-2-line mr-1 text-white"></i>{{$addschool[0]->getactivityname->activity_name}}
             </p>

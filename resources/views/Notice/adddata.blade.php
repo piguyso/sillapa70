@@ -64,8 +64,8 @@
                         <div class="space-y-2">
                             <label class="block text-sm font-black text-gray-700 uppercase tracking-wider italic">ชนิดของประกาศ</label>
                             <select name="notice_type" class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
-                                <option value="1">📢 ประกาศทั่วไป (General Notice)</option>
-                                <option value="2">📂 รายการเอกสาร (Document List)</option>
+                                <option value="1">ประกาศทั่วไป (General Notice)</option>
+                                <option value="2">รายการเอกสาร (Document List)</option>
                             </select>
                         </div>
                     </div>

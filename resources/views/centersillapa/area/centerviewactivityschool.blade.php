@@ -64,7 +64,7 @@
                                 <td class="px-4 py-5">
                                     <p class="text-[10px] text-slate-400 uppercase tracking-tighter"> {{$l->getschoolgroup->schoolgroup_name}}</p>
                                     <a href="{{url('area/addaddstudent/'.$l->id)}}" class="text-slate-800 hover:text-orange-600 font-black italic uppercase transition-colors">
-                                        {{$l->getschoolname->school_name}}
+                                        <x-school-name :school="$l->getschoolname" />
                                     </a>
                                 </td>
                                 <td class="px-4 py-5 text-slate-500 leading-relaxed font-medium">
@@ -197,7 +197,7 @@
             message = 'ยืนยันประกาศผลแบบไม่มีการแข่งขัน และ<b>มอบเกียรติบัตร</b> (พิมพ์ได้ในระดับ "เข้าร่วม") ใช่หรือไม่?';
         } else if (status === '2') {
             title = 'ยืนยันการยกเลิกผลการแข่งขัน';
-            message = '⚠️ ยืนยันยกเลิกผลการแข่งขัน? การกระทำนี้ไม่สามารถย้อนกลับได้!';
+            message = 'ยืนยันยกเลิกผลการแข่งขัน? การกระทำนี้ไม่สามารถย้อนกลับได้!';
         }
         
         showCustomConfirm(title, message, function() {

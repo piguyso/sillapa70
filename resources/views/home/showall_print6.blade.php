@@ -110,7 +110,7 @@
                 ],
                 "language": {
                    "search": "",
-                   "searchPlaceholder": "🔍 ค้นหากลุ่มสาระ หรือรายการแข่งขัน...",
+                   "searchPlaceholder": "ค้นหากลุ่มสาระ หรือรายการแข่งขัน...",
                 }
             });
             table.buttons().container().appendTo('#excel_tools_area');

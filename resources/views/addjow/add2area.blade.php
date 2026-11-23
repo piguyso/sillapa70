@@ -183,7 +183,7 @@
                 ],
                 "language": {
                     "search": "",
-                    "searchPlaceholder": "🔍 ค้นหาข้อมูล...",
+                    "searchPlaceholder": "ค้นหาข้อมูล...",
                     "processing": "กำลังประมวลผล...", // ข้อความขณะค้นหา/เปลี่ยนหน้า
                     "loadingRecords": "กำลังโหลดข้อมูล...", 
                 },

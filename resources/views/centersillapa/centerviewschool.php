@@ -45,7 +45,7 @@
                           echo $x.'.';
                           ?>
                       </td>
-                       <td>{{$l->getschoolname->school_name}}</td>
+                       <td><x-school-name :school="$l->getschoolname" /></td>
                        <td>
                        {{$l->getschoolgroup->schoolgroup_name}}
                        

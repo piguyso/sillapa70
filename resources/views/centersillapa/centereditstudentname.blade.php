@@ -28,7 +28,7 @@
         </a>
         <div>
             <h1 class="text-2xl font-black text-gray-800 leading-none mb-1 uppercase italic text-emerald-700">Edit Profile / แก้ไขข้อมูล</h1>
-            <p class="text-sm text-gray-400 font-bold tracking-widest uppercase italic">{{$addschool[0]->getschoolname->school_name}}</p>
+            <p class="text-sm text-gray-400 font-bold tracking-widest uppercase italic"><x-school-name :school="$addschool[0]->getschoolname" /></p>
         </div>
     </div>
 

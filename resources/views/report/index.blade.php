@@ -144,7 +144,7 @@
             "dom": 'f<"my-4">rtp', // โชว์แค่ Search (f), Table (t), Pagination (p)
             "language": {
                 "search": "",
-                "searchPlaceholder": "🔍 ค้นหากลุ่มสาระ...",
+                "searchPlaceholder": "ค้นหากลุ่มสาระ...",
                 "paginate": { "next": "→", "previous": "←" }
             }
         });

@@ -124,7 +124,7 @@
                 "dom": '<"flex flex-col md:flex-row justify-between items-center mb-6 gap-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
                 "language": {
                     "search": "",
-                    "searchPlaceholder": "🔍 ค้นหาชื่อกิจกรรม หรือ กลุ่มสาระ...",
+                    "searchPlaceholder": "ค้นหาชื่อกิจกรรม หรือ กลุ่มสาระ...",
                 },
                 "initComplete": function(settings, json) {
                     $('#loading-overlay').addClass('opacity-0');

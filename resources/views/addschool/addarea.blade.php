@@ -60,10 +60,10 @@
                                         <p class="text-[9px] text-slate-400 uppercase tracking-tighter"> {{$l->getschoolgroup->schoolgroup_name}}</p>
                                         @if($activity->activity_status == 0)
                                             <a href="{{ url('area/addaddstudent/'.$l->id) }}" class="text-slate-800 hover:text-orange-600 font-black text-sm uppercase italic transition-colors">
-                                                {{$l->getschoolname->school_name}}
+                                                <x-school-name :school="$l->getschoolname" />
                                             </a>
                                         @else
-                                            <span class="text-slate-800 font-black text-sm uppercase italic">{{$l->getschoolname->school_name}}</span>
+                                            <span class="text-slate-800 font-black text-sm uppercase italic"><x-school-name :school="$l->getschoolname" /></span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-5 text-slate-500 leading-relaxed font-medium">
@@ -190,7 +190,7 @@
     function DelConfirm(id) {
         showCustomConfirm(
             'ยืนยันการลบโรงเรียน',
-            '⚠️ คุณต้องการลบโรงเรียนนี้ออกจากรายการแข่งขันใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย</span>',
+            'คุณต้องการลบโรงเรียนนี้ออกจากรายการแข่งขันใช่หรือไม่?<br><span class="text-red-600 font-bold">ข้อมูลนักเรียนและครูทั้งหมดในทีมนี้จะถูกลบออกด้วย</span>',
             function() {
                 document.getElementById('delform' + id).submit();
             }

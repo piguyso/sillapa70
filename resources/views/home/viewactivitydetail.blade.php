@@ -83,7 +83,7 @@
         
         <td class="px-4 py-4 font-bold text-gray-800">
             <button onclick="openSchoolModal('school-modal-{{$l->id}}')" class="text-green-600 hover:text-green-800 hover:underline transition-colors focus:outline-none text-left flex items-center gap-2">
-                {{$l->getschoolname->school_name}}
+                <x-school-name :school="$l->getschoolname" />
                 <i class="ri-external-link-line text-xs text-green-400"></i>
             </button>
 
@@ -99,7 +99,7 @@
                                     <div class="p-1.5 bg-white/20 rounded-lg">
                                         <i class="ri-building-4-line text-sm"></i>
                                     </div>
-                                    <span class="truncate">{{$l->getschoolname->school_name}}</span>
+                                    <span class="truncate"><x-school-name :school="$l->getschoolname" /></span>
                                 </h3>
                                 <button type="button" onclick="closeSchoolModal('school-modal-{{$l->id}}')" class="text-white/70 hover:text-white hover:bg-white/20 p-1 rounded-lg transition-colors focus:outline-none">
                                     <i class="ri-close-line text-xl"></i>

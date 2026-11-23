@@ -159,7 +159,7 @@
                     @forelse($dbrank as $l)
                      <tr>
                        <td>{{$num1}}</td>
-                       <td><a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}">{{$selectschool[$l->school_name]}}</a></td>
+                       <td><a href="{{ url('showschooldetail/'.$l->school_name.'/0') }}"><x-school-name :id="$l->school_name" :name="$selectschool[$l->school_name] ?? ''" /></a></td>
                        <td style="text-align: center">
                        
                        {{$l->Gold}}

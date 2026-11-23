@@ -85,9 +85,14 @@
                             <tr class="group bg-white hover:bg-gray-50/50 transition-all border border-gray-100 shadow-sm rounded-2xl">
                                 <td class="px-6 py-6 text-center font-bold text-gray-300">{{$l->id}}</td>
                                 <td class="px-6 py-6">
+                                  <div class="flex items-center gap-3">
+                                    <x-school-logo :school="$l->getschool" :icon="['0' => 'ri-school-line', '1' => 'ri-map-pin-2-line', '5' => 'ri-share-circle-line', '10' => 'ri-shield-user-line'][(string) $l->position] ?? 'ri-user-line'" />
+                                    <div>
                                     <div class="font-black text-gray-800 text-base leading-tight">{{$l->name.' '.$l->lastname}}</div>
                                     <div class="text-xs text-primary font-bold italic mt-1"><i class="ri-mail-line"></i> {{$l->email}}</div>
                                     <div class="text-[10px] text-gray-400 font-bold mt-1 uppercase"><i class="ri-phone-line"></i> {{$l->phonenumber ?: '-'}}</div>
+                                    </div>
+                                  </div>
                                 </td>
                                 <td class="px-6 py-6 text-center">
                                     <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black border border-emerald-100 uppercase italic">
@@ -122,79 +127,109 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="bg-emerald-600 px-8 py-6 text-white">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" x-data="userRegister(@js($registerData))">
+            <div class="px-8 py-6 text-white" style="background: var(--ui-primary)">
                 <h2 class="text-xl font-bold flex items-center gap-2">
                     <i class="ri-user-add-line"></i> ลงทะเบียนผู้ใช้งานใหม่ (Register)
                 </h2>
+                <p class="text-sm opacity-90 mt-1">เลือกประเภทบัญชีและหน่วยงาน ระบบกำหนดสิทธิ์และข้อมูลที่เกี่ยวข้องให้อัตโนมัติ</p>
             </div>
             <div class="p-8 md:p-12">
-                <form method="POST" action="{{ Route('myuser.store') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @if($errors->any())
+                    <div class="mb-6 rounded-2xl bg-red-50 border border-red-100 text-red-700 p-4 text-sm font-bold">
+                        @foreach($errors->all() as $error)<div>* {{ $error }}</div>@endforeach
+                    </div>
+                @endif
+                <form method="POST" action="{{ Route('myuser.store') }}" class="space-y-8">
                     {{ csrf_field() }}
 
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">ชื่อ</label>
-                        <input type="text" name="name" value="{{ old('name') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                    {{-- 1) ประเภทบัญชี --}}
+                    <div>
+                        <label class="ui-label">1. ประเภทบัญชี (สิทธิ์ที่จะได้รับ)</label>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-2">
+                            <template x-for="t in types" :key="t.key">
+                                <label class="cursor-pointer rounded-2xl border-2 p-4 flex items-center gap-3 transition"
+                                       :class="type === t.key ? 'ring-4' : 'border-gray-200 hover:border-gray-300'"
+                                       :style="type === t.key ? 'border-color: var(--ui-primary); background: color-mix(in srgb, var(--ui-primary) 8%, white); --tw-ring-color: color-mix(in srgb, var(--ui-primary) 18%, transparent)' : ''">
+                                    <input type="radio" name="account_type" :value="t.key" x-model="type" @change="reset()" class="sr-only">
+                                    <i :class="t.icon" class="text-2xl" :style="type === t.key ? 'color: var(--ui-primary)' : 'color:#94a3b8'"></i>
+                                    <span><span class="block font-black text-gray-800 text-sm" x-text="t.label"></span><span class="block text-[11px] text-gray-400 font-bold" x-text="t.hint"></span></span>
+                                </label>
+                            </template>
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">นามสกุล</label>
-                        <input type="text" name="lastname" value="{{ old('lastname') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                    {{-- 2) หน่วยงาน --}}
+                    <div x-show="type !== 'admin'" x-cloak>
+                        <label class="ui-label" x-text="'2. เลือก' + current().label"></label>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="w-12 h-12 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center shrink-0 overflow-hidden border border-gray-100">
+                                <template x-if="selected && selected.logo"><img :src="selected.logo" alt="" class="w-12 h-12 object-contain bg-white"></template>
+                                <template x-if="!(selected && selected.logo)"><i :class="current().icon" class="text-xl"></i></template>
+                            </span>
+                            <select name="target_id" x-model="targetId" @change="pick()" class="ui-select flex-1" :required="type !== 'admin'">
+                                <option value="">— เลือก —</option>
+                                <template x-for="o in options()" :key="o.id">
+                                    <option :value="o.id" :disabled="o.hasUser" x-text="o.label + (o.hasUser ? '  (มีบัญชีแล้ว)' : '')"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <p class="ui-help" x-show="type !== 'admin'">รายการที่ขึ้นว่า "มีบัญชีแล้ว" เลือกไม่ได้ (1 หน่วยงานมี 1 บัญชี) ถ้าต้องการแก้ไข ให้ใช้ปุ่มแก้ไขในตารางด้านบน</p>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">เบอร์โทร</label>
-                        <input type="text" name="phonenumber" value="{{ old('phonenumber') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
+                    {{-- 3) ข้อมูลบัญชี --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <x-form.input label="ชื่อ" name="name" x-model="name" required />
+                        <x-form.input label="นามสกุล / ชื่อหน่วยงาน" name="lastname" x-model="lastname" required />
+                        <x-form.input label="เบอร์โทร (ไม่บังคับ)" name="phonenumber" x-model="phone" inputmode="tel" />
+                        <x-form.input label="Username" name="email" x-model="email" required autocomplete="off" help="โรงเรียนใช้รหัสโรงเรียน 8 หลักอัตโนมัติ แก้ไขได้" />
+                        <x-form.input label="รหัสผ่าน" name="password" x-model="password" autocomplete="new-password" placeholder="เว้นว่าง = เท่ากับ Username" help="ปล่อยว่างเพื่อใช้ Username เป็นรหัสผ่านเริ่มต้น" />
+                        <div class="ui-form-group flex items-end">
+                            <label class="flex items-center gap-2 text-sm font-bold text-gray-700 pb-3">
+                                <input type="hidden" name="must_change_password" value="0">
+                                <input type="checkbox" name="must_change_password" value="1" checked class="rounded border-gray-300"> บังคับเปลี่ยนรหัสผ่านเมื่อเข้าใช้ครั้งแรก
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">สิทธิ์/ตำแหน่ง</label>
-                        <select name="position" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700">
-                            <option value="10">Admin (Super)</option>
-                            <option value="0">โรงเรียน (School)</option>
-                            <option value="5">เครือข่ายสถานศึกษา</option>
-                            <option value="1">ศูนย์การแข่งขัน</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">ศูนย์การแข่งขัน</label>
-                        <select name="branch" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700">
-                            <option value="0">ไม่ระบุ / เลือกข้อมูล</option>
-                            @foreach($branch as $i)
-                                <option value="{{$i->id}}">{{$i->branch_name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">เครือข่าย</label>
-                        <select name="schoolgroup" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700">
-                            <option value="0">ไม่ระบุ / เลือกข้อมูล</option>
-                            @foreach($schoolgroup as $i)
-                                <option value="{{$i->id}}">{{$i->schoolgroup_name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Username / Email</label>
-                        <input type="text" name="email" value="{{ old('email') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-sm font-black text-gray-400 uppercase tracking-widest italic">Password</label>
-                        <input type="text" name="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-gray-700 shadow-inner">
-                    </div>
-
-                    <div class="md:col-span-2 lg:col-span-1 flex items-end">
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ri-user-add-line text-xl"></i> ลงทะเบียนผู้ใช้
-                        </button>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <x-form.button type="submit"><i class="ri-user-add-line"></i> ลงทะเบียนผู้ใช้</x-form.button>
+                        <span class="text-xs text-gray-400 font-bold" x-show="summary()" x-text="summary()"></span>
                     </div>
                 </form>
             </div>
         </div>
+        <script>
+            function userRegister(d) {
+                return {
+                    types: [
+                        { key: 'school', label: 'โรงเรียน', hint: 'ได้สิทธิ์โรงเรียน', icon: 'ri-school-line' },
+                        { key: 'network', label: 'เครือข่าย', hint: 'ได้สิทธิ์เครือข่าย', icon: 'ri-share-circle-line' },
+                        { key: 'center', label: 'ศูนย์การแข่งขัน', hint: 'ได้สิทธิ์ศูนย์', icon: 'ri-map-pin-2-line' },
+                        { key: 'admin', label: 'ผู้ดูแลระบบ', hint: 'ได้สิทธิ์สูงสุด', icon: 'ri-shield-user-line' },
+                    ],
+                    type: @js(old('account_type', 'school')),
+                    targetId: @js(old('target_id', '')),
+                    name: @js(old('name', '')), lastname: @js(old('lastname', '')), phone: @js(old('phonenumber', '')),
+                    email: @js(old('email', '')), password: '', selected: null,
+                    current() { return this.types.find(t => t.key === this.type); },
+                    options() { return d[this.type] || []; },
+                    reset() { this.targetId = ''; this.selected = null; this.name = ''; this.lastname = ''; this.email = ''; if (this.type === 'admin') { this.name = 'ผู้ดูแลระบบ'; } },
+                    pick() {
+                        const o = this.options().find(x => String(x.id) === String(this.targetId));
+                        this.selected = o || null;
+                        if (!o) { return; }
+                        this.name = o.name; this.lastname = o.lastname; this.email = o.username;
+                    },
+                    summary() {
+                        const o = this.selected;
+                        if (this.type === 'admin') { return 'จะสร้างบัญชีผู้ดูแลระบบ (สิทธิ์สูงสุด)'; }
+                        return o ? 'สิทธิ์ที่จะได้รับ: ' + this.current().hint.replace('ได้สิทธิ์', '') + ' — ' + o.label : '';
+                    },
+                    init() { if (this.targetId) { this.pick(); } else if (this.type === 'admin') { this.name = 'ผู้ดูแลระบบ'; } },
+                };
+            }
+        </script>
     </div>
 </div>
 
@@ -248,7 +283,7 @@
                 "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
                 "language": {
                    "search": "",
-                   "searchPlaceholder": "🔍 ค้นหาชื่อ, อีเมล, ตำแหน่ง หรือศูนย์...",
+                   "searchPlaceholder": "ค้นหาชื่อ, อีเมล, ตำแหน่ง หรือศูนย์...",
                 },
                 "initComplete": function(settings, json) {
                     $('#loading-overlay').addClass('opacity-0');

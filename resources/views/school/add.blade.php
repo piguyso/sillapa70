@@ -123,12 +123,22 @@
                                         {{$l->id}}
                                     </td>
                                     <td class="px-6 py-6">
+                                      <div class="flex items-center gap-3">
+                                        @if($l->logo_url)
+                                            <img src="{{ $l->logo_url }}" alt="" loading="lazy" class="w-10 h-10 rounded-full object-contain bg-white border border-gray-100 shrink-0">
+                                        @else
+                                            <span class="w-10 h-10 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center shrink-0"><i class="ri-school-line text-lg"></i></span>
+                                        @endif
+                                        <div>
                                         <div class="font-black text-gray-800 text-base leading-tight uppercase italic tracking-tight group-hover:text-emerald-700 transition-colors">
                                             {{$l->school_name}}
                                         </div>
                                         <div class="text-xs text-gray-400 font-bold mt-1 flex items-center gap-1">
                                             <i class="ri-information-line"></i> {{$l->school_detail ?: 'ไม่มีรายละเอียด'}}
+                                            @if($l->school_code)<span class="ml-2 font-mono text-gray-400">{{ $l->school_code }}</span>@endif
                                         </div>
+                                        </div>
+                                      </div>
                                     </td>
                                     <td class="px-6 py-6">
                                         <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black border border-emerald-100 uppercase italic">
@@ -233,7 +243,7 @@
                 "dom": '<"flex justify-end mb-4"f>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
                 "language": {
                    "search": "",
-                   "searchPlaceholder": "🔍 ค้นหาชื่อโรงเรียน หรือเครือข่าย...",
+                   "searchPlaceholder": "ค้นหาชื่อโรงเรียน หรือเครือข่าย...",
                    "info": "แสดง _START_ - _END_ จากทั้งหมด _TOTAL_ โรงเรียน",
                    "infoEmpty": "ไม่พบข้อมูล",
                    "infoFiltered": "(กรองจาก _MAX_ โรงเรียน)",

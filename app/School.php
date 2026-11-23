@@ -27,6 +27,12 @@ class School extends Model
     }
 
     /** บันทึกสังกัดทั้งหมด; $primaryId ต้องอยู่ในรายการเสมอ */
+    /** URL โลโก้โรงเรียน (null ถ้าไม่มี) */
+    public function getLogoUrlAttribute(): ?string
+    {
+        return $this->school_logo ? get_secure_file_url('upload', $this->school_logo) : null;
+    }
+
     public function syncNetworks(array $networkIds, int $primaryId): void
     {
         $ids = array_values(array_unique(array_map('intval', array_merge([$primaryId], $networkIds))));

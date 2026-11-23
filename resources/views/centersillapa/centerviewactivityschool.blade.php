@@ -66,7 +66,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <a href="{{ url('centereditstudent/'.$l->id) }}" class="font-black text-gray-800 hover:text-primary transition-colors block leading-tight">
-                                    {{$l->getschoolname->school_name}}
+                                    <x-school-name :school="$l->getschoolname" />
                                 </a>
                                 <span class="text-[10px] font-bold text-gray-400 italic">เครือข่าย: {{$l->getschoolgroup->schoolgroup_name}}</span>
                             </td>

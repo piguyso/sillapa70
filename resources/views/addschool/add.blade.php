@@ -62,7 +62,7 @@
                                 <td class="px-6 py-6 text-center text-slate-300 italic align-top">{{ $y++ }}.</td>
                                 <td class="px-6 py-6 align-top">
                                     <a href="{{ url('addaddstudent/'.$l->id) }}" class="text-emerald-700 hover:text-emerald-900 transition-colors uppercase italic font-black text-base">
-                                        {{$l->getschoolname->school_name}}
+                                        <x-school-name :school="$l->getschoolname" />
                                     </a>
                                     <div class="text-[10px] text-slate-400 mt-1 uppercase italic font-bold">
                                         <i class="ri-links-line"></i> {{$l->getschoolgroup->schoolgroup_name}}
