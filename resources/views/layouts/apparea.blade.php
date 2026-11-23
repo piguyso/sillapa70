@@ -10,6 +10,12 @@
         $path = request()->path();
         $netId = $networkId ?? (preg_match('#area/(?:showall_print\d*|report/\w+)/(\d+)$#', $path, $pm) ? (int) $pm[1] : null)
             ?? request()->attributes->get('schoolgroup_id') ?? session('area') ?? Auth::user()?->schoolgroup;
+        // ผู้ใช้เครือข่ายที่เปิดหน้าจัดการของตัวเอง (URL ไม่มีรหัสเครือข่ายต่อท้าย) ใช้สีเครือข่ายของตัวเอง
+        // ไม่ใช้ session('area') ซึ่งเปลี่ยนตามเครือข่ายอื่นที่เพิ่งเปิดดู
+        if ((int) Auth::user()?->position === 5 && (int) Auth::user()->schoolgroup > 0
+            && ! ($networkId ?? null) && ! request()->attributes->get('schoolgroup_id') && ! preg_match('#/\d+/?$#', '/'.$path)) {
+            $netId = (int) Auth::user()->schoolgroup;
+        }
         $netColor = \App\Schoolgroup::colorFor($netId);
         if ($netColor) { $themePrimary = $netColor; }
         $themeSecondary = config('app.theme_secondary') ?: session('theme_secondary', '#0f172a');
@@ -404,6 +410,9 @@
 
                                         @if(Auth::user()->position==5)
                                             <div class="border-t border-gray-100 my-2"></div>
+                                            <a href="{{ url('area/printdocs') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition">
+                                                <i class="ri-printer-line text-emerald-600 text-lg"></i> พิมพ์เอกสาร
+                                            </a>
                                           
 
                                             <a href="{{ url('area/areasubjectgroup/'.Auth::user()->schoolgroup ?? '')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 rounded-2xl transition-all">

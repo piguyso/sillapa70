@@ -26,6 +26,7 @@
                        <th style="text-align: center"><img src="{{ asset('imgs/gold.png') }}" width='20px'> เหรียญทอง</th>
                        <th style="text-align: center"><img src="{{ asset('imgs/silver.png') }}" width='20px'> เหรียญเงิน</th>
                        <th style="text-align: center"><img src="{{ asset('imgs/bronze.png') }}" width='20px'> เหรียญทองแดง</th>
+                       <th style="text-align: center">ไม่มีการแข่งขัน</th>
                        <th>รวม</th>
                      </tr>
                    </thead>
@@ -46,6 +47,7 @@
                     
                        </td>
                        <td style="text-align: center">{{$l->Bronce}}</td>
+                       <td style="text-align: center; color:#94a3b8">{{ $l->Part ?? 0 }}</td>
                        <td>
                    
                         {{$l->Gold+$l->Silver+$l->Bronce}}

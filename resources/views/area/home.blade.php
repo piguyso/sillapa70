@@ -88,6 +88,7 @@
                         <th class="px-6 py-2 text-center text-amber-500">ทอง</th>
                         <th class="px-6 py-2 text-center text-slate-400">เงิน</th>
                         <th class="px-6 py-2 text-center text-amber-700">ทองแดง</th>
+                        <th class="px-6 py-2 text-center">ไม่มีการแข่งขัน</th>
                         <th class="px-6 py-2 text-center">รวม</th>
                     </tr>
                 </thead>
@@ -104,6 +105,7 @@
                             <td class="px-6 py-4 text-center text-amber-500 bg-amber-50/30">{{$l->Gold}}</td>
                             <td class="px-6 py-4 text-center text-slate-400">{{$l->Silver}}</td>
                             <td class="px-6 py-4 text-center text-amber-700">{{$l->Bronce}}</td>
+                            <td class="px-6 py-4 text-center text-slate-400">{{ $l->Part ?? 0 }}</td>
                             <td class="px-6 py-4 text-center text-orange-800 rounded-r-2xl bg-orange-50/30">{{$l->Gold+$l->Silver+$l->Bronce}}</td>
                         </tr>
                         @php $num1++; @endphp

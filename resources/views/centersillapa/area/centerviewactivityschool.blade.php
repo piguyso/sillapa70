@@ -99,7 +99,7 @@
                                 </td>
                                 <td class="px-4 py-5 text-center rounded-r-2xl">
                                     <div class="flex flex-col items-center">
-                                        @php getmedel($l->student_score); @endphp
+                                        @php if (!in_array((int) $l->activity_status, [98, 99], true)) { getmedel($l->student_score); } @endphp
                                         @if($l->activity_status == "98")
                                             <span class="text-[9px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full uppercase italic">No Certificate</span>
                                         @elseif($l->activity_status == "99")

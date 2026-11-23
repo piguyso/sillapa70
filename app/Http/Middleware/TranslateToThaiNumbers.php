@@ -7,10 +7,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TranslateToThaiNumbers
 {
+    /** เส้นทางที่เป็นเกียรติบัตร: แสดงเลขไทยตามแบบเอกสาร */
+    private const CERTIFICATE_PATH = '~(?:^|/)(?:area/)?print(?:PDF2?|activity|centeractivity|jow2?(?:_showbg)?|jowdoc|reportjow(?:_showbg)?|test|student)(?:/|$)~i';
+
+    private const THAI_DIGITS = ['๐' => '0', '๑' => '1', '๒' => '2', '๓' => '3', '๔' => '4', '๕' => '5', '๖' => '6', '๗' => '7', '๘' => '8', '๙' => '9'];
+
     /**
      * Handle an incoming request.
-     * แปลงเลขอารบิคเป็นเลขไทยเฉพาะหน้าพิมพ์เกียรติบัตร (URL มีคำว่า "print")
-     * หน้าเว็บทั่วไปใช้เลขอารบิคตามปกติ
+     * แปลงเลขอารบิคเป็นเลขไทยเฉพาะหน้าพิมพ์เกียรติบัตรเท่านั้น (ดู CERTIFICATE_PATH)
+     * หน้าอื่นทั้งหมดแปลงเลขไทยเป็นเลขอารบิค (รวมเลขไทยที่อยู่ในข้อมูล เช่น ชื่อเครือข่าย "เมือง ๑")
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -20,11 +25,19 @@ class TranslateToThaiNumbers
     {
         $response = $next($request);
 
-        // ตรวจสอบว่าเป็นหน้าพิมพ์เกียรติบัตร (URL ต้องมีคำว่า "print")
-        $isPrintPage = stripos($request->path(), 'print') !== false
-                    || stripos($request->path(), 'showall_print') !== false;
+        $isCertificate = (bool) preg_match(self::CERTIFICATE_PATH, $request->path());
 
-        if (!$isPrintPage) {
+        if (! $isCertificate) {
+            // หน้าทั่วไป: เลขไทย -> เลขอารบิค (เฉพาะ HTML)
+            if ($response instanceof Response && ! $response instanceof \Symfony\Component\HttpFoundation\StreamedResponse
+                && ! $response instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse
+                && str_contains((string) $response->headers->get('Content-Type'), 'text/html')) {
+                $content = $response->getContent();
+                if ($content !== false && preg_match('/[๐-๙]/u', $content)) {
+                    $response->setContent(strtr($content, self::THAI_DIGITS));
+                }
+            }
+
             return $response;
         }
 

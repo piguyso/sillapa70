@@ -83,7 +83,7 @@ if (file_exists($imagePath)) {
                  $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                  $pdf::SetFont('fonts/THSarabun.ttf','',20);
                  
-                 $pdf::Cell(0, 0,'เลขที่ ๐๔๕๖๘-๐๑-๒๕๖๘    ', 0, 1, 'R', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๔๕๖๘-๐๑-๒๕๖๘    '), 0, 1, 'R', 0, '', 1);
                  $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -93,17 +93,17 @@ if (file_exists($imagePath)) {
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
                  $pdf::SetTextColor(0,0,255);
-               //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-                 $pdf::Cell(0, 0,"นายกิตติพงษ์ น้อยจีน", 0, 1, 'C', 0, '', 1);
+               //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("นายกิตติพงษ์ น้อยจีน"), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
                  $pdf::SetFont('fonts/THSarabun.ttf','',24);
-                 $pdf::Cell(0, 0,"รองผู้อำนวยการโรงเรียนอนุบาลชุมพร", 0, 1, 'C', 0, '', 1);
-                 $pdf::Cell(0, 0,'ได้เป็นวิทยากรในการฝึกอบรมเชิงปฏิบัติการ', 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("รองผู้อำนวยการโรงเรียนอนุบาลชุมพร"), 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit('ได้เป็นวิทยากรในการฝึกอบรมเชิงปฏิบัติการ'), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
      
            
      
-                 $pdf::Cell(0, 0,"เครือข่ายสถานศึกษาและเจ้าหน้าที่บันทึกคะแนนเพื่อใช้งานโปรแกรม", 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("เครือข่ายสถานศึกษาและเจ้าหน้าที่บันทึกคะแนนเพื่อใช้งานโปรแกรม"), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
                  $pdf::endPage();
      
@@ -171,7 +171,7 @@ if (file_exists($imagePath)) {
                  $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                  $pdf::SetFont('fonts/THSarabun.ttf','',20);
                  
-                 $pdf::Cell(0, 0,'เลขที่ ๐๔๕๖๘-๐๑-๒๕๖๘    ', 0, 1, 'R', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๔๕๖๘-๐๑-๒๕๖๘    '), 0, 1, 'R', 0, '', 1);
                  $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -181,17 +181,17 @@ if (file_exists($imagePath)) {
                  $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
                  $pdf::SetTextColor(0,0,255);
-               //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-                 $pdf::Cell(0, 0,"นายกิตติพงษ์ น้อยจีน", 0, 1, 'C', 0, '', 1);
+               //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("นายกิตติพงษ์ น้อยจีน"), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
                  $pdf::SetFont('fonts/THSarabun.ttf','',24);
-                 $pdf::Cell(0, 0,"รองผู้อำนวยการโรงเรียนอนุบาลชุมพร", 0, 1, 'C', 0, '', 1);
-                 $pdf::Cell(0, 0,'ได้เป็นวิทยากรในการฝึกอบรมเชิงปฏิบัติการ', 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("รองผู้อำนวยการโรงเรียนอนุบาลชุมพร"), 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit('ได้เป็นวิทยากรในการฝึกอบรมเชิงปฏิบัติการ'), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
      
            
      
-                 $pdf::Cell(0, 0,"เครือข่ายสถานศึกษาและเจ้าหน้าที่บันทึกคะแนนเพื่อใช้งานโปรแกรม", 0, 1, 'C', 0, '', 1);
+                 $pdf::Cell(0, 0,thainumDigit("เครือข่ายสถานศึกษาและเจ้าหน้าที่บันทึกคะแนนเพื่อใช้งานโปรแกรม"), 0, 1, 'C', 0, '', 1);
                  $pdf::SetTextColor(0,0,0);
                  $pdf::endPage();
      
@@ -266,7 +266,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years)), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -276,12 +276,12 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
           //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
             $pdf::SetTextColor(0,0,255);
-          //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
-            $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
 
             $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -309,7 +309,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -391,7 +391,7 @@ if (file_exists($imagePath)) {
                $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/THSarabun.ttf','',20);
                
-               $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit(\App\Services\CertificateText::number('๐๔', $addschool[0], $year[0]->years)), 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -401,12 +401,12 @@ if (file_exists($imagePath)) {
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
              //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
                $pdf::SetTextColor(0,0,255);
-             //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-               $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+             //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
                $pdf::SetFont('fonts/THSarabun.ttf','',24);
-               $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-               $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
    
                $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -434,7 +434,7 @@ if (file_exists($imagePath)) {
              //  $activity_name = str_replace('9','๙',$activity_name);
             //   $activity_name = str_replace('0','๐',$activity_name);
    
-               $pdf::Cell(0, 0,$activity_name." ".$addschool[0]->getactivityname->getclass->class_name, 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($activity_name." ".$addschool[0]->getactivityname->getclass->class_name), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
                $pdf::endPage();
    
@@ -489,16 +489,16 @@ for($i=0;$i< count($jows);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',158);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการตัดสิน', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการตัดสิน'), 0, 1, 'C', 0, '', 1);
 
             $activity_name = str_replace('[เดี่ยว]','',$activity->activity_name);
             $activity_name = str_replace('[ทีม 2 คน]','',$activity_name);
@@ -517,7 +517,7 @@ for($i=0;$i< count($jows);$i++) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -580,16 +580,16 @@ if (file_exists($imagePath)) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',140);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการตัดสิน', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการตัดสิน'), 0, 1, 'C', 0, '', 1);
 
             $activity_name = str_replace('[เดี่ยว]','',$activity->activity_name);
             $activity_name = str_replace('[ทีม 2 คน]','',$activity_name);
@@ -608,7 +608,7 @@ if (file_exists($imagePath)) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,$activity_name." ".$activity->getclass->class_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name." ".$activity->getclass->class_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -654,23 +654,23 @@ for($i=0;$i< count($jows);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'-'.thainumDigit(session('area')).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'-'.thainumDigit(session('area')).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',150);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name??'', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name??''), 0, 1, 'C', 0, '', 1);
 
        
         //    $activity_name = thainumDigit($activity_name);
 
 
-         //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+         //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -729,23 +729,23 @@ if (file_exists($imagePath)) {
                    $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',20);
                    
-                     $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'-'.thainumDigit(session('area')).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'-'.thainumDigit(session('area')).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',145);
                    $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                    
                    $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
                    $pdf::SetTextColor(0,0,255);
-                   $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',24);
                    $pdf::SetTextColor(0,0,0);
-                   $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-                   $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name??'', 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name??''), 0, 1, 'C', 0, '', 1);
        
               
                //    $activity_name = thainumDigit($activity_name);
        
        
-                //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+                //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
        
        
        
@@ -795,23 +795,23 @@ public function areaprintjow2doccerf($id){
              $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',20);
              
-             $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit(session('area')).'-'.thainumDigit($i).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit(session('area')).'-'.thainumDigit($i).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',150);
              $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
              
              $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
              $pdf::SetTextColor(0,0,255);
-             $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',24);
              $pdf::SetTextColor(0,0,0);
-             $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-             $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name ??'', 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name ??''), 0, 1, 'C', 0, '', 1);
  
         
          //    $activity_name = thainumDigit($activity_name);
  
  
-          //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+          //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
  
  
  
@@ -869,23 +869,23 @@ if (file_exists($imagePath)) {
                      $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',20);
                      
-                          $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit(session('area')).'-'.thainumDigit($i).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+                          $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit(session('area')).'-'.thainumDigit($i).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',145);
                      $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                      
                      $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
                      $pdf::SetTextColor(0,0,255);
-                     $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',24);
                      $pdf::SetTextColor(0,0,0);
-                     $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-                     $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name??'', 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name??''), 0, 1, 'C', 0, '', 1);
          
                 
                  //    $activity_name = thainumDigit($activity_name);
          
          
-                  //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+                  //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
          
          
          
@@ -979,7 +979,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years)), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -989,12 +989,12 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
           //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
             $pdf::SetTextColor(0,0,255);
-          //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
-            $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
 
             $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -1022,7 +1022,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -1084,7 +1084,7 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years)), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',32);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -1094,12 +1094,12 @@ for($i=0;$i< count($addstudent);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-          //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
-            $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
 
             $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -1127,7 +1127,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -1179,16 +1179,16 @@ for($i=0;$i< count($jows);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',158);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการตัดสิน', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการตัดสิน'), 0, 1, 'C', 0, '', 1);
 
             $activity_name = str_replace('[เดี่ยว]','',$activity->activity_name);
             $activity_name = str_replace('[ทีม 2 คน]','',$activity_name);
@@ -1207,7 +1207,7 @@ for($i=0;$i< count($jows);$i++) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -1268,16 +1268,16 @@ if (file_exists($imagePath)) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',140);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการตัดสิน', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการตัดสิน'), 0, 1, 'C', 0, '', 1);
 
             $activity_name = str_replace('[เดี่ยว]','',$activity->activity_name);
             $activity_name = str_replace('[ทีม 2 คน]','',$activity_name);
@@ -1296,7 +1296,7 @@ if (file_exists($imagePath)) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,$activity_name." ".$activity->getclass->class_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name." ".$activity->getclass->class_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -1339,16 +1339,16 @@ $pdf::SetAutoPageBreak(TRUE, 0);
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($years[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๒-'.thainumDigit($activity->id.$activity->activity_class.$activity->activity_subject).'/'.thainumDigit($years[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',158);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/THSarabun.ttf','',28);
             $pdf::SetTextColor(0,0,255);
-           // $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+           // $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการตัดสิน', 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการตัดสิน'), 0, 1, 'C', 0, '', 1);
 
             $activity_name = str_replace('[เดี่ยว]','',$activity->activity_name);
             $activity_name = str_replace('[ทีม 2 คน]','',$activity_name);
@@ -1367,7 +1367,7 @@ $pdf::SetAutoPageBreak(TRUE, 0);
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -1437,23 +1437,23 @@ for($i=0;$i< count($jows);$i++) {
             $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',20);
             
-            $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',150);
             $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
             
             $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
             $pdf::SetTextColor(0,0,255);
-            $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
             $pdf::SetFont('fonts/THSarabun.ttf','',24);
             $pdf::SetTextColor(0,0,0);
-            $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-            $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name, 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name), 0, 1, 'C', 0, '', 1);
 
        
         //    $activity_name = thainumDigit($activity_name);
 
 
-         //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+         //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -1512,23 +1512,23 @@ if (file_exists($imagePath)) {
                    $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',20);
                    
-                   $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',145);
                    $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                    
                    $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
                    $pdf::SetTextColor(0,0,255);
-                   $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
                    $pdf::SetFont('fonts/THSarabun.ttf','',24);
                    $pdf::SetTextColor(0,0,0);
-                   $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-                   $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name, 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+                   $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name), 0, 1, 'C', 0, '', 1);
        
               
                //    $activity_name = thainumDigit($activity_name);
        
        
-                //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+                //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
        
        
        
@@ -1607,11 +1607,11 @@ if (file_exists($imagePath)) {
         //$pdf::SetY(-5);
         for($i=0;$i< count($addschool);$i++) {
           $pdf::Ln();
-          $pdf::Cell(10, 8, $i+1, 'L,B,R', 0, 'C', 0, '', 1);
-          $pdf::Cell(50, 8, $addschool[$i]->getschoolname->school_name, 'L,B,R', 0, 'C', 0, '', 1);
+          $pdf::Cell(10, 8, thainumDigit($i+1), 'L,B,R', 0, 'C', 0, '', 1);
+          $pdf::Cell(50, 8, thainumDigit($addschool[$i]->getschoolname->school_name), 'L,B,R', 0, 'C', 0, '', 1);
 
           for($std=0;$std < count($student);$std++){
-            $pdf::Cell(50, 8,'ll', 'L,B,R', 1, 'C', 0, '', 1);
+            $pdf::Cell(50, 8,thainumDigit('ll'), 'L,B,R', 1, 'C', 0, '', 1);
           }
 
 
@@ -1620,10 +1620,10 @@ if (file_exists($imagePath)) {
         }
 
         $pdf::Output($filename);
-          //  $pdf::Cell(0, 0,'เอกสารรับรายงานตัว', 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit('เอกสารรับรายงานตัว'), 0, 1, 'C', 0, '', 1);
          //   $pdf::SetFont('fonts/THSarabun.ttf','',16); 
-          //  $pdf::Cell(0, 0,$activity->activity_name, 0, 1, 'C', 0, '', 1);
-          //  $pdf::Cell(0, 0,'งานศิลปหัตถกรรมนักเรียนครั้งที่ 70 สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต 1', 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit($activity->activity_name), 0, 1, 'C', 0, '', 1);
+          //  $pdf::Cell(0, 0,thainumDigit('งานศิลปหัตถกรรมนักเรียนครั้งที่ 70 สำนักงานเขตพื้นที่การศึกษาประถมศึกษาชุมพร เขต 1'), 0, 1, 'C', 0, '', 1);
 
          //   $pdf::endPage();
          //   $pdf::Output($filename);
@@ -1746,23 +1746,23 @@ public function printjow2doccerf($id){
              $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',20);
              
-             $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->getjowbranch->id)."-".thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->getjowbranch->id)."-".thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',150);
              $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
              
              $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
              $pdf::SetTextColor(0,0,255);
-             $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
              $pdf::SetFont('fonts/THSarabun.ttf','',24);
              $pdf::SetTextColor(0,0,0);
-             $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-             $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name, 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+             $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name), 0, 1, 'C', 0, '', 1);
  
         
          //    $activity_name = thainumDigit($activity_name);
  
  
-          //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+          //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
  
  
  
@@ -1820,23 +1820,23 @@ if (file_exists($imagePath)) {
                      $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',20);
                      
-                     $pdf::Cell(0, 0,'เลขที่ ๐๓-'.thainumDigit($jows[$i]->getjowbranch->id)."-".thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit('เลขที่ ๐๓-'.thainumDigit($jows[$i]->getjowbranch->id)."-".thainumDigit($jows[$i]->id).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',145);
                      $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                      
                      $pdf::SetFont('fonts/PSLMalinee.ttf','',36);
                      $pdf::SetTextColor(0,0,255);
-                     $pdf::Cell(0, 0,$jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname, 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowtitle->title.$jows[$i]->jow_name.' '.$jows[$i]->jow_lastname), 0, 1, 'C', 0, '', 1);
                      $pdf::SetFont('fonts/THSarabun.ttf','',24);
                      $pdf::SetTextColor(0,0,0);
-                     $pdf::Cell(0, 0,'เป็นกรรมการดำเนินงาน', 0, 1, 'C', 0, '', 1);
-                     $pdf::Cell(0, 0,$jows[$i]->getjowbranch->branch_name, 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit('เป็นกรรมการดำเนินงาน'), 0, 1, 'C', 0, '', 1);
+                     $pdf::Cell(0, 0,thainumDigit($jows[$i]->getjowbranch->branch_name), 0, 1, 'C', 0, '', 1);
          
                 
                  //    $activity_name = thainumDigit($activity_name);
          
          
-                  //   $pdf::Cell(0, 0,$activity_name, 0, 1, 'C', 0, '', 1);
+                  //   $pdf::Cell(0, 0,thainumDigit($activity_name), 0, 1, 'C', 0, '', 1);
          
          
          

@@ -67,6 +67,7 @@ route::get('area/areaconfig','area\areaconfigController@index')->middleware('aut
 
 
 //พิมพ์เอกสารและเกียรติบัตร
+Route::get('area/printdocs','area\areaPrintdocController@printdocs')->middleware('auth')->name('area.printdocs');
 Route::get('area/printpointdoc/{id}','area\areaPrintdocController@printpointdoc');
 Route::get('area/studentregisterform/{id}','area\areaPrintdocController@studentregisterform')->middleware('auth');
 Route::get('area/teacherregisterform/{id}','area\areaPrintdocController@teacherregisterform')->middleware('auth');

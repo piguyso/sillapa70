@@ -88,7 +88,7 @@ if (file_exists($imagePath)) {
                $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/THSarabun.ttf','',20);
                
-               $pdf::Cell(0, 0,\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years), 0, 1, 'R', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit(\App\Services\CertificateText::number('๐๑', $addschool[0], $year[0]->years)), 0, 1, 'R', 0, '', 1);
                $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -98,12 +98,12 @@ if (file_exists($imagePath)) {
                $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
              //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
                $pdf::SetTextColor(0,0,255);
-             //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-               $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+             //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
                $pdf::SetFont('fonts/THSarabun.ttf','',24);
-               $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-               $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
    
                $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -131,7 +131,7 @@ if (file_exists($imagePath)) {
              //  $activity_name = str_replace('9','๙',$activity_name);
             //   $activity_name = str_replace('0','๐',$activity_name);
    
-               $pdf::Cell(0, 0,$activity_name." ".$addschool[0]->getactivityname->getclass->class_name, 0, 1, 'C', 0, '', 1);
+               $pdf::Cell(0, 0,thainumDigit($activity_name." ".$addschool[0]->getactivityname->getclass->class_name), 0, 1, 'C', 0, '', 1);
                $pdf::SetTextColor(0,0,0);
                $pdf::endPage();
    
@@ -234,7 +234,7 @@ if (file_exists($imagePath)) {
                 $pdf::Cell(0, 0,'', 0, 1, 'R', 0, '', 1);
                 $pdf::SetFont('fonts/THSarabun.ttf','',20);
                 
-                $pdf::Cell(0, 0,'เลขที่ -๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      ', 0, 1, 'R', 0, '', 1);
+                $pdf::Cell(0, 0,thainumDigit('เลขที่ -๐๑-'.thainumDigit($addschool[0]->school_activity.$addschool[0]->school_name.$addschool[0]->id).'/'.thainumDigit($year[0]->years).'      '), 0, 1, 'R', 0, '', 1);
                 $pdf::SetFont('fonts/PSLMalinee.ttf','',28);
                 $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
                 $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
@@ -244,12 +244,12 @@ if (file_exists($imagePath)) {
                 $pdf::Cell(0, 0,'', 0, 1, 'C', 0, '', 1);
               //  $pdf::SetFont('fonts/THSarabun.ttf','B',28);
                 $pdf::SetTextColor(0,0,255);
-              //  $pdf::Cell(0, 0,studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
-                $pdf::Cell(0, 0,$addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname, 0, 1, 'C', 0, '', 1);
+              //  $pdf::Cell(0, 0,thainumDigit(studenttitle($addstudent[$i]->title).' '.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
+                $pdf::Cell(0, 0,thainumDigit($addstudent[$i]->getstudenttitle->title.''.$addstudent[$i]->name.' '.$addstudent[$i]->lastname), 0, 1, 'C', 0, '', 1);
                 $pdf::SetTextColor(0,0,0);
                 $pdf::SetFont('fonts/THSarabun.ttf','',24);
-                $pdf::Cell(0, 0,$addschool[0]->getschoolname->school_name, 0, 1, 'C', 0, '', 1);
-                $pdf::Cell(0, 0,''.$teach.' '.$student, 0, 1, 'C', 0, '', 1);
+                $pdf::Cell(0, 0,thainumDigit($addschool[0]->getschoolname->school_name), 0, 1, 'C', 0, '', 1);
+                $pdf::Cell(0, 0,thainumDigit(''.$teach.' '.$student), 0, 1, 'C', 0, '', 1);
                 $pdf::SetTextColor(0,0,0);
 
                 $activity_name = str_replace('[เดี่ยว]','',$addschool[0]->getactivityname->activity_name);
@@ -277,7 +277,7 @@ if (file_exists($imagePath)) {
               //  $activity_name = str_replace('9','๙',$activity_name);
               //   $activity_name = str_replace('0','๐',$activity_name);
 
-                $pdf::Cell(0, 0,$activity_name." ".$addschool[0]->getactivityname->getclass->class_name, 0, 1, 'C', 0, '', 1);
+                $pdf::Cell(0, 0,thainumDigit($activity_name." ".$addschool[0]->getactivityname->getclass->class_name), 0, 1, 'C', 0, '', 1);
                 $pdf::SetTextColor(0,0,0);
                 $pdf::endPage();
               

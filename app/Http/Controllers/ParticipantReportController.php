@@ -134,7 +134,8 @@ class ParticipantReportController extends Controller
             $cells = [$i + 1];
             foreach ($columns as $col) {
                 $v = $row[$col['key']] ?? null;
-                $cells[] = $col['kind'] === 'list' ? implode("\n", (array) $v) : $v;
+                $v = $col['kind'] === 'list' ? implode("\n", (array) $v) : $v;
+                $cells[] = is_string($v) ? strtr($v, ['๐' => '0', '๑' => '1', '๒' => '2', '๓' => '3', '๔' => '4', '๕' => '5', '๖' => '6', '๗' => '7', '๘' => '8', '๙' => '9']) : $v;
             }
             $sheet->fromArray($cells, null, "A{$r}", true);
             $r++;

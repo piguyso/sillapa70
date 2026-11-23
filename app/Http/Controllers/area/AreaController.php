@@ -123,13 +123,14 @@ $activityfinish = $rows->pluck('total', 'activity_subject')->toArray();
    $schoolrank = Schoolranks::where('id','like','%')->orderBy('schoolpoint')->paginate(10);
 
    $dbrank = DB::select("SELECT a.school_name , 
-    (select count(activity_rank) from addschools_areas b where b.school_name = a.school_name and b.activity_status IN (1, 98, 99) and b.student_score >= 80 and b.year = ?) as Gold,
-    (select count(activity_rank) from addschools_areas c where c.school_name = a.school_name and c.activity_status IN (1, 98, 99) and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
-    (select count(activity_rank) from addschools_areas d where d.school_name = a.school_name and d.activity_status IN (1, 98, 99) and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce
+    (select count(activity_rank) from addschools_areas b where b.school_name = a.school_name and b.activity_status = 1 and b.student_score >= 80 and b.year = ?) as Gold,
+    (select count(activity_rank) from addschools_areas c where c.school_name = a.school_name and c.activity_status = 1 and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
+    (select count(activity_rank) from addschools_areas d where d.school_name = a.school_name and d.activity_status = 1 and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce,
+    (select count(activity_rank) from addschools_areas e where e.school_name = a.school_name and e.activity_status IN (98, 99) and e.school_schoolgroup = ? and e.year = ?) as Part
     FROM addschools_areas a 
     where activity_status IN (1, 98, 99) and school_schoolgroup = ? and a.year = ?
     group by school_name
-    order by Gold desc,Silver desc, Bronce desc,activity_rank asc limit 10", [$activeYear, $activeYear, $activeYear, $id, $activeYear]);
+    order by Gold desc,Silver desc, Bronce desc,Part desc,activity_rank asc limit 10", [$activeYear, $activeYear, $activeYear, $id, $activeYear, $id, $activeYear]);
 
   // ผลการแข่งขันล่าสุด
    $firstactivity = addschools_areas::whereIn('activity_status', [1, 98, 99])
@@ -197,12 +198,13 @@ $subjectTeamCount = DB::table('addschools_areas')
         $dbrank = DB::select("SELECT a.school_name , 
         (select count(activity_rank) from addschools_areas b where b.school_name = a.school_name and b.activity_status = 1 and b.student_score >= 80 and b.year = ?) as Gold,
         (select count(activity_rank) from addschools_areas c where c.school_name = a.school_name and c.activity_status = 1 and c.student_score < 80 and c.student_score >= 70 and c.year = ?) as Silver,
-        (select count(activity_rank) from addschools_areas d where d.school_name = a.school_name and d.activity_status = 1 and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce
+        (select count(activity_rank) from addschools_areas d where d.school_name = a.school_name and d.activity_status = 1 and d.student_score < 70 and d.student_score >= 60 and d.year = ?) as Bronce,
+        (select count(activity_rank) from addschools_areas e where e.school_name = a.school_name and e.activity_status IN (98, 99) and e.school = ? and e.year = ?) as Part
         FROM addschools_areas a 
-        where activity_status = 1
+        where activity_status IN (1, 98, 99)
         and school = ? and a.year = ?
         group by school_name
-        order by Gold desc,Silver desc, Bronce desc,activity_rank asc limit 10", [$activeYear, $activeYear, $activeYear, $id, $activeYear]);
+        order by Gold desc,Silver desc, Bronce desc,Part desc,activity_rank asc limit 10", [$activeYear, $activeYear, $activeYear, $id, $activeYear, $id, $activeYear]);
 
         $data = Array(
             'addschool'=>$addschool,

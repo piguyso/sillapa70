@@ -52,6 +52,21 @@
         .dataTables_wrapper .dataTables_filter input { min-width: 100%; }
     }
 
+    /* DataTables: "แสดง N แถว" ชิดซ้าย และช่องค้นหาชิดขวา อยู่แถวเดียวกัน */
+    .dataTables_wrapper::after { content: ""; display: table; clear: both; }
+    .dataTables_wrapper div.dataTables_length { float: left !important; margin: 0 0 12px !important; }
+    .dataTables_wrapper div.dataTables_filter { float: right !important; width: auto !important; margin: 0 0 12px !important; display: block !important; }
+    .dataTables_wrapper div.dataTables_length label, .dataTables_wrapper div.dataTables_filter label {
+        display: inline-flex !important; align-items: center; gap: 8px; margin: 0; white-space: nowrap;
+        min-width: 0 !important; height: auto !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important;
+    }
+    .dataTables_wrapper div.dataTables_filter input { width: auto !important; height: auto !important; margin: 0 !important; padding: 9px 14px !important; }
+    .dataTables_wrapper table.dataTable, .dataTables_wrapper .dataTables_scroll { clear: both; }
+    @media (max-width: 640px) {
+        .dataTables_wrapper div.dataTables_length, .dataTables_wrapper div.dataTables_filter { float: none !important; width: 100% !important; }
+        .dataTables_wrapper div.dataTables_filter label { width: 100%; }
+        .dataTables_wrapper div.dataTables_filter input { flex: 1; min-width: 0; }
+    }
     /* ===== Laravel paginator ===== */
     nav[role="navigation"] a, nav[role="navigation"] span[aria-current="page"] > span, nav[role="navigation"] span[aria-disabled="true"] > span,
     .pagination .page-link {

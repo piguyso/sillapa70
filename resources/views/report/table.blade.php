@@ -67,7 +67,7 @@
                 <input type="checkbox" name="top3" value="1" @checked($filters['top3'])> เฉพาะอันดับ 1-3
             </label>
         @endif
-        <div class="flex flex-wrap gap-2 pb-1">
+        <div class="flex flex-nowrap items-center gap-2 pb-1 whitespace-nowrap md:col-span-2">
             <x-form.button type="submit">ค้นหา</x-form.button>
             <a href="{{ $exportUrl }}" class="ui-btn ui-btn-secondary"><i class="ri-file-excel-2-line"></i> Excel</a>
             <x-form.button variant="secondary" onclick="window.print()"><i class="ri-printer-line"></i> พิมพ์</x-form.button>
