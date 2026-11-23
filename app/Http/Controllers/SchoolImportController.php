@@ -92,7 +92,9 @@ class SchoolImportController extends Controller
         try {
             $result = $service->inspect($request->file('school_file'));
         } catch (\Throwable $exception) {
-            return back()->withErrors(['school_file' => 'ไม่สามารถอ่านไฟล์ Excel ได้ กรุณาใช้เทมเพลตจากระบบ']);
+            \Illuminate\Support\Facades\Log::error('school import inspect failed', ['e' => $exception]);
+
+            return back()->withErrors(['school_file' => 'ไม่สามารถอ่านไฟล์ Excel ได้ กรุณาใช้เทมเพลตจากระบบ ('.class_basename($exception).': '.$exception->getMessage().')']);
         }
 
         $hasRowErrors = collect($result['rows'])->contains(fn ($row) => $row['errors'] !== []);
