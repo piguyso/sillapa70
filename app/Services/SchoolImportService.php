@@ -17,7 +17,7 @@ class SchoolImportService
 
     public function inspect(UploadedFile $file): array
     {
-        $sheet = IOFactory::load($file->getRealPath())->getActiveSheet();
+        $sheet = IOFactory::load($file->getPathname())->getActiveSheet();
         $lastRow = min($sheet->getHighestDataRow(), 502);
         $headers = array_map(fn ($value) => trim((string) $value), $sheet->rangeToArray('A1:E1')[0]);
         $optional = array_slice($headers, 3, 2);
