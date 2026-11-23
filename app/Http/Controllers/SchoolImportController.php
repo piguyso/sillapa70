@@ -98,7 +98,7 @@ class SchoolImportController extends Controller
         }
 
         try {
-            $result = $service->inspect($upload);
+            $result = $service->inspect($upload, $request->boolean('update_existing'));
         } catch (\Throwable $exception) {
             \Illuminate\Support\Facades\Log::error('school import inspect failed', ['e' => $exception]);
 
@@ -124,12 +124,12 @@ class SchoolImportController extends Controller
         }
 
         try {
-            $count = $service->import($rows);
+            $result = $service->import($rows);
         } catch (\Throwable $exception) {
             return back()->withErrors(['school_file' => $exception->getMessage()]);
         }
 
-        return redirect()->route('school.index')->with('massage', "นำเข้าโรงเรียนสำเร็จ {$count} แห่ง");
+        return redirect()->route('school.index')->with('massage', "นำเข้าโรงเรียนสำเร็จ: เพิ่มใหม่ {$result['created']} แห่ง, อัปเดตโรงเรียนเดิม {$result['updated']} แห่ง");
     }
 
     /** ลบโรงเรียนทั้งหมดเพื่อนำเข้าใหม่ (ลบไม่ได้ถ้ามีข้อมูลลงทะเบียน/นักเรียนอ้างอิง) */

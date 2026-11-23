@@ -96,6 +96,10 @@
                             @csrf
                             <input type="file" name="school_file" accept=".xlsx,.xls" required
                                    class="block w-full text-xs text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-bold file:text-slate-700 hover:file:bg-slate-200">
+                            <label class="flex items-start gap-2 text-xs font-bold text-gray-700">
+                                <input type="checkbox" name="update_existing" value="1" checked class="mt-0.5 rounded border-gray-300">
+                                <span>อัปเดตโรงเรียนเดิม (จับคู่ด้วยรหัส 8 หลัก หรือชื่อ) แทนการข้าม &mdash; คง id เดิม ข้อมูลลงทะเบียนไม่กระทบ</span>
+                            </label>
                             <button type="submit"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-800 transition-all">
                                 <i class="ri-shield-check-line"></i> ตรวจสอบไฟล์ก่อนนำเข้า
@@ -198,7 +202,7 @@
         <div class="mt-8 bg-white rounded-3xl shadow-sm border {{ $importHasErrors ? 'border-red-200' : 'border-emerald-200' }} overflow-hidden">
             <div class="px-6 py-5 {{ $importHasErrors ? 'bg-red-50 text-red-800' : 'bg-emerald-50 text-emerald-800' }}">
                 <h2 class="font-black text-lg">ผลการตรวจสอบไฟล์: {{ count($importResult['rows']) }} รายการ</h2>
-                <p class="text-sm mt-1">{{ $importHasErrors ? 'ยังนำเข้าไม่ได้ กรุณาแก้ไขข้อผิดพลาดแล้วอัปโหลดใหม่' : ($importable > 0 ? 'พร้อมนำเข้า '.$importable.' โรงเรียน' : 'ไม่มีโรงเรียนใหม่ให้นำเข้า').($skipped ? ' (ข้ามแถวที่ซ้ำ '.$skipped.' แถว)' : '') }}</p>
+                <p class="text-sm mt-1">{{ $importHasErrors ? 'ยังนำเข้าไม่ได้ กรุณาแก้ไขข้อผิดพลาดแล้วอัปโหลดใหม่' : ($importable > 0 ? 'พร้อมนำเข้า/อัปเดต '.$importable.' โรงเรียน' : 'ไม่มีโรงเรียนใหม่ให้นำเข้า').($skipped ? ' (ข้ามแถวที่ซ้ำ '.$skipped.' แถว)' : '') }}</p>
             </div>
 
             @foreach($importResult['errors'] as $error)
@@ -224,7 +228,7 @@
                                 @elseif($row['errors'])
                                     <ul class="text-red-600 list-disc pl-4">@foreach($row['errors'] as $error)<li>{{ $error }}</li>@endforeach</ul>
                                 @else
-                                    <span class="font-bold text-emerald-600">ถูกต้อง</span>
+                                    @if(!empty($row['update_id']))<span class="font-bold text-sky-600">อัปเดตโรงเรียนเดิม (id {{ $row['update_id'] }})</span>@else<span class="font-bold text-emerald-600">ถูกต้อง (เพิ่มใหม่)</span>@endif
                                 @endif
                             </td>
                         </tr>

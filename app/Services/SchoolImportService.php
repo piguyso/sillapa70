@@ -15,7 +15,7 @@ class SchoolImportService
     /** คอลัมน์เสริม (ไม่บังคับ): เครือข่ายเพิ่มเติม (คั่นด้วยจุลภาค) และป้ายโรงเรียนขยายโอกาส (1 = ใช่) */
     public const OPTIONAL_HEADERS = ['extra_group_ids', 'is_expansion', 'school_code'];
 
-    public function inspect(UploadedFile $file): array
+    public function inspect(UploadedFile $file, bool $update = false): array
     {
         $sheet = IOFactory::load($file->getPathname())->getActiveSheet();
         $lastRow = min($sheet->getHighestDataRow(), 502);
@@ -44,6 +44,12 @@ class SchoolImportService
         $seenNames = [];
         $existingCodes = School::whereNotNull('school_code')->pluck('school_code')->flip();
         $seenCodes = [];
+        $seenUpdates = [];
+        $byCode = School::whereNotNull('school_code')->where('school_code', '!=', '')->pluck('id', 'school_code');
+        $byName = [];
+        foreach (School::get(['id', 'school_name', 'school_code']) as $sc) {
+            $byName[$this->normalizeName($sc->school_name)] ??= ['id' => $sc->id, 'code' => (string) $sc->school_code];
+        }
         $rows = [];
 
         for ($rowNumber = 2; $rowNumber <= $lastRow; $rowNumber++) {
@@ -59,9 +65,26 @@ class SchoolImportService
             $rowErrors = [];
             $skipReason = null;
             $normalizedName = $this->normalizeName($name);
+            $codeRaw = preg_replace('/\D/', '', str_replace(['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'], range(0, 9), $codeRaw));
+            $matchId = null;
+            if ($update) {
+                if ($codeRaw !== '' && $byCode->has($codeRaw)) {
+                    $matchId = (int) $byCode[$codeRaw];
+                } elseif (isset($byName[$normalizedName]) && ($codeRaw === '' || $byName[$normalizedName]['code'] === '')) {
+                    $matchId = (int) $byName[$normalizedName]['id'];
+                }
+                if ($matchId !== null && isset($seenUpdates[$matchId])) {
+                    $skipReason = 'โรงเรียนเดียวกันซ้ำในไฟล์ (ซ้ำกับแถว '.$seenUpdates[$matchId].')';
+                    $matchId = null;
+                } elseif ($matchId !== null) {
+                    $seenUpdates[$matchId] = $rowNumber;
+                }
+            }
             if ($name === '') {
                 $rowErrors[] = 'ไม่ระบุชื่อโรงเรียน';
-            } elseif ($existingNames->has($normalizedName)) {
+            } elseif ($skipReason !== null) {
+                // ซ้ำในไฟล์ (ตรวจแล้วด้านบน)
+            } elseif ($existingNames->has($normalizedName) && $matchId === null) {
                 $skipReason = 'ชื่อโรงเรียนซ้ำกับฐานข้อมูล';
             } elseif (isset($seenNames[$normalizedName])) {
                 $skipReason = 'ชื่อโรงเรียนซ้ำในไฟล์ (ซ้ำกับแถว '.$seenNames[$normalizedName].')';
@@ -74,7 +97,7 @@ class SchoolImportService
             $codeRaw = preg_replace('/\D/', '', str_replace(['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'], range(0, 9), $codeRaw));
             if ($codeRaw !== '' && ! preg_match('/^\d{8}$/', $codeRaw)) {
                 $rowErrors[] = 'รหัสโรงเรียนต้องเป็นตัวเลข 8 หลัก';
-            } elseif ($codeRaw !== '' && $skipReason === null) {
+            } elseif ($codeRaw !== '' && $skipReason === null && $matchId === null) {
                 if ($existingCodes->has($codeRaw)) {
                     $skipReason = 'รหัสโรงเรียนซ้ำกับฐานข้อมูล';
                 } elseif (isset($seenCodes[$codeRaw])) {
@@ -114,6 +137,7 @@ class SchoolImportService
                 'extra_names' => collect($extraIds)->map(fn ($id) => $groups->get($id))->filter()->implode(', '),
                 'is_expansion' => $isExpansion,
                 'school_code' => $codeRaw,
+                'update_id' => $matchId,
                 'errors' => $rowErrors,
                 'skip' => $skipReason,
             ];
@@ -126,9 +150,10 @@ class SchoolImportService
         return ['rows' => $rows, 'errors' => $errors];
     }
 
-    public function import(array $rows): int
+    /** @return array{created:int,updated:int} */
+    public function import(array $rows): array
     {
-        return DB::transaction(function () use ($rows): int {
+        return DB::transaction(function () use ($rows): array {
             $existingNames = School::lockForUpdate()->pluck('school_name')
                 ->map(fn ($name) => $this->normalizeName($name))
                 ->all();
@@ -142,7 +167,13 @@ class SchoolImportService
             }
 
             $imported = 0;
+            $updated = 0;
             foreach ($rows as $row) {
+                if (! empty($row['update_id']) && empty($row['skip'])) {
+                    $this->updateExisting($row);
+                    $updated++;
+                    continue;
+                }
                 $key = $this->normalizeName($row['school_name']);
                 if (! empty($row['skip']) || isset($existingLookup[$key])) {
                     continue;
@@ -164,8 +195,28 @@ class SchoolImportService
                 $imported++;
             }
 
-            return $imported;
+            return ['created' => $imported, 'updated' => $updated];
         });
+    }
+
+    /** อัปเดตโรงเรียนเดิมโดยคง id (ข้อมูลลงทะเบียน/นักเรียนที่อ้างอิงอยู่ไม่กระทบ) */
+    private function updateExisting(array $row): void
+    {
+        $school = School::lockForUpdate()->findOrFail($row['update_id']);
+        $school->school_name = $row['school_name'];
+        $school->school_detail = $row['school_detail'];
+        $school->school_group = $row['school_group'];
+        $school->is_expansion = (bool) ($row['is_expansion'] ?? false);
+        $code = (string) ($row['school_code'] ?? '');
+        if ((string) $school->school_code === '') {
+            $school->school_code = ($code !== '' && ! School::where('school_code', $code)->exists()) ? $code : $this->nextPrivateCode();
+        }
+        $school->save();
+        $school->syncNetworks($row['extra_groups'] ?? [], (int) $row['school_group']);
+        \App\User::where('position', 0)->where('school_id', $school->id)->update(['schoolgroup' => $school->school_group]);
+        if (! \App\User::where('position', 0)->where('school_id', $school->id)->exists()) {
+            $this->createAccount($school);
+        }
     }
 
     /** รหัสโรงเรียนเอกชน/ไม่มีใน SMIS: 86019xxx ต่อจากลำดับล่าสุด */
