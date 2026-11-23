@@ -82,12 +82,11 @@
 
                         <details class="rounded-xl border border-red-200 bg-red-50/50">
                             <summary class="cursor-pointer px-4 py-3 text-sm font-bold text-red-700"><i class="ri-delete-bin-6-line"></i> ลบข้อมูลโรงเรียนทั้งหมด (เพื่อนำเข้าใหม่)</summary>
-                            <form method="POST" action="{{ route('school.import.purge') }}" class="px-4 pb-4 space-y-3"
-                                  onsubmit="return confirm('ยืนยันลบโรงเรียนและบัญชีโรงเรียนทั้งหมด? ไม่สามารถย้อนกลับได้');">
+                            <form method="POST" action="{{ route('school.import.purge') }}" class="px-4 pb-4 space-y-3">
                                 @csrf
                                 <p class="text-xs text-red-700">จะลบโรงเรียนทั้งหมด ความเชื่อมโยงกับเครือข่าย และบัญชีผู้ใช้ระดับโรงเรียน (ระบบสำรองข้อมูลไว้ก่อนลบ) ลบไม่ได้ถ้ามีการลงทะเบียนแข่งขันหรือนักเรียนอ้างอิงโรงเรียนอยู่</p>
                                 <x-form.input label='พิมพ์ "ลบโรงเรียนทั้งหมด" เพื่อยืนยัน' name="confirm_text" required autocomplete="off" />
-                                <button type="submit" class="w-full px-4 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-all">
+                                <button type="submit" onclick="return appConfirmSubmit(this, 'ยืนยันลบโรงเรียนและบัญชีโรงเรียนทั้งหมด? ไม่สามารถย้อนกลับได้');" class="w-full px-4 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-all">
                                     <i class="ri-delete-bin-6-line"></i> ลบทั้งหมด
                                 </button>
                             </form>

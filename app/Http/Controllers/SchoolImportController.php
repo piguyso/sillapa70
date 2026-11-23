@@ -139,21 +139,25 @@ class SchoolImportController extends Controller
             return back()->withErrors(['confirm_text' => 'ข้อความยืนยันไม่ถูกต้อง']);
         }
 
-        $refs = [
-            'addschools' => 'school', 'addschools_areas' => 'school_id',
-            'addstudents' => 'school', 'addstudents_areas' => 'school_id',
-        ];
+        $db = \Illuminate\Support\Facades\DB::class;
+        // หาทุกตารางที่มีคอลัมน์อ้างอิงโรงเรียน (school / school_id) ยกเว้นตารางที่ลบพร้อมกัน
+        $columns = $db::select("select table_name as t, column_name as c from information_schema.columns where table_schema = database() and column_name in ('school','school_id') and table_name not in ('schools','school_schoolgroup')");
         $blocking = [];
-        foreach ($refs as $table => $col) {
-            $n = \Illuminate\Support\Facades\DB::table($table)->count();
+        foreach ($columns as $col) {
+            $q = $db::table($col->t)->whereNotNull($col->c)->where($col->c, '>', 0);
+            if ($col->t === 'users') {
+                $q->where('position', '!=', 0); // บัญชีโรงเรียนจะถูกลบพร้อมกัน
+            }
+            $n = (clone $q)->count();
             if ($n > 0) {
-                $blocking[] = "{$table} {$n} รายการ";
+                $blocking[] = "ตาราง {$col->t} (คอลัมน์ {$col->c}): {$n} รายการ";
             }
         }
         if ($blocking) {
-            return back()->withErrors(['confirm_text' => 'ลบไม่ได้ เพราะยังมีข้อมูลอ้างอิงโรงเรียน: '.implode(', ', $blocking)]);
+            $message = "ลบโรงเรียนทั้งหมดไม่ได้ เพราะยังมีข้อมูลอ้างอิงโรงเรียนอยู่:\n- ".implode("\n- ", $blocking)
+                ."\nต้องลบหรือย้ายข้อมูลลงทะเบียน/นักเรียนเหล่านี้ก่อน (ลบข้อมูลของงานที่ไม่ใช้แล้วก่อนได้)";
+            return back()->withErrors(['confirm_text' => nl2br(e($message), false)])->with('error', $message);
         }
-
         $dir = storage_path('app/backups');
         @mkdir($dir, 0775, true);
         $db = \Illuminate\Support\Facades\DB::class;
@@ -163,11 +167,16 @@ class SchoolImportController extends Controller
             'users' => \Illuminate\Support\Facades\DB::table('users')->where('position', 0)->get(),
         ], JSON_UNESCAPED_UNICODE));
 
-        $count = \Illuminate\Support\Facades\DB::transaction(function () {
+        try {
+            $count = \Illuminate\Support\Facades\DB::transaction(function () {
             $db = \Illuminate\Support\Facades\DB::table('users')->where('position', 0)->delete();
             \Illuminate\Support\Facades\DB::table('school_schoolgroup')->delete();
             return \Illuminate\Support\Facades\DB::table('schools')->delete();
-        });
+            });
+        } catch (\Throwable $e) {
+            \Log::error('school purge failed: '.$e->getMessage());
+            return back()->with('error', 'ลบไม่สำเร็จ (ไม่มีการเปลี่ยนแปลงข้อมูล): '.$e->getMessage())->withErrors(['confirm_text' => 'ลบไม่สำเร็จ: '.e($e->getMessage())]);
+        }
 
         return redirect('school')->with('massage', "ลบโรงเรียน {$count} แห่งและบัญชีโรงเรียนแล้ว พร้อมนำเข้าใหม่ (สำรองไว้ที่ storage/app/backups)");
     }
