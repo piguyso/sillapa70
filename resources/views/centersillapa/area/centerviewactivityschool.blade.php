@@ -164,6 +164,11 @@
                                             <i class="ri-spam-2-fill text-lg text-slate-500"></i> ยกเลิกผลการแข่งขันแล้ว
                                         </div>
                                     @endif
+                                    @if(in_array($status, [1, 98, 99]) && in_array((int) Auth::user()->position, [5, 10], true))
+                                        <button type="button" class="px-6 py-3.5 bg-red-600 text-white rounded-2xl font-black text-sm hover:bg-red-700 active:scale-95 transition-all shadow-xl shadow-red-100" onClick="submitWithConfirm('2');">
+                                            <i class="ri-close-circle-line mr-1"></i> ยกเลิกการประกาศผล
+                                        </button>
+                                    @endif
                                 </div>
                             @endif
                     </div>

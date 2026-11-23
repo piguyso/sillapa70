@@ -171,6 +171,7 @@ class areaCentersillapaController extends Controller
     public function store(Request $request)
     {
         $this->authorizeActivity((int) $request->input('id'));
+        $this->guardAnnouncementCancel((int) $request->input('id'), (int) $request->input('activity_chk'), $request);
         app(CompetitionScoreService::class)->process(
             addschools_areas::class,
             (int) $request->input('id'),
@@ -399,6 +400,37 @@ class areaCentersillapaController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * ยกเลิกผลที่ประกาศแล้ว (สถานะ 1/98/99): เฉพาะเครือข่ายและผู้ดูแลระบบ
+     * และต้องยังไม่ได้ส่งทีมของรายการนี้เข้าระดับเขตพื้นที่
+     */
+    private function guardAnnouncementCancel(int $activityId, int $action, Request $request): void
+    {
+        if ($action !== 2) {
+            return;
+        }
+        $groupId = $this->currentSchoolgroupId();
+        $announced = addschools_areas::where('school_activity', $activityId)
+            ->where('school_schoolgroup', $groupId)
+            ->whereIn('activity_status', [1, 98, 99])->exists();
+        if (! $announced) {
+            return;
+        }
+        abort_unless(in_array((int) $request->user()->position, [5, 10], true), 403,
+            'ยกเลิกผลที่ประกาศแล้วได้เฉพาะเครือข่ายสถานศึกษาหรือผู้ดูแลระบบ');
+        $transferred = \App\Addschool::where('school_activity', $activityId)
+            ->where('school_schoolgroup', $groupId)->exists();
+        if ($transferred) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'activity_chk' => 'ยกเลิกไม่ได้ เพราะส่งทีมของรายการนี้เข้าระดับเขตพื้นที่แล้ว',
+            ]);
+        }
+        \Illuminate\Support\Facades\Log::notice('Network announcement cancelled', [
+            'user_id' => $request->user()->id, 'activity_id' => $activityId,
+            'schoolgroup_id' => $groupId, 'ip' => $request->ip(),
+        ]);
     }
 
     private function authorizeActivity(int $activityId): Activities

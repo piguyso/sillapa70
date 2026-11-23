@@ -27,7 +27,7 @@
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
                 <h1 class="text-3xl md:text-5xl font-black mb-4 tracking-tight italic uppercase text-white">Activity Management</h1>
-                <p class="text-emerald-100 text-lg md:text-xl opacity-90 font-medium italic text-white"><i class="ri-trophy-line mr-2"></i>รายการกิจกรรม (คลิกที่แถวเพื่อดูรายละเอียด)</p>
+                <p class="text-emerald-100 text-lg md:text-xl opacity-90 font-medium italic text-white"><i class="ri-trophy-line mr-2"></i>รายการกิจกรรม (คลิกที่แถวเพื่อดูรายละเอียดในหน้าต่างป๊อปอัป)</p>
             </div>
             @if(officerchk())
             <div class="shrink-0" id="excel_tools_area">
@@ -137,31 +137,33 @@
                 }
             });
 
-            // ระบบ Child Rows สำหรับกางข้อมูลเมื่อคลิกแถว
+            // คลิกแถวเพื่อดูรายละเอียดใน modal
             $('#table_activities tbody').on('click', 'tr.main-row', function () {
                 var tr = $(this);
-                var row = table.row(tr);
-                var detailHtml = tr.attr('data-detail'); 
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('bg-emerald-50/50 shadow-inner');
-                } else {
-                    // ปิดแถวอื่นๆ ที่กางอยู่ก่อน (ถ้าต้องการให้กางได้ทีละแถว)
-                    table.rows().every(function () {
-                        if (this.child.isShown()) {
-                            this.child.hide();
-                            $(this.node()).removeClass('bg-emerald-50/50 shadow-inner');
-                        }
-                    });
-                    
-                    // เปิดแถวที่คลิก
-                    row.child(detailHtml).show();
-                    tr.addClass('bg-emerald-50/50 shadow-inner');
-                    $(row.child()).addClass('animate-fade-in');
-                }
+                $('#activity-modal-title').text(tr.find('td:eq(1) .font-black').text().trim());
+                $('#activity-modal-body').html(tr.attr('data-detail'));
+                openActivityModal();
             });
         }
     });
+</script>
+
+<div id="activity-modal" class="hidden fixed inset-0 z-[9998] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="activity-modal-title">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeActivityModal()"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between gap-4 px-8 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl">
+            <h3 id="activity-modal-title" class="text-lg font-black text-gray-800 italic"></h3>
+            <button type="button" onclick="closeActivityModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-primary hover:text-white transition" aria-label="ปิด">
+                <i class="ri-close-line text-xl"></i>
+            </button>
+        </div>
+        <div id="activity-modal-body" class="p-8"></div>
+    </div>
+</div>
+
+<script>
+    function openActivityModal() { document.getElementById("activity-modal").classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+    function closeActivityModal() { document.getElementById("activity-modal").classList.add("hidden"); document.body.style.overflow = ""; }
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeActivityModal(); });
 </script>
 @endsection

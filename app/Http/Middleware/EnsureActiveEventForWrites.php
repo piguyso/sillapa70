@@ -32,7 +32,10 @@ class EnsureActiveEventForWrites
         $isAuthentication = in_array($routeName, $allowedRoutes, true)
             || preg_match('~/(?:cpn1/)?(?:[0-9]+/)?(?:login|logout|password/(?:email|reset|change-required))(?:/|$)~', $path);
 
-        if ($isEventAdministration || $isAuthentication) {
+        // พิมพ์เกียรติบัตร (POST แต่ไม่แก้ข้อมูล) ต้องใช้ได้กับงานย้อนหลังด้วย ตัวควบคุมตรวจสิทธิ์และสถานะประกาศผลเองอยู่แล้ว
+        $isReadOnlyPrint = (bool) preg_match('~/(?:cpn1/)?(?:[0-9]+/)?(?:area/)?printPDF2?/?$~', $path);
+
+        if ($isEventAdministration || $isAuthentication || $isReadOnlyPrint) {
             return $next($request);
         }
 

@@ -35,6 +35,8 @@ Route::get('/cpn1', function () {
 
 $registerRoutes = function (bool $isEventGroup = true) {
 Auth::routes();
+// heartbeat นับผู้ใช้ออนไลน์ (เรียกจาก JS ทุก 2 นาที; ดู TrackVisitors)
+Route::get('visitor-ping', fn () => response()->noContent())->name('visitor.ping');
 // area route
 Route::get('/area/{id}','area\AreaController@index')->where('id', '[0-9]+');
 

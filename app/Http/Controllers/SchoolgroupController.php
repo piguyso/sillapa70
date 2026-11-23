@@ -17,6 +17,16 @@ class SchoolgroupController extends Controller
     {
         $this->middleware('auth');
     }
+    /** ใช้สีตามระบบ = null, ไม่ระบุ = สุ่มจากชุดสีที่ยังไม่ซ้ำ, ระบุ = ใช้สีที่เลือก */
+    private function resolveColor(Request $request): ?string
+    {
+        if ($request->boolean('use_system_color')) {
+            return null;
+        }
+
+        return $request->filled('theme_color') ? strtolower($request->theme_color) : Schoolgroup::nextPaletteColor();
+    }
+
     public function index()
     {
         $schoolgroup = Schoolgroup::withCount('schools')->orderBy('id')->paginate(100);
@@ -49,12 +59,16 @@ class SchoolgroupController extends Controller
           'schoolgroup_name'=>'required',
           'schoolgroup_detail'=>'required',
           'group_type'=>'required|in:district,cluster',
+          'theme_color'=>['nullable','regex:/^#[0-9a-fA-F]{6}$/', function ($attr, $value, $fail) {
+              if ($value && \App\Schoolgroup::contrastWithWhite($value) < 4.5) { $fail('สีนี้อ่านตัวอักษรสีขาวยาก กรุณาเลือกสีที่เข้มกว่านี้'); }
+          }],
         
       ]);
       $schoolgroup = new Schoolgroup;
       $schoolgroup->schoolgroup_name = $request->schoolgroup_name;
       $schoolgroup->schoolgroup_detail = $request->schoolgroup_detail;
       $schoolgroup->group_type = $request->group_type;
+      $schoolgroup->theme_color = $this->resolveColor($request);
  
       $schoolgroup->save();
       Session::flash('massage','Success Create !!');
@@ -102,12 +116,16 @@ class SchoolgroupController extends Controller
             'schoolgroup_name'=>'required',
             'schoolgroup_detail'=>'required',
             'group_type'=>'required|in:district,cluster',
+          'theme_color'=>['nullable','regex:/^#[0-9a-fA-F]{6}$/', function ($attr, $value, $fail) {
+              if ($value && \App\Schoolgroup::contrastWithWhite($value) < 4.5) { $fail('สีนี้อ่านตัวอักษรสีขาวยาก กรุณาเลือกสีที่เข้มกว่านี้'); }
+          }],
           
         ]);
         $schoolgroup = Schoolgroup::findOrFail($id);
         $schoolgroup->schoolgroup_name = $request->schoolgroup_name;
         $schoolgroup->schoolgroup_detail = $request->schoolgroup_detail;
       $schoolgroup->group_type = $request->group_type;
+      $schoolgroup->theme_color = $this->resolveColor($request);
         $schoolgroup->save();
         Session::flash('massage','Data update Successfull..');
         return redirect('schoolgroup');

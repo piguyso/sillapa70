@@ -139,7 +139,7 @@ class areaAddschoolController extends Controller
         $chktotelschool = addschools_areas::where('school_activity','=',$request->school_activity)->where('school_schoolgroup','=',$this->registrationGroupId())->count();
         if($chktotelschool>=$activityteamnumber){
             Session::flash('massage','จำนวนทีมต่อรายการสามารถลงได้แค่ '.$activityteamnumber.' ทีม !!');
-         //   return redirect(url()->previous());
+            return redirect(url()->previous());
         }
 
 

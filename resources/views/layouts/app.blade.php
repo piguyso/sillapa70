@@ -622,5 +622,15 @@
     @endif
 <script src="{{ asset('js/ui-feedback.js') }}?v={{ filemtime(public_path('js/ui-feedback.js')) }}"></script>
 <script src="{{ asset('js/image-upload-rules.js') }}"></script>
+<script>
+    // ส่งสัญญาณว่ายังเปิดหน้าเว็บอยู่ เพื่อให้นับเป็นผู้ใช้ออนไลน์ถูกต้องแม้ไม่ได้เปลี่ยนหน้า
+    (function () {
+        var ping = function () {
+            if (document.hidden) return;
+            fetch("{{ url('visitor-ping') }}", { headers: { 'X-Visitor-Ping': '1' }, credentials: 'same-origin' }).catch(function () {});
+        };
+        setInterval(ping, 120000);
+    })();
+</script>
 </body>
 </html>

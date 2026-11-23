@@ -825,23 +825,29 @@ if (!function_exists('delete_storage_file')) {
 }
 
 if (!function_exists('visitor_count')) {
+    /** ผู้เข้าชมไม่ซ้ำสะสมทั้งหมด (รวมยอดเดิมก่อนใช้ระบบนับใหม่) */
     function visitor_count() {
+        $baseOffset = 1578;
         try {
-            $baseOffset = 1578;
-            return \Illuminate\Support\Facades\DB::table('visitor_logs')->count() + $baseOffset;
-        } catch (\Exception $e) {
-            return 1578;
+            return \Illuminate\Support\Facades\Cache::remember('visitor_total_count', 30,
+                fn () => \Illuminate\Support\Facades\DB::table('visitor_totals')->count() + $baseOffset);
+        } catch (\Throwable $e) {
+            return $baseOffset;
         }
     }
 }
 
 if (!function_exists('online_count')) {
+    /** ผู้ใช้ออนไลน์ = visitor ไม่ซ้ำที่มีความเคลื่อนไหวใน 5 นาทีล่าสุด (ไม่รวมบอท) อย่างน้อย 1 คน (ตัวผู้ดูเอง) */
     function online_count() {
         try {
-            return \Illuminate\Support\Facades\DB::table('visitor_logs')
-                ->where('last_activity', '>=', now()->subMinutes(5))
-                ->count();
-        } catch (\Exception $e) {
+            $count = \Illuminate\Support\Facades\Cache::remember('visitor_online_count', 30,
+                fn () => \Illuminate\Support\Facades\DB::table('visitor_logs')
+                    ->where('last_activity', '>=', now()->subMinutes(5))
+                    ->distinct()->count('visitor_id'));
+
+            return max(1, (int) $count);
+        } catch (\Throwable $e) {
             return 1;
         }
     }

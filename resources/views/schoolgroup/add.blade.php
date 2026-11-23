@@ -71,6 +71,28 @@
     <option value="cluster" @selected(old('group_type', 'cluster') === 'cluster')>กลุ่มโรงเรียน</option>
 </x-form.select>
 
+@php
+    $curColor = old('theme_color', '');
+    $useSystem = old('use_system_color', $curColor ? false : (isset($schoolgroup) ? true : false));
+@endphp
+<div class="space-y-2" x-data="{ useSystem: {{ $useSystem ? 'true' : 'false' }} }">
+    <label class="ui-label">สีประจำเครือข่าย</label>
+    <div class="flex flex-wrap items-center gap-3">
+        <input type="color" name="theme_color" value="{{ $curColor ?: \App\Schoolgroup::nextPaletteColor() }}" :disabled="useSystem" class="h-12 w-20 rounded-xl border border-gray-200 cursor-pointer disabled:opacity-40">
+        <label class="flex items-center gap-2 text-sm font-bold text-gray-700">
+            <input type="checkbox" name="use_system_color" value="1" x-model="useSystem"> ใช้สีตามระบบ
+        </label>
+    </div>
+    <div class="flex flex-wrap gap-2 pt-1" x-show="!useSystem">
+        @foreach(\App\Schoolgroup::PALETTE as $c)
+            <button type="button" class="w-7 h-7 rounded-full border-2 border-white shadow ring-1 ring-gray-200" style="background: {{ $c }}" title="{{ $c }}" onclick="this.closest('[x-data]').querySelector('input[type=color]').value='{{ $c }}'"></button>
+        @endforeach
+    </div>
+    <p class="ui-help">เว็บของเครือข่ายนี้จะใช้สีนี้ที่ navbar ปุ่ม และไอคอน (ถ้าเลือก "ใช้สีตามระบบ" จะใช้สี theme ของระบบ)</p>
+    @error('theme_color')<p class="ui-error">{{ $message }}</p>@enderror
+</div>
+
+
                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-emerald-100 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-lg">
                             <i class="ri-save-3-line text-xl"></i> บันทึกข้อมูล
                         </button>
@@ -107,6 +129,7 @@
                                             {{$l->schoolgroup_name}}
                                         </div>
                                         <div class="text-xs text-gray-400 font-bold mt-1 flex items-center gap-1 leading-relaxed">
+                                            <span class="inline-block w-3 h-3 rounded-full border border-gray-200" style="background: {{ $l->theme_color ?: 'transparent' }}" title="{{ $l->theme_color ?: 'ใช้สีตามระบบ' }}"></span>
                                             <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 font-black">{{ $l->type_name }}</span>
                                             <span><i class="ri-school-line"></i> {{ $l->schools_count }} โรงเรียน</span>
                                             <span><i class="ri-information-line"></i> {{$l->schoolgroup_detail ?: 'ไม่มีรายละเอียด'}}</span>

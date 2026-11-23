@@ -24,6 +24,37 @@
         </div>
     @endif
 
+    @php
+        $pt = $progressTotal;
+        $pending = max(0, $pt['registered'] - $pt['announced']);
+        $pct = $pt['registered'] > 0 ? round($pt['announced'] * 100 / $pt['registered']) : 0;
+    @endphp
+    @if(($orphanTeams ?? 0) > 0)
+        <div class="mb-4 p-4 bg-amber-50 border-l-4 border-amber-400 text-amber-800 rounded-xl text-sm font-bold">
+            <i class="ri-error-warning-line"></i> พบ {{ number_format($orphanTeams) }} ทีมที่อ้างอิงรายการแข่งขันซึ่งไม่มีอยู่ในงานนี้ (ข้อมูลตกค้าง) จึงไม่นับรวมในสรุปด้านล่าง
+        </div>
+    @endif
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">รายการที่มีทีมลงทะเบียน</p>
+            <p class="text-3xl font-black text-slate-800">{{ number_format($pt['registered']) }}</p>
+            <p class="text-[10px] text-slate-400">{{ number_format($pt['teams']) }} ทีม</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ประกาศผลแล้ว</p>
+            <p class="text-3xl font-black text-emerald-600">{{ number_format($pt['announced']) }} <span class="text-sm">รายการ</span></p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ยังไม่ประกาศผล</p>
+            <p class="text-3xl font-black text-red-500">{{ number_format($pending) }} <span class="text-sm">รายการ</span></p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ความคืบหน้า</p>
+            <p class="text-3xl font-black text-slate-800">{{ $pct }}%</p>
+            <div class="h-2 bg-slate-100 rounded-full mt-2 overflow-hidden"><div class="h-2 bg-emerald-500 rounded-full" style="width: {{ $pct }}%"></div></div>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div class="lg:col-span-2">
@@ -43,6 +74,8 @@
                                     <th class="px-6 py-2 italic">สาระการเรียนรู้</th>
                                     <th class="px-6 py-2 italic">รายละเอียด</th>
                                     <th class="px-6 py-2 text-center italic">จำนวนรายการ</th>
+                                    <th class="px-6 py-2 text-center italic">ลงทะเบียน</th>
+                                    <th class="px-6 py-2 text-center italic">ประกาศผลแล้ว</th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm font-bold italic">
@@ -61,7 +94,7 @@
                                     <td class="px-6 py-6 text-slate-500 font-medium">
                                         {{$l->subjectgroup_detail}}
                                     </td>
-                                    <td class="px-6 py-6 text-center rounded-r-2xl">
+                                    <td class="px-6 py-6 text-center">
                                         <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-black shadow-inner">
                                             @if(isset($activitycount[$l->id]))
                                                 {{ $activitycount[$l->id] }} รายการ
@@ -70,10 +103,24 @@
                                             @endif
                                         </span>
                                     </td>
+                                    @php $p = $progress[$l->id] ?? ['registered' => 0, 'announced' => 0, 'teams' => 0]; @endphp
+                                    <td class="px-6 py-6 text-center">
+                                        <span class="text-slate-700">{{ $p['registered'] }} รายการ</span>
+                                        <div class="text-[10px] text-slate-400">{{ $p['teams'] }} ทีม</div>
+                                    </td>
+                                    <td class="px-6 py-6 text-center rounded-r-2xl">
+                                        @if($p['registered'] === 0)
+                                            <span class="text-slate-300">-</span>
+                                        @elseif($p['announced'] >= $p['registered'])
+                                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black">ครบ {{ $p['announced'] }}/{{ $p['registered'] }}</span>
+                                        @else
+                                            <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-black">{{ $p['announced'] }}/{{ $p['registered'] }} (ค้าง {{ $p['registered'] - $p['announced'] }})</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-10 text-center text-slate-400 italic font-bold">
+                                    <td colspan="6" class="px-6 py-10 text-center text-slate-400 italic font-bold">
                                         ไม่พบข้อมูลรายการแข่งขัน
                                     </td>
                                 </tr>

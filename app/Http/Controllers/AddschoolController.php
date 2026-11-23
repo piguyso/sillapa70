@@ -95,6 +95,12 @@ class AddschoolController extends Controller
         ]);
         $activity = $this->authorizeDistrictActivity($request->school_activity);
 
+        // โรงเรียนต้องสังกัดเครือข่ายที่ส่งมาจริง (ไม่เชื่อค่าจากฟอร์มอย่างเดียว)
+        if (! School::whereKey((int) $request->school_name)->inNetwork((int) $request->school_schoolgroup)->exists()) {
+            Session::flash('massage','โรงเรียนที่เลือกไม่ได้สังกัดเครือข่ายนี้ !!');
+            return redirect(url()->previous());
+        }
+
         $chkschool = addschool::where('school','=',$request->school_name)->where('school_activity','=',$request->school_activity)->count();
         $numschool = $activity->activity_schoolteamnumber;
         $activityteamnumber = $activity->activity_teamnumber;

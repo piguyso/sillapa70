@@ -50,9 +50,37 @@ class areaSubjectgroupController extends Controller
     ->pluck('total','activity_subject');
   
 
+        // สรุปการประกาศผลของเครือข่ายนี้ แยกตามสาระ (นับเป็นรายการแข่งขัน)
+        $networkId = (int) (request()->attributes->get('schoolgroup_id') ?: $id);
+        $perActivity = DB::table('addschools_areas')
+            ->select('school_activity', DB::raw('max(activity_status) as st'), DB::raw('count(*) as teams'))
+            ->where('school_schoolgroup', $networkId)->where('year', $activeYear)
+            ->groupBy('school_activity')->get();
+        $subjectOf = Activities::whereIn('id', $perActivity->pluck('school_activity'))->pluck('activity_subject', 'id');
+        $progress = [];
+        $orphanTeams = 0; // ทีมที่อ้างอิงรายการแข่งขันซึ่งไม่มีอยู่ในงานนี้ (ข้อมูลตกค้าง) ไม่นับรวม
+        foreach ($perActivity as $row) {
+            if (! isset($subjectOf[$row->school_activity])) {
+                $orphanTeams += (int) $row->teams;
+                continue;
+            }
+            $sid = $subjectOf[$row->school_activity];
+            $progress[$sid] ??= ['registered' => 0, 'announced' => 0, 'teams' => 0];
+            $progress[$sid]['registered']++;
+            $progress[$sid]['teams'] += (int) $row->teams;
+            if (in_array((int) $row->st, [1, 98, 99], true)) $progress[$sid]['announced']++;
+        }
+        $progressTotal = [
+            'registered' => array_sum(array_column($progress, 'registered')),
+            'announced' => array_sum(array_column($progress, 'announced')),
+            'teams' => array_sum(array_column($progress, 'teams')),
+        ];
         $data  = array(
            'subjectgroup'=>$subjectgroup,
            'activitycount'=>$activitycount,
+           'progress'=>$progress,
+           'progressTotal'=>$progressTotal,
+           'orphanTeams'=>$orphanTeams,
            'schoolgroup'=>$schoolgroup,
            'area'=>$id,
         );
