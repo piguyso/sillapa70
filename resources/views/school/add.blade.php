@@ -190,7 +190,10 @@
                             <td class="p-3">{{ $row['row'] }}</td>
                             <td class="p-3 font-bold">{{ $row['school_name'] }}</td>
                             <td class="p-3">{{ $row['school_detail'] }}</td>
-                            <td class="p-3">{{ $row['schoolgroup_name'] ?: '-' }} ({{ $row['school_group'] ?: '-' }})</td>
+                            <td class="p-3">{{ $row['schoolgroup_name'] ?: '-' }} ({{ $row['school_group'] ?: '-' }})
+                                @if(!empty($row['extra_names']))<div class="text-xs text-slate-500">เพิ่มเติม: {{ $row['extra_names'] }}</div>@endif
+                                @if(!empty($row['is_expansion']))<div class="text-xs text-amber-700 font-bold">ขยายโอกาส</div>@endif
+                            </td>
                             <td class="p-3">
                                 @if($row['errors'])
                                     <ul class="text-red-600 list-disc pl-4">@foreach($row['errors'] as $error)<li>{{ $error }}</li>@endforeach</ul>

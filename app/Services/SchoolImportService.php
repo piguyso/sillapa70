@@ -12,14 +12,20 @@ class SchoolImportService
 {
     public const HEADERS = ['school_name', 'school_detail', 'school_group_id'];
 
+    /** คอลัมน์เสริม (ไม่บังคับ): เครือข่ายเพิ่มเติม (คั่นด้วยจุลภาค) และป้ายโรงเรียนขยายโอกาส (1 = ใช่) */
+    public const OPTIONAL_HEADERS = ['extra_group_ids', 'is_expansion'];
+
     public function inspect(UploadedFile $file): array
     {
         $sheet = IOFactory::load($file->getRealPath())->getActiveSheet();
         $lastRow = min($sheet->getHighestDataRow(), 502);
-        $headers = array_map(fn ($value) => trim((string) $value), $sheet->rangeToArray('A1:C1')[0]);
+        $headers = array_map(fn ($value) => trim((string) $value), $sheet->rangeToArray('A1:E1')[0]);
+        $optional = array_slice($headers, 3, 2);
+        $headers = array_slice($headers, 0, 3);
         $errors = [];
 
-        if ($headers !== self::HEADERS) {
+        $optionalOk = $optional === ['', ''] || $optional === self::OPTIONAL_HEADERS || $optional === [self::OPTIONAL_HEADERS[0], ''] || $optional === [self::OPTIONAL_HEADERS[0]];
+        if ($headers !== self::HEADERS || ! $optionalOk) {
             return ['rows' => [], 'errors' => ['หัวตารางไม่ถูกต้อง กรุณาใช้ไฟล์เทมเพลตจากระบบ']];
         }
 
@@ -34,12 +40,12 @@ class SchoolImportService
         $rows = [];
 
         for ($rowNumber = 2; $rowNumber <= $lastRow; $rowNumber++) {
-            [$name, $detail, $groupId] = array_map(
+            [$name, $detail, $groupId, $extraRaw, $expansionRaw] = array_pad(array_map(
                 fn ($value) => trim((string) $value),
-                $sheet->rangeToArray("A{$rowNumber}:C{$rowNumber}")[0],
-            );
+                $sheet->rangeToArray("A{$rowNumber}:E{$rowNumber}")[0],
+            ), 5, '');
 
-            if ($name === '' && $detail === '' && $groupId === '') {
+            if ($name === '' && $detail === '' && $groupId === '' && $extraRaw === '') {
                 continue;
             }
 
@@ -61,6 +67,18 @@ class SchoolImportService
                 $rowErrors[] = 'ไม่พบรหัสเครือข่าย '.$groupId;
             }
 
+            $extraIds = [];
+            if ($extraRaw !== '') {
+                foreach (preg_split('/[\s,;]+/', $extraRaw, -1, PREG_SPLIT_NO_EMPTY) as $part) {
+                    if (! ctype_digit($part) || ! $groups->has((int) $part)) {
+                        $rowErrors[] = 'ไม่พบรหัสเครือข่ายเพิ่มเติม '.$part;
+                    } else {
+                        $extraIds[] = (int) $part;
+                    }
+                }
+            }
+            $isExpansion = in_array(mb_strtolower($expansionRaw), ['1', 'y', 'yes', 'ใช่', 'true'], true);
+
             if ($normalizedName !== '') {
                 $seenNames[$normalizedName] ??= $rowNumber;
             }
@@ -71,6 +89,9 @@ class SchoolImportService
                 'school_detail' => $detail,
                 'school_group' => ctype_digit($groupId) ? (int) $groupId : null,
                 'schoolgroup_name' => ctype_digit($groupId) ? $groups->get((int) $groupId) : null,
+                'extra_groups' => array_values(array_unique($extraIds)),
+                'extra_names' => collect($extraIds)->map(fn ($id) => $groups->get($id))->filter()->implode(', '),
+                'is_expansion' => $isExpansion,
                 'errors' => $rowErrors,
             ];
         }
@@ -105,8 +126,9 @@ class SchoolImportService
                 $school->school_name = $row['school_name'];
                 $school->school_detail = $row['school_detail'];
                 $school->school_group = $row['school_group'];
+                $school->is_expansion = (bool) ($row['is_expansion'] ?? false);
                 $school->save();
-                $school->syncNetworks([], (int) $row['school_group']);
+                $school->syncNetworks($row['extra_groups'] ?? [], (int) $row['school_group']);
             }
 
             return count($rows);
