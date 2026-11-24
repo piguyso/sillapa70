@@ -69,7 +69,8 @@
 
                         <div class="space-y-2">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest italic">ตำแหน่งในระบบ</label>
-                            <select name="position" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all font-black text-slate-700 outline-none">
+                            <input type="hidden" name="position" value="{{ (int) $data->position }}">
+                            <select disabled class="w-full px-5 py-4 bg-slate-100 cursor-not-allowed border border-slate-200 rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all font-black text-slate-700 outline-none">
                                 <option value="5" @if($data->position == 5) selected @endif>เครือข่ายสถานศึกษา</option>
                                 <option value="0" @if($data->position == 0) selected @endif>โรงเรียน</option>
                             </select>
@@ -87,10 +88,18 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Username (Email)</label>
-                            <input type="text" name="email" value="{{ $data->email }}" required
-                                   class="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl font-black text-slate-400 cursor-not-allowed outline-none" readonly>
-                            <p class="text-[9px] text-slate-400 mt-1 italic leading-none font-bold">ไม่สามารถแก้ไข Username ได้</p>
+                            @if((int) $data->position === 0)
+                                <label class="block text-[10px] font-black text-orange-600 uppercase tracking-widest italic">Username</label>
+                                <input type="text" name="email" value="{{ old('email', $data->email) }}" required autocomplete="off"
+                                       class="w-full px-5 py-4 bg-orange-50/50 border border-orange-200 rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all font-black text-slate-700 shadow-inner outline-none">
+                                @if ($errors->has('email')) <p class="text-red-500 text-[10px] mt-1 font-black italic">* {{ $errors->first('email') }}</p> @endif
+                                <p class="text-[9px] text-slate-400 mt-1 italic leading-none font-bold">แก้ไขได้เฉพาะบัญชีโรงเรียนในเครือข่ายของท่าน ต้องไม่ซ้ำกับบัญชีอื่น</p>
+                            @else
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Username</label>
+                                <input type="text" name="email" value="{{ $data->email }}" required
+                                       class="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl font-black text-slate-400 cursor-not-allowed outline-none" readonly>
+                                <p class="text-[9px] text-slate-400 mt-1 italic leading-none font-bold">ไม่สามารถแก้ไข Username ของบัญชีเครือข่ายได้</p>
+                            @endif
                         </div>
 
                         <div class="space-y-2">

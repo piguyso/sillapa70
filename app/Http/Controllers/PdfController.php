@@ -309,7 +309,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,certificate_text($activity_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,certificate_text(trim($activity_name.' '.($addschool[0]->getactivityname->getclass->class_name ?? ''))), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -517,7 +517,7 @@ for($i=0;$i< count($jows);$i++) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,certificate_text($activity_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,certificate_text(trim($activity_name.' '.($activity->getclass->class_name ?? ''))), 0, 1, 'C', 0, '', 1);
 
 
 
@@ -1022,7 +1022,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,certificate_text($activity_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,certificate_text(trim($activity_name.' '.($addschool[0]->getactivityname->getclass->class_name ?? ''))), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -1127,7 +1127,7 @@ for($i=0;$i< count($addstudent);$i++) {
           //  $activity_name = str_replace('9','๙',$activity_name);
          //   $activity_name = str_replace('0','๐',$activity_name);
 
-            $pdf::Cell(0, 0,certificate_text($activity_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,certificate_text(trim($activity_name.' '.($addschool[0]->getactivityname->getclass->class_name ?? ''))), 0, 1, 'C', 0, '', 1);
             $pdf::SetTextColor(0,0,0);
             $pdf::endPage();
 
@@ -1207,7 +1207,7 @@ for($i=0;$i< count($jows);$i++) {
             $activity_name = thainumDigit($activity_name);
 
 
-            $pdf::Cell(0, 0,certificate_text($activity_name), 0, 1, 'C', 0, '', 1);
+            $pdf::Cell(0, 0,certificate_text(trim($activity_name.' '.($activity->getclass->class_name ?? ''))), 0, 1, 'C', 0, '', 1);
 
 
 

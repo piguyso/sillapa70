@@ -77,7 +77,6 @@
     <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-8">
         <div class="bg-orange-600 px-8 py-5 text-white flex justify-between items-center text-white">
             <h3 class="font-black italic uppercase tracking-widest text-white"><i class="ri-medal-line text-white"></i> สรุปเหรียญการแข่งขันรายโรงเรียน TOP 10</h3>
-            <a href="{{ url('area/showall_print/'.session('area')) }}" class="text-[10px] bg-white/20 hover:bg-white/40 px-3 py-1 rounded-lg text-white transition backdrop-blur-sm uppercase italic">View All</a>
         </div>
         <div class="overflow-x-auto p-4">
             <table class="w-full text-left border-separate border-spacing-y-2">

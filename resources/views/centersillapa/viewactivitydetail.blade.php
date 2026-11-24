@@ -15,6 +15,9 @@
                 </div>
             </div>
             <div class="flex flex-wrap gap-2">
+                @if(!empty($activity->getclass?->class_name))
+                    <span class="bg-white/30 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20 text-xs font-bold uppercase tracking-wider">{{ $activity->getclass->class_name ?? '' }}</span>
+                @endif
                 <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20 text-xs font-bold uppercase tracking-wider">นร. {{$activity->activity_studennumber}} คน</span>
                 <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20 text-xs font-bold uppercase tracking-wider">ครู {{$activity->activity_teachernumber}} คน</span>
                 <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20 text-xs font-bold uppercase tracking-wider">{{$activity->activity_schoolteamnumber}} ทีม/โรงเรียน</span>

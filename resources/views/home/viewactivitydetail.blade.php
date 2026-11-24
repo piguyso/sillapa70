@@ -151,6 +151,7 @@
                                                             <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-[10px]">
                                                                 {{ $stdCountModal }}
                                                             </div>
+                                                            @include('area._person-photo', ['st' => $item, 'teacher' => false])
                                                             <div class="text-gray-700 text-xs">
                                                                 {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}
                                                             </div>
@@ -179,6 +180,7 @@
                                                             <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-[10px]">
                                                                 {{ $tchCountModal }}
                                                             </div>
+                                                            @include('area._person-photo', ['st' => $item, 'teacher' => true])
                                                             <div class="text-gray-700 text-xs">
                                                                 {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}
                                                             </div>
@@ -216,6 +218,7 @@
                         @if($l->id == $item->school && $item->type == 0)
                             <div class="flex items-center gap-2">
                                 <span class="text-gray-500 font-mono text-[11px]">{{ $stdCount }}.</span>
+                                @include('area._person-photo', ['st' => $item, 'teacher' => false])
                                 {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}
                             </div>
                             <?php $stdCount++; ?>
@@ -233,6 +236,7 @@
                         @if($l->id == $item->school && $item->type == 1)
                             <div class="flex items-center gap-2 italic">
                                 <span class="text-blue-400 font-mono text-[11px]">{{ $tchCount }}.</span>
+                                @include('area._person-photo', ['st' => $item, 'teacher' => true])
                                 {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}
                             </div>
                             <?php $tchCount++; ?>

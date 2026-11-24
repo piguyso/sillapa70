@@ -206,7 +206,7 @@ $judgeCountByBranch = DB::table('jows')
     ->join('activities', 'jows.jow_activity', '=', 'activities.id')
     ->select('activities.activity_branch', DB::raw('count(jows.id) as total'))
     ->where('jows.jow_type', '=', '0') // สมมติ 0 คือกรรมการตัดสิน
-    ->where('jows.year', $activeYear)
+    ->when(active_event_id(), fn ($q, $eid) => $q->where('jows.event_id', $eid), fn ($q) => $q->where('jows.year', $activeYear))
     ->groupBy('activities.activity_branch')
     ->pluck('total', 'activities.activity_branch');
 
@@ -214,7 +214,7 @@ $judgeCountByBranch = DB::table('jows')
 $staffCountByBranch = DB::table('jows')
     ->select('jow_branch', DB::raw('count(DISTINCT CONCAT(IFNULL(jow_name,""), IFNULL(jow_lastname,""))) as total'))
     ->where('jow_type', '=', '1')
-    ->where('year', $activeYear)
+    ->when(active_event_id(), fn ($q, $eid) => $q->where('event_id', $eid), fn ($q) => $q->where('year', $activeYear))
     ->whereNotNull('jow_branch') // มั่นใจว่ามีรหัสศูนย์
     ->groupBy('jow_branch')
     ->pluck('total', 'jow_branch');

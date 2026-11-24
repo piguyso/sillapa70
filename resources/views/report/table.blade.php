@@ -24,8 +24,8 @@
     <p class="text-sm text-slate-500 mb-3">
         ปีการศึกษา {{ active_year() }} ·
         {{ number_format($rows->count()) }} {{ $type === 'activities' ? 'รายการ' : 'ทีม' }}
-        @if($type === 'participants' && $filters['top3']) · เฉพาะอันดับ 1-3 @endif
     </p>
+    <p class="text-sm font-bold text-slate-700 mb-3">ตัวกรอง: {{ $filterSummary ? implode(' | ', $filterSummary) : 'ทั้งหมด' }}</p>
 
     <div class="no-print flex flex-wrap gap-2 mb-4">
         @foreach($types as $key => $t)
@@ -51,6 +51,13 @@
                 <option value="">ทั้งหมด</option>
                 @foreach($activities as $a)
                     <option value="{{ $a->id }}" @selected($filters['activity'] == $a->id)>{{ $a->activity_name }}</option>
+                @endforeach
+            </x-form.select>
+        @endif
+        @if($type === 'activities')
+            <x-form.select label="จำนวนผู้ลงทะเบียน" name="teams" onchange="this.form.submit()">
+                @foreach(\App\Services\ParticipantReportService::TEAM_FILTERS as $k => $label)
+                    <option value="{{ $k }}" @selected(($filters['teams'] ?? '') === $k)>{{ $label }}</option>
                 @endforeach
             </x-form.select>
         @endif

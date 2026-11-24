@@ -322,7 +322,7 @@ class MyUserController extends Controller
             'id' => ['required', 'integer'],
             'name' => ['required'],
             'lastname' => ['required'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('users', 'email')->ignore((int) $request->id)],
             'phonenumber' => ['required'],
             'position' => ['required', 'integer', 'in:0,5'],
         ]);
@@ -330,8 +330,10 @@ class MyUserController extends Controller
         $user = User::where('schoolgroup', $schoolgroupId)->findOrFail($request->id);
         $user->name=$request->name;
         $user->lastname=$request->lastname;
-        $user->position=$request->position;
-        $user->email=$request->email;
+        // เครือข่ายแก้ Username ได้เฉพาะบัญชีโรงเรียนในเครือข่ายตนเอง และเปลี่ยนตำแหน่งสิทธิ์ของบัญชีไม่ได้
+        if ((int) $user->position === 0) {
+            $user->email = $request->email;
+        }
         $user->phonenumber = $request->phonenumber;
         $user->schoolgroup = $schoolgroupId;
         if($request->password != null)

@@ -24,6 +24,41 @@ class ParticipantReportService
     ];
 
     /** @return array<int, array{key:string,label:string,width:int,kind:string}> kind: text|list|num */
+    /** ตัวกรองจำนวนทีมที่ลงทะเบียนต่อรายการ (ใช้กับรายงานรายการแข่งขัน) */
+    public const TEAM_FILTERS = [
+        '' => 'เฉพาะที่มีผู้ลงทะเบียน (ค่าเริ่มต้น)',
+        'none' => 'ไม่มีผู้ลงทะเบียน',
+        'lt3' => 'ลงทะเบียนน้อยกว่า 3 ราย (1-2 ราย)',
+        'eq3' => 'ลงทะเบียน 3 ราย',
+        'gt3' => 'ลงทะเบียนมากกว่า 3 ราย',
+    ];
+
+    /** สรุปตัวกรองที่เลือก (ใช้เป็นหัวรายงานตอนพิมพ์/ส่งออก) เช่น ['กลุ่มสาระ: ภาพยนตร์สั้น', 'ระดับชั้น: ป.1 - ป.6'] */
+    public function filterSummary(array $filters, string $type, string $level): array
+    {
+        $out = [];
+        if (! empty($filters['subject'])) {
+            $out[] = 'กลุ่มสาระ: '.(\App\Subjectgroup::find($filters['subject'])->subjectgroup_name ?? $filters['subject']);
+        }
+        if (! empty($filters['class'])) {
+            $out[] = 'ระดับชั้น: '.(\App\Classes::find($filters['class'])->class_name ?? $filters['class']);
+        }
+        if ($type !== 'activities' && ! empty($filters['activity'])) {
+            $out[] = 'รายการแข่งขัน: '.(\App\Activities::find($filters['activity'])->activity_name ?? $filters['activity']);
+        }
+        if ($level === self::LEVEL_DISTRICT && ! empty($filters['schoolgroup'])) {
+            $out[] = 'เครือข่าย: '.(\App\Schoolgroup::find($filters['schoolgroup'])->schoolgroup_name ?? $filters['schoolgroup']);
+        }
+        if ($type === 'participants' && ! empty($filters['top3'])) {
+            $out[] = 'เฉพาะอันดับ 1-3';
+        }
+        if ($type === 'activities' && ! empty($filters['teams'])) {
+            $out[] = 'จำนวนผู้ลงทะเบียน: '.(self::TEAM_FILTERS[$filters['teams']] ?? $filters['teams']);
+        }
+
+        return $out;
+    }
+
     public function columns(string $type, string $level): array
     {
         $cols = [
@@ -46,6 +81,7 @@ class ParticipantReportService
         }
         if ($type === 'activities') {
             $cols[] = ['key' => 'teams', 'label' => 'จำนวนทีม', 'width' => 12, 'kind' => 'num'];
+            $cols[] = ['key' => 'schools', 'label' => 'โรงเรียนที่ลงทะเบียน', 'width' => 50, 'kind' => 'list'];
         }
 
         return $cols;
@@ -59,18 +95,31 @@ class ParticipantReportService
         $teams = $this->teams($type, $level, $filters);
 
         if ($type === 'activities') {
-            return $teams->groupBy('school_activity')
-                ->map(function (Collection $group) {
-                    $activity = $group->first()->getactivityname;
+            $counts = $teams->groupBy('school_activity')->map->count();
+            $schoolNames = $teams->groupBy('school_activity')->map(fn ($g) => $g->map(fn ($t) => $t->getschoolname->school_name ?? '-')->sort()->values()->all());
+            $mode = (string) ($filters['teams'] ?? '');
 
-                    return [
-                        'subject' => $activity?->getactivitysubject?->subjectgroup_name ?? '-',
-                        'activity' => $activity->activity_name ?? '-',
-                        'class' => $activity?->getclass?->class_name ?? '-',
-                        'teams' => $group->count(),
-                        'activity_id' => (int) $group->first()->school_activity,
-                        '_sort' => sprintf('%08d-%08d', $activity->activity_subject ?? 0, $group->first()->school_activity),
-                    ];
+            // ฐานเป็นรายการแข่งขันทั้งหมดของงาน เพื่อให้เห็นรายการที่ไม่มีผู้ลงทะเบียนด้วย
+            return \App\Activities::query()->with(['getactivitysubject', 'getclass'])
+                ->when(! empty($filters['subject']), fn ($q) => $q->where('activity_subject', (int) $filters['subject']))
+                ->when(! empty($filters['class']), fn ($q) => $q->where('activity_class', (int) $filters['class']))
+                ->when(! empty($filters['activity']), fn ($q) => $q->where('id', (int) $filters['activity']))
+                ->get()
+                ->map(fn ($activity) => [
+                    'subject' => $activity->getactivitysubject?->subjectgroup_name ?? '-',
+                    'activity' => $activity->activity_name ?? '-',
+                    'class' => $activity->getclass?->class_name ?? '-',
+                    'teams' => (int) ($counts[$activity->id] ?? 0),
+                    'schools' => $schoolNames[$activity->id] ?? [],
+                    'activity_id' => (int) $activity->id,
+                    '_sort' => sprintf('%08d-%08d', $activity->activity_subject ?? 0, $activity->id),
+                ])
+                ->filter(fn ($r) => match ($mode) {
+                    'none' => $r['teams'] === 0,
+                    'lt3' => $r['teams'] >= 1 && $r['teams'] <= 2,
+                    'eq3' => $r['teams'] === 3,
+                    'gt3' => $r['teams'] > 3,
+                    default => $r['teams'] > 0,
                 })
                 ->sortBy('_sort')->values();
         }
@@ -86,8 +135,8 @@ class ParticipantReportService
     {
         $model = $level === self::LEVEL_NETWORK ? addschools_areas::class : addschool::class;
         $with = ['getactivityname.getactivitysubject', 'getactivityname.getclass'];
+        $with[] = 'getschoolname';
         if ($type !== 'activities') {
-            $with[] = 'getschoolname';
             $with[] = 'getschoolgroup';
         }
         if ($type === 'participants') {

@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
           <div class="panel panel-default">
-              <div class="panel-heading"><a href="#" onclick="history.back(); return false;" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject?->subjectgroup_name ??''}}->{{$activity->activity_name ??''}} จำนวนนักเรียน {{$activity->activity_studennumber ??''}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber??''}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber??''}} ทีม</div>
+              <div class="panel-heading"><a href="#" onclick="history.back(); return false;" class="btn btn-info btn-md"> <span class="glyphicon glyphicon-backward"></span></a> {{$activity->getactivitysubject?->subjectgroup_name ??''}}->{{$activity->activity_name ??''}} {{ $activity->getclass->class_name ?? '' }} จำนวนนักเรียน {{$activity->activity_studennumber ??''}} คน,จำนวนครูผู้ควบคุม {{$activity->activity_teachernumber??''}} คน,จำนวนทีมต่อโรงเรียน {{$activity->activity_schoolteamnumber??''}} ทีม</div>
 
               <div class="panel-body">
                   @if (session('status'))
@@ -71,7 +71,7 @@
                         if($l->id == $s->getstudentname[$i]->school){
                           if($s->getstudentname[$i]->type==0){
                            
-                           echo $ii.'. '.$s->getstudentname[$i]->getstudenttitle->title.' '.$s->getstudentname[$i]->name.' '.$s->getstudentname[$i]->lastname."<br>";
+                           echo view('area._person-photo', ['st' => $s->getstudentname[$i], 'teacher' => false])->render().'<span class="align-middle">'.$ii.'. '.$s->getstudentname[$i]->getstudenttitle->title.' '.$s->getstudentname[$i]->name.' '.$s->getstudentname[$i]->lastname."</span><br>";
                             $ii++;
                           }
                         }   
@@ -88,7 +88,7 @@
                         if($l->id == $s->getstudentname[$k]->school){
                           if($s->getstudentname[$k]->type==1){
                             
-                           echo $kk.'. '.$s->getstudentname[$k]->getstudenttitle->title.' '.$s->getstudentname[$k]->name.' '.$s->getstudentname[$k]->lastname."<br>";
+                           echo view('area._person-photo', ['st' => $s->getstudentname[$k], 'teacher' => true])->render().'<span class="align-middle">'.$kk.'. '.$s->getstudentname[$k]->getstudenttitle->title.' '.$s->getstudentname[$k]->name.' '.$s->getstudentname[$k]->lastname."</span><br>";
                             $kk++;
                           }
                         }   

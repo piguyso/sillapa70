@@ -28,7 +28,7 @@
                         {{$activity->activity_name}}
                     </h2>
                     <p class="text-[10px] text-slate-400 mt-1 font-bold italic uppercase tracking-widest">
-                        {{$activity->getactivitysubject->subjectgroup_name}} | นักเรียน {{$activity->activity_studennumber}} | ครู {{$activity->activity_teachernumber}}
+                        {{$activity->getactivitysubject->subjectgroup_name}} | {{ $activity->getclass->class_name ?? '-' }} | นักเรียน {{$activity->activity_studennumber}} | ครู {{$activity->activity_teachernumber}}
                     </p>
                 </div>
             </div>

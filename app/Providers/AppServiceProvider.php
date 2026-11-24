@@ -47,6 +47,25 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // บันทึกกิจกรรม (audit log): การเพิ่ม/แก้/ลบข้อมูลผ่าน Eloquent ทุกโมเดล และการเข้า/ออกจากระบบ
+        foreach (['created', 'updated', 'deleted'] as $auditAction) {
+            EventFacade::listen('eloquent.'.$auditAction.': *', function (string $eventName, array $models) use ($auditAction): void {
+                $model = $models[0] ?? null;
+                if ($model instanceof Model) {
+                    \App\Services\AuditLogger::model($auditAction, $model);
+                }
+            });
+        }
+        EventFacade::listen(\Illuminate\Auth\Events\Login::class, fn ($e) => \App\Services\AuditLogger::record('login', [
+            'user_id' => $e->user->getAuthIdentifier(), 'username' => $e->user->email ?? null, 'description' => 'เข้าสู่ระบบ',
+        ]));
+        EventFacade::listen(\Illuminate\Auth\Events\Logout::class, fn ($e) => \App\Services\AuditLogger::record('logout', [
+            'user_id' => $e->user?->getAuthIdentifier(), 'username' => $e->user->email ?? null, 'description' => 'ออกจากระบบ',
+        ]));
+        EventFacade::listen(\Illuminate\Auth\Events\Failed::class, fn ($e) => \App\Services\AuditLogger::record('login_failed', [
+            'username' => $e->credentials['email'] ?? ($e->credentials['username'] ?? null), 'description' => 'เข้าสู่ระบบไม่สำเร็จ (ชื่อบัญชีหรือรหัสผ่านไม่ถูกต้อง)',
+        ]));
+
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('configs')) {
                 $event = active_event();

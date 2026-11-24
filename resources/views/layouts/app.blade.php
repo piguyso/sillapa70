@@ -363,6 +363,9 @@
                                             <a href="{{ url('myuser')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl transition-all">
                                                 <i class="ri-user-settings-line text-emerald-500 text-lg"></i> จัดการข้อมูลผู้ใช้
                                             </a>
+                                            <a href="{{ url('audit-logs')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl transition-all">
+                                                <i class="ri-history-line text-emerald-500 text-lg"></i> บันทึกกิจกรรม (ใครทำอะไร)
+                                            </a>
                                             <a href="{{ url('branch')}}" class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl transition-all">
                                                 <i class="ri-map-pin-2-line text-emerald-500 text-lg"></i> จัดการข้อมูลศูนย์แข่งขัน
                                             </a>

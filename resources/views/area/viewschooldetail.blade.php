@@ -110,7 +110,7 @@
                                         @foreach($student as $s)
                                             @foreach($s->getstudentname as $st)
                                                 @if($l->id == $st->school && $st->type == 0)
-                                                    <div class="leading-tight">• {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</div>
+                                                    <div class="leading-tight flex items-center gap-2">@include('area._person-photo', ['st' => $st, 'teacher' => false])<span>• {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</span></div>
                                                 @endif
                                             @endforeach
                                         @endforeach
@@ -119,7 +119,7 @@
                                         @foreach($student as $s)
                                             @foreach($s->getstudentname as $st)
                                                 @if($l->id == $st->school && $st->type == 1)
-                                                    <div class="leading-tight opacity-70">Teacher: {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</div>
+                                                    <div class="leading-tight opacity-70 flex items-center gap-2">@include('area._person-photo', ['st' => $st, 'teacher' => true])<span>Teacher: {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</span></div>
                                                 @endif
                                             @endforeach
                                         @endforeach

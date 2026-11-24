@@ -147,6 +147,7 @@ Route::resource('datatranfer','area\DatatranferController')->only(['index', 'sto
 Route::post('databackup', 'area\DatatranferController@databackup')->middleware(['auth', 'systemadmin'])->name('databackup');
 
 Route::resource('myuser','MyUserController')->middleware(['auth', 'systemadmin']);
+Route::get('audit-logs','AuditLogController@index')->middleware(['auth', 'systemadmin'])->name('audit.index');
 Route::post('myuser/password-reset', 'PasswordResetManagementController@reset')
     ->middleware(['auth', 'systemadmin'])
     ->name('myuser.password-reset');

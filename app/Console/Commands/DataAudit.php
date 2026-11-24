@@ -64,6 +64,20 @@ class DataAudit extends Command
             'บัญชีศูนย์ชี้ศูนย์ที่ไม่ใช่ของงานปัจจุบัน' => $this->centerNotCurrent(),
             'ตำแหน่งผู้ใช้ที่ไม่รู้จัก (ไม่ใช่ 0/1/5/10)' =>
                 DB::table('users')->whereNotIn('position', [0, 1, 5, 10])->orWhereNull('position')->select('id', 'email', 'position')->get(),
+            'กรรมการระดับเครือข่าย (jows_areas) ไม่มี event_id หรือ jow_area' =>
+                DB::table('jows_areas')->where(function ($q) {
+                    $q->whereNull('event_id')->orWhereNull('jow_area');
+                })->select('id', 'jow_name', 'event_id', 'jow_area')->get(),
+            'กรรมการระดับเครือข่ายชี้กิจกรรมที่ไม่มีอยู่ในงานเดียวกัน' =>
+                DB::table('jows_areas as j')->leftJoin('activities as a', function ($jn) {
+                    $jn->on('a.id', '=', 'j.jow_activity')->on('a.event_id', '=', 'j.event_id');
+                })->whereNotNull('j.jow_activity')->whereNull('a.id')->select('j.id', 'j.jow_name', 'j.jow_activity', 'j.event_id')->get(),
+            'กรรมการระดับเขต (jows) ไม่มี event_id' =>
+                DB::table('jows')->whereNull('event_id')->select('id', 'jow_name')->get(),
+            'กรรมการระดับเขตชี้กิจกรรมที่ไม่มีอยู่ในงานเดียวกัน' =>
+                DB::table('jows as j')->leftJoin('activities as a', function ($jn) {
+                    $jn->on('a.id', '=', 'j.jow_activity')->on('a.event_id', '=', 'j.event_id');
+                })->whereNotNull('j.jow_activity')->whereNull('a.id')->select('j.id', 'j.jow_name', 'j.jow_activity', 'j.event_id')->get(),
             'username (email) ซ้ำ' =>
                 DB::table('users')->groupBy('email')->havingRaw('count(*) > 1')->select('email', DB::raw('count(*) as n'))->get(),
         ];

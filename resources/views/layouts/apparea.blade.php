@@ -286,7 +286,7 @@
             <div class="flex justify-between h-16">
                 
                 <div class="flex items-center">
-                    <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center text-white gap-2 group">
+                    <a href="{{ !empty($netId) ? url('area/'.$netId) : url('/') }}" class="flex-shrink-0 flex items-center text-white gap-2 group">
                         <img class="h-10 w-auto bg-white rounded-full p-1" src="{{ asset('imgs/obec_icon2.png') }}" alt="Logo">
                         <span class="font-bold text-lg tracking-wide group-hover:text-amber-200 transition">
                             {{ session('app_name').' ระดับเครือข่ายสถานศึกษา ปีการศึกษา '.session('app_year') }}
@@ -295,7 +295,7 @@
                 </div>
 
                 <div class="hidden md:flex md:items-center md:space-x-4">
-                    <a href="{{url('/area/'.session('area'))??'/'}}" class="text-white hover:bg-primaryDark px-3 py-2 rounded-md text-sm font-medium transition">
+                    <a href="{{ url('/') }}" class="text-white hover:bg-primaryDark px-3 py-2 rounded-md text-sm font-medium transition">
                         <i class="ri-home-4-line mr-1"></i> หน้าหลัก
                     </a>
 

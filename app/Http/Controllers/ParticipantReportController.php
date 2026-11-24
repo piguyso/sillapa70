@@ -68,6 +68,7 @@ class ParticipantReportController extends Controller
             'activity' => $request->integer('activity') ?: null,
             'schoolgroup' => $request->integer('schoolgroup') ?: null,
             'top3' => $request->boolean('top3'),
+            'teams' => in_array($request->input('teams'), array_keys(\App\Services\ParticipantReportService::TEAM_FILTERS), true) ? $request->input('teams') : '',
         ];
         if ($level === Report::LEVEL_NETWORK) {
             // หน้าเครือข่ายแสดงเฉพาะเครือข่ายใน URL เสมอ (ไม่รับค่าจาก query)
@@ -93,6 +94,7 @@ class ParticipantReportController extends Controller
             'level' => $level,
             'networkId' => $networkId,
             'filters' => $filters,
+            'filterSummary' => $report->filterSummary($filters, $type, $level),
             'columns' => $report->columns($type, $level),
             'rows' => $report->rows($type, $level, $filters),
             'subjects' => Subjectgroup::orderBy('id')->get(),
@@ -102,7 +104,7 @@ class ParticipantReportController extends Controller
             'networkName' => $level === Report::LEVEL_NETWORK ? (Schoolgroup::find($networkId)->schoolgroup_name ?? '') : '',
             'tabUrls' => collect(Report::TYPES)->map(fn ($t, $k) => url(sprintf($base, $k)))->all(),
             'exportUrl' => url(sprintf($base, $type).'/export')
-                .'?'.http_build_query($request->only(['subject', 'class', 'activity', 'schoolgroup', 'top3'])),
+                .'?'.http_build_query($request->only(['subject', 'class', 'activity', 'schoolgroup', 'top3', 'teams'])),
         ]);
     }
 
@@ -125,11 +127,15 @@ class ParticipantReportController extends Controller
             .($type === 'participants' && $filters['top3'] ? ' (เฉพาะอันดับ 1-3)' : ''));
         $sheet->mergeCells("A1:{$lastCol}1");
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(18);
-        $sheet->fromArray($headers, null, 'A2');
-        $sheet->getStyle("A2:{$lastCol}2")->getFont()->setBold(true);
-        $sheet->getStyle("A2:{$lastCol}2")->getFill()->setFillType('solid')->getStartColor()->setRGB('E2E8F0');
+        $summary = $report->filterSummary($filters, $type, $level);
+        $sheet->setCellValue('A2', 'ตัวกรอง: '.($summary ? implode(' | ', $summary) : 'ทั้งหมด'));
+        $sheet->mergeCells("A2:{$lastCol}2");
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(14);
+        $sheet->fromArray($headers, null, 'A3');
+        $sheet->getStyle("A3:{$lastCol}3")->getFont()->setBold(true);
+        $sheet->getStyle("A3:{$lastCol}3")->getFill()->setFillType('solid')->getStartColor()->setRGB('E2E8F0');
 
-        $r = 3;
+        $r = 4;
         foreach ($rows as $i => $row) {
             $cells = [$i + 1];
             foreach ($columns as $col) {
@@ -140,20 +146,21 @@ class ParticipantReportController extends Controller
             $sheet->fromArray($cells, null, "A{$r}", true);
             $r++;
         }
-        $last = max(2, $r - 1);
-        $range = "A2:{$lastCol}{$last}";
+        $last = max(3, $r - 1);
+        $range = "A3:{$lastCol}{$last}";
         $sheet->getStyle($range)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
         $sheet->getStyle($range)->getAlignment()->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
         $sheet->getColumnDimension('A')->setWidth(7);
         foreach ($columns as $k => $col) {
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($k + 2))->setWidth($col['width']);
         }
-        $sheet->freezePane('A3');
+        $sheet->freezePane('A4');
         $sheet->setAutoFilter($range);
         $sheet->getPageSetup()->setOrientation('landscape')->setPaperSize(9)->setFitToWidth(1)->setFitToHeight(0);
 
+        $suffix = $summary ? '_'.trim(preg_replace('#[\\/:*?"<>|\s]+#u', '-', implode('_', array_map(fn ($p) => explode(': ', $p, 2)[1] ?? $p, $summary))), '-_') : '';
         $filename = Report::TYPES[$type]['file'].'_'.($level === Report::LEVEL_NETWORK ? 'เครือข่าย' : 'เขตพื้นที่')
-            .'_'.active_year().'_'.now()->format('Ymd').'.xlsx';
+            .'_'.active_year().mb_substr($suffix, 0, 80).'_'.now()->format('Ymd').'.xlsx';
 
         return response()->streamDownload(function () use ($book) {
             (new Xlsx($book))->save('php://output');

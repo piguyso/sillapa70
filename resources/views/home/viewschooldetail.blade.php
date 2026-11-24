@@ -117,7 +117,7 @@
                                 @foreach($student as $s)
                                     @foreach($s->getstudentname as $item)
                                         @if($l->id == $item->school && $item->type == 0)
-                                            <div class="whitespace-nowrap">{{ $ii }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
+                                            <div class="whitespace-nowrap flex items-center gap-2">@include('area._person-photo', ['st' => $item, 'teacher' => false]){{ $ii }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
                                             @php $ii++; @endphp
                                         @endif
                                     @endforeach
@@ -128,7 +128,7 @@
                                 @foreach($student as $s)
                                     @foreach($s->getstudentname as $item)
                                         @if($l->id == $item->school && $item->type == 1)
-                                            <div class="whitespace-nowrap">{{ $kk }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
+                                            <div class="whitespace-nowrap flex items-center gap-2">@include('area._person-photo', ['st' => $item, 'teacher' => true]){{ $kk }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
                                             @php $kk++; @endphp
                                         @endif
                                     @endforeach

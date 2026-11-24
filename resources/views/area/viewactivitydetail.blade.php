@@ -18,6 +18,9 @@
                 <span class="text-orange-200">→</span> {{$activity->activity_name ??''}}
             </h1>
             <div class="flex flex-wrap gap-4 text-[11px] font-black uppercase italic tracking-widest text-white">
+                @if($activity->getclass?->class_name)
+                    <span class="bg-white/30 px-3 py-1 rounded-lg backdrop-blur-sm text-white"><i class="ri-graduation-cap-line"></i> {{ $activity->getclass->class_name }}</span>
+                @endif
                 <span class="bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm text-white"><i class="ri-user-heart-line"></i> นักเรียน {{$activity->activity_studennumber ??'0'}} คน</span>
                 <span class="bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm text-white"><i class="ri-user-star-line"></i> ครู {{$activity->activity_teachernumber??'0'}} คน</span>
                 <span class="bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm text-white"><i class="ri-team-line"></i> {{$activity->activity_schoolteamnumber??'0'}} ทีม/รร.</span>
@@ -70,22 +73,22 @@
                             </td>
                             <td class="px-4 py-6 text-slate-800">
                                 <div class="grid grid-cols-1 gap-4 text-slate-800">
-                                    <div class="text-slate-700 font-medium">
-                                        <p class="text-[9px] text-orange-600 font-black uppercase mb-1">Students:</p>
+                                    <div class="text-slate-700 font-medium flex flex-wrap gap-x-4 gap-y-2 items-center">
+                                        <p class="w-full text-[9px] text-orange-600 font-black uppercase -mb-1">Students:</p>
                                         @foreach($student as $s)
                                             @foreach($s->getstudentname as $st)
                                                 @if($l->id == $st->school && $st->type == 0)
-                                                    <div class="leading-relaxed">• {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</div>
+                                                    @include('area._person-chip', ['st' => $st, 'teacher' => false])
                                                 @endif
                                             @endforeach
                                         @endforeach
                                     </div>
-                                    <div class="text-slate-500 font-medium italic">
-                                        <p class="text-[9px] text-slate-400 font-black uppercase mb-1">Teachers:</p>
+                                    <div class="text-slate-500 font-medium flex flex-wrap gap-x-4 gap-y-2 items-center">
+                                        <p class="w-full text-[9px] text-slate-400 font-black uppercase -mb-1">Teachers:</p>
                                         @foreach($student as $s)
                                             @foreach($s->getstudentname as $st)
                                                 @if($l->id == $st->school && $st->type == 1)
-                                                    <div class="leading-relaxed opacity-80">- {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</div>
+                                                    @include('area._person-chip', ['st' => $st, 'teacher' => true])
                                                 @endif
                                             @endforeach
                                         @endforeach

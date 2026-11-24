@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetEventContext::class,
             \App\Http\Middleware\RequirePasswordChange::class,
+            \App\Http\Middleware\AuditRequests::class,
         ]);
         $middleware->append(\App\Http\Middleware\EnsureActiveEventForWrites::class);
         $middleware->append(\App\Http\Middleware\TranslateToThaiNumbers::class);
