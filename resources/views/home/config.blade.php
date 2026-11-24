@@ -166,7 +166,7 @@
                             <div class="space-y-2">
                                 <label class="block text-sm font-black text-gray-400 uppercase italic">System Logo (Crop)</label>
                                 <input type="file" id="logo_input" accept="image/jpeg,image/png,image/webp" class="ui-file text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                                <p class="text-[10px] text-slate-400 italic">* แนะนำสัดส่วน 1:1 หรือวงกลม</p>
+                                <p class="text-[10px] text-slate-400 italic">* ลากกรอบเลือกส่วนที่ต้องการได้อิสระ (ไม่บังคับสี่เหลี่ยมจัตุรัส)</p>
                             </div>
                         </div>
                         <div class="space-y-2">
@@ -652,7 +652,7 @@
                 cropModal.classList.remove('hidden');
                 if (cropper) cropper.destroy();
                 cropper = new Cropper(cropImageElement, {
-                    aspectRatio: 1,
+                    aspectRatio: NaN, // crop อิสระ ไม่บังคับสัดส่วน
                     viewMode: 2,
                 });
             };
@@ -673,7 +673,7 @@
                     cropModal.classList.remove('hidden');
                     if (cropper) cropper.destroy();
                     cropper = new Cropper(cropImageElement, {
-                        aspectRatio: 1,
+                        aspectRatio: NaN, // crop อิสระ ไม่บังคับสัดส่วน
                         viewMode: 2,
                     });
                 };
@@ -684,8 +684,9 @@
 
     btnCropDone.addEventListener('click', function() {
         const canvas = cropper.getCroppedCanvas({
-            width: 512,
-            height: 512
+            maxWidth: 1024,
+            maxHeight: 1024,
+            imageSmoothingQuality: "high"
         });
         const base64data = canvas.toDataURL('image/webp', 0.82);
         if (cropTarget === 'logo') {

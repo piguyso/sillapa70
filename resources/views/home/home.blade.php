@@ -43,7 +43,9 @@
         
         <?php if($config->first() && $config->first()->app_logo): ?>
         <div class="mb-6 transform transition duration-500 hover:scale-110">
-            <img src="{{ get_secure_file_url('upload', $config->first()->app_logo, $config->first()->app_year) }}" alt="Logo" class="h-24 sm:h-32 mx-auto drop-shadow-xl">
+            <span class="inline-block bg-white rounded-3xl p-3 sm:p-4 shadow-xl ring-4 ring-white/30">
+                <img src="{{ get_secure_file_url('upload', $config->first()->app_logo, $config->first()->app_year) }}" alt="Logo" class="block h-24 sm:h-32 w-auto max-w-full">
+            </span>
         </div>
         <?php endif; ?>
         <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 drop-shadow-lg transform transition duration-500 hover:scale-105">
