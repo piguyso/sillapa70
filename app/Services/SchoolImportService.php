@@ -10,6 +10,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SchoolImportService
 {
+    private static ?int $privateCounter = null;
+
     public const HEADERS = ['school_name', 'school_detail', 'school_group_id'];
 
     /** คอลัมน์เสริม (ไม่บังคับ): เครือข่ายเพิ่มเติม (คั่นด้วยจุลภาค) และป้ายโรงเรียนขยายโอกาส (1 = ใช่) */
@@ -153,6 +155,7 @@ class SchoolImportService
     /** @return array{created:int,updated:int} */
     public function import(array $rows): array
     {
+        self::$privateCounter = null;
         return DB::transaction(function () use ($rows): array {
             $existingNames = School::lockForUpdate()->pluck('school_name')
                 ->map(fn ($name) => $this->normalizeName($name))
@@ -222,8 +225,13 @@ class SchoolImportService
     /** รหัสโรงเรียนเอกชน/ไม่มีใน SMIS: 86019xxx ต่อจากลำดับล่าสุด */
     private function nextPrivateCode(): string
     {
-        $max = (int) School::where('school_code', 'like', '86019%')->max('school_code');
-        return (string) max($max + 1, 86019001);
+        self::$privateCounter ??= (int) School::where('school_code', 'like', '86019%')->max('school_code');
+        do {
+            self::$privateCounter = max(self::$privateCounter + 1, 86019001);
+            $code = (string) self::$privateCounter;
+        } while (School::where('school_code', $code)->exists());
+
+        return $code;
     }
 
     /** บัญชีโรงเรียน: username = รหัส 8 หลัก, รหัสผ่านเริ่มต้นเท่ากัน, บังคับเปลี่ยน */
@@ -236,7 +244,7 @@ class SchoolImportService
         $u->name = $school->school_name;
         $u->lastname = (string) $school->school_detail;
         $u->email = $school->school_code;
-        $u->password = \Illuminate\Support\Facades\Hash::make($school->school_code);
+        $u->password = \Illuminate\Support\Facades\Hash::make($school->school_code, ['rounds' => 8]) /* รหัสเริ่มต้นชั่วคราว บังคับเปลี่ยนตอนเข้าใช้ครั้งแรก (ครั้งนั้นใช้ rounds ปกติ) ลดเวลานำเข้าจำนวนมาก */;
         $u->must_change_password = 1;
         $u->position = 0;
         $u->school_id = $school->id;

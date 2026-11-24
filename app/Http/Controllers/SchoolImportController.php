@@ -118,16 +118,21 @@ class SchoolImportController extends Controller
     public function store(Request $request, SchoolImportService $service)
     {
         adminchk();
-        $rows = $request->session()->pull('school_import_rows');
+        $rows = $request->session()->get('school_import_rows');
         if (! is_array($rows) || $rows === []) {
             return back()->withErrors(['school_file' => 'ข้อมูลตรวจสอบหมดอายุ กรุณาอัปโหลดและตรวจสอบไฟล์อีกครั้ง']);
         }
 
+        @set_time_limit(300);
         try {
             $result = $service->import($rows);
         } catch (\Throwable $exception) {
+            \Illuminate\Support\Facades\Log::error('school import store failed', ['e' => $exception]);
+
             return back()->withErrors(['school_file' => $exception->getMessage()]);
         }
+
+        $request->session()->forget('school_import_rows');
 
         return redirect()->route('school.index')->with('massage', "นำเข้าโรงเรียนสำเร็จ: เพิ่มใหม่ {$result['created']} แห่ง, อัปเดตโรงเรียนเดิม {$result['updated']} แห่ง");
     }
