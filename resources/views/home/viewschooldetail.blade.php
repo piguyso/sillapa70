@@ -95,8 +95,7 @@
                         <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
                             <th class="px-4 py-4 font-bold text-center w-12">#</th>
                             <th class="px-4 py-4 font-bold">รายการแข่งขัน</th>
-                            <th class="px-4 py-4 font-bold">รายชื่อนักเรียน</th>
-                            <th class="px-4 py-4 font-bold">รายชื่อครู</th>
+                            <th class="px-4 py-4 font-bold">รายชื่อนักเรียน/ครู</th>
                             <th class="px-4 py-4 font-bold text-center">คะแนน</th>
                             <th class="px-4 py-4 font-bold text-center">เหรียญ</th>
                             <th class="px-4 py-4 font-bold text-center">อันดับ</th>
@@ -112,27 +111,44 @@
                                 <a href="{{url('viewactivitydetail/')}}/{{$l->getactivityname->id}}">{{$l->getactivityname->activity_name}}</a>
                                 <div class="text-[10px] text-gray-400 font-normal">ช่วงชั้น: {{$l->getactivityname->getclass->class_name}}</div>
                             </td>
-                            <td class="px-4 py-4 leading-relaxed">
-                                @php $ii=1; @endphp
+                            <td class="px-4 py-4 w-1/2 min-w-[340px]">
+                                @php $stuList = collect(); $tchList = collect(); @endphp
                                 @foreach($student as $s)
                                     @foreach($s->getstudentname as $item)
-                                        @if($l->id == $item->school && $item->type == 0)
-                                            <div class="whitespace-nowrap flex items-center gap-2">@include('area._person-photo', ['st' => $item, 'teacher' => false]){{ $ii }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
-                                            @php $ii++; @endphp
+                                        @if($l->id == $item->school)
+                                            @php ($item->type == 0 ? $stuList : $tchList)->push($item); @endphp
                                         @endif
                                     @endforeach
                                 @endforeach
-                            </td>
-                            <td class="px-4 py-4 leading-relaxed text-blue-600">
-                                @php $kk=1; @endphp
-                                @foreach($student as $s)
-                                    @foreach($s->getstudentname as $item)
-                                        @if($l->id == $item->school && $item->type == 1)
-                                            <div class="whitespace-nowrap flex items-center gap-2">@include('area._person-photo', ['st' => $item, 'teacher' => true]){{ $kk }}. {{$item->getstudenttitle->title}}{{$item->name}} {{$item->lastname}}</div>
-                                            @php $kk++; @endphp
-                                        @endif
-                                    @endforeach
-                                @endforeach
+                                <p class="uppercase text-[10px] mb-2">
+                                    <span class="font-black text-emerald-600">นักเรียน ({{ $stuList->count() }})</span>
+                                    @if($tchList->count())<span class="font-black text-slate-400 ml-3">ครู ({{ $tchList->count() }})</span>@endif
+                                </p>
+                                @php
+                                    $hasPhoto = $stuList->merge($tchList)->contains(fn ($p) => ! empty($p->student_image));
+                                    $peopleCount = $stuList->count() + $tchList->count();
+                                    $tier = $peopleCount > 16 ? 'xs' : ($peopleCount > 8 ? 'sm' : 'md'); // คนมาก: ลดขนาดรูปเป็นขั้น ให้วางได้หลายคนต่อแถว
+                                @endphp
+                                @if($hasPhoto)
+                                    <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax({{ ['md' => 92, 'sm' => 76, 'xs' => 62][$tier] }}px, 1fr));">
+                                        @foreach($stuList as $item)
+                                            @include('area._person-card', ['st' => $item, 'teacher' => false, 'tier' => $tier])
+                                        @endforeach
+                                        @foreach($tchList as $item)
+                                            @include('area._person-card', ['st' => $item, 'teacher' => true, 'tier' => $tier])
+                                        @endforeach
+                                    </div>
+                                @else
+                                    {{-- ไม่มีรูปในแถวนี้: แสดงชื่ออย่างเดียว ประหยัดพื้นที่ --}}
+                                    <div class="flex flex-col gap-1">
+                                        @foreach($stuList as $item)
+                                            @include('area._person-chip', ['st' => $item, 'teacher' => false])
+                                        @endforeach
+                                        @foreach($tchList as $item)
+                                            @include('area._person-chip', ['st' => $item, 'teacher' => true])
+                                        @endforeach
+                                    </div>
+                                @endif
                             </td>
                             <td class="px-4 py-4 text-center font-bold text-lg">
                                 {{ ($l->getactivityname->activity_status == 1) ? $l->student_score : '-' }}

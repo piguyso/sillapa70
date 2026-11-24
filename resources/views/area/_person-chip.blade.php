@@ -2,7 +2,7 @@
 @php
     $fullName = trim(($st->getstudenttitle->title ?? '').$st->name.' '.$st->lastname);
     $imageUrl = $st->student_image ? get_secure_file_url('picture', $st->student_image, $st->year) : null;
-    $size = $teacher ? 'w-8 h-8' : 'w-10 h-10';
+    $size = 'w-10 h-10';
 @endphp
 <span class="inline-flex items-center gap-2 max-w-full {{ $teacher ? 'text-slate-500' : 'text-slate-700' }}">
     @if($imageUrl)
@@ -13,5 +13,5 @@
     @else
         <span class="{{ $teacher ? 'text-slate-300' : 'text-orange-300' }}">&bull;</span>
     @endif
-    <span class="leading-tight text-xs {{ $teacher ? 'font-medium' : 'font-bold' }}">{{ $fullName }}</span>
+    <span class="leading-tight text-xs {{ $teacher ? 'font-medium' : 'font-bold' }}">{{ $fullName }} <span class="text-[10px] font-bold {{ $teacher ? 'text-slate-400' : 'text-emerald-600' }}">({{ $teacher ? 'ครู' : 'นักเรียน' }})</span></span>
 </span>

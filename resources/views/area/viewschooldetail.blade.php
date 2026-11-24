@@ -103,28 +103,44 @@
                                 </a>
                                 <p class="text-[9px] text-slate-400 mt-1 uppercase tracking-tighter">{{$l->getactivityname?->getclass->class_name}}</p>
                             </td>
-                            <td class="px-4 py-6 text-slate-800">
-                                <div class="grid grid-cols-1 gap-2 text-slate-800">
-                                    <div class="text-slate-600 text-[10px] text-slate-800">
-                                        <p class="font-black text-orange-600 uppercase mb-1">Students:</p>
-                                        @foreach($student as $s)
-                                            @foreach($s->getstudentname as $st)
-                                                @if($l->id == $st->school && $st->type == 0)
-                                                    <div class="leading-tight flex items-center gap-2">@include('area._person-photo', ['st' => $st, 'teacher' => false])<span>• {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</span></div>
-                                                @endif
-                                            @endforeach
+                            <td class="px-4 py-6 text-slate-800 w-1/2 min-w-[340px]">
+                                @php $stuList = collect(); $tchList = collect(); @endphp
+                                @foreach($student as $s)
+                                    @foreach($s->getstudentname as $st)
+                                        @if($l->id == $st->school)
+                                            @php ($st->type == 0 ? $stuList : $tchList)->push($st); @endphp
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                                <p class="uppercase text-[10px] mb-2">
+                                    <span class="font-black text-orange-600">Students ({{ $stuList->count() }})</span>
+                                    @if($tchList->count())<span class="font-black text-slate-400 ml-3">Teachers ({{ $tchList->count() }})</span>@endif
+                                </p>
+                                @php
+                                    $hasPhoto = $stuList->merge($tchList)->contains(fn ($p) => ! empty($p->student_image));
+                                    $peopleCount = $stuList->count() + $tchList->count();
+                                    $tier = $peopleCount > 16 ? 'xs' : ($peopleCount > 8 ? 'sm' : 'md'); // คนมาก: ลดขนาดรูปเป็นขั้น ให้วางได้หลายคนต่อแถว
+                                @endphp
+                                @if($hasPhoto)
+                                    <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax({{ ['md' => 92, 'sm' => 76, 'xs' => 62][$tier] }}px, 1fr));">
+                                        @foreach($stuList as $st)
+                                            @include('area._person-card', ['st' => $st, 'teacher' => false, 'tier' => $tier])
+                                        @endforeach
+                                        @foreach($tchList as $st)
+                                            @include('area._person-card', ['st' => $st, 'teacher' => true, 'tier' => $tier])
                                         @endforeach
                                     </div>
-                                    <div class="text-slate-400 font-medium italic">
-                                        @foreach($student as $s)
-                                            @foreach($s->getstudentname as $st)
-                                                @if($l->id == $st->school && $st->type == 1)
-                                                    <div class="leading-tight opacity-70 flex items-center gap-2">@include('area._person-photo', ['st' => $st, 'teacher' => true])<span>Teacher: {{$st->getstudenttitle->title}}{{$st->name}} {{$st->lastname}}</span></div>
-                                                @endif
-                                            @endforeach
+                                @else
+                                    {{-- ไม่มีรูปในแถวนี้: แสดงชื่ออย่างเดียว ประหยัดพื้นที่ --}}
+                                    <div class="flex flex-col gap-1">
+                                        @foreach($stuList as $st)
+                                            @include('area._person-chip', ['st' => $st, 'teacher' => false])
+                                        @endforeach
+                                        @foreach($tchList as $st)
+                                            @include('area._person-chip', ['st' => $st, 'teacher' => true])
                                         @endforeach
                                     </div>
-                                </div>
+                                @endif
                             </td>
                             <td class="px-4 py-6 text-center text-slate-800">
                                 <span class="text-lg font-black text-slate-800">
