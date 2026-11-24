@@ -116,8 +116,10 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-2">ชื่อบัญชี / Email (Username)</label>
-                        <input type="email" name="email" value="{{ $data->email }}" required class="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl font-bold text-slate-400 cursor-not-allowed outline-none" readonly>
+                        <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest italic ml-2">ชื่อบัญชี (Username)</label>
+                        <input type="text" name="email" value="{{ old('email', $data->email) }}" required autocomplete="off" class="w-full px-5 py-4 bg-emerald-50/30 border border-emerald-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold text-slate-700 outline-none shadow-sm">
+                        @error('email')<p class="text-xs font-bold text-red-600 ml-2">{{ $message }}</p>@enderror
+                        <p class="text-[11px] text-slate-400 ml-2">แอดมินแก้ได้ ต้องไม่ซ้ำกับบัญชีอื่น (ผู้ใช้ต้องใช้ชื่อใหม่นี้ล็อกอินครั้งต่อไป)</p>
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest italic ml-2">รหัสผ่านใหม่ (Reset Password)</label>

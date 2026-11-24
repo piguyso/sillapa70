@@ -214,7 +214,7 @@ class MyUserController extends Controller
           'name'=>'required',
           'lastname'=>'required',
           'phonenumber'=>'required|numeric',
-          'email'=>'required',
+          'email'=>['required','string','max:255',\Illuminate\Validation\Rule::unique('users','email')->ignore((int) $id)],
           //'password'=>'required'
         ]);
         $user= User::find($id);
