@@ -302,7 +302,7 @@
                             <th class="px-4 py-2 text-left">กลุ่มสาระ</th>
                             <th class="px-4 py-2 text-center">รายการ</th>
                             <th class="px-4 py-2 text-center">ทีม</th>
-                            <th class="px-4 py-2 text-center text-green-600">เสร็จสิ้น</th>
+                            <th class="px-4 py-2 text-center text-green-600">ประกาศผล</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">

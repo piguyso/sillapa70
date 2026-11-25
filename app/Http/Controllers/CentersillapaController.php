@@ -200,14 +200,20 @@ class CentersillapaController extends Controller
     public function store(Request $request)
     {
         $this->authorizeActivity((int) $request->input('id'));
-        app(CompetitionScoreService::class)->process(
-            addschool::class,
-            (int) $request->input('id'),
-            (array) $request->input('activity_score', []),
-            (int) $request->input('activity_chk'),
-            null,
-            true,
-        );
+        try {
+            app(CompetitionScoreService::class)->process(
+                addschool::class,
+                (int) $request->input('id'),
+                (array) $request->input('activity_score', []),
+                (int) $request->input('activity_chk'),
+                null,
+                true,
+            );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Session::flash('massage', 'ไม่สามารถบันทึก/ประกาศผลได้: '.collect($e->errors())->flatten()->first());
+
+            return redirect(url()->previous())->withInput();
+        }
 
         Session::flash('massage', 'บันทึกและจัดลำดับผลการแข่งขันเรียบร้อยแล้ว');
         return redirect('/centerviewactivityschool/'.$request->input('id'));

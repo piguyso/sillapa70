@@ -38,6 +38,7 @@
 
     </div>
 </div>
+@include('centersillapa._substitution-rule', ['activity' => $addschool[0]->getactivityname])
 
     <div class="space-y-8">
         

@@ -161,7 +161,7 @@ $(document).ready(function() {
         var message =
             '<div style="text-align:left">' +
             'ทุกเครือข่ายประกาศผลครบแล้ว (' + readiness.networks.length + ' เครือข่าย)<br>' +
-            '• จะโอน <b>' + readiness.transferable_teams + ' ทีม</b> (อันดับ 1–3 และรายการที่ไม่มีการแข่งขัน ' + readiness.no_contest_teams + ' ทีม) พร้อมรายชื่อนักเรียนและครู<br>';
+            '• จะโอน <b>' + readiness.transferable_teams + ' ทีม</b> (อันดับ ' + readiness.transfer_ranks_label + ' และรายการที่ไม่มีการแข่งขัน ' + readiness.no_contest_teams + ' ทีม) พร้อมรายชื่อนักเรียนและครู<br>';
         if (readiness.district_teams > 0) {
             message += '<br><span style="color:#b91c1c;font-weight:700">ข้อมูลระดับเขตพื้นที่เดิม ' + readiness.district_teams + ' ทีม จะถูกลบและแทนที่ทั้งหมด';
             if (readiness.district_scored_teams > 0) {

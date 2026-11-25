@@ -84,9 +84,9 @@
                     <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black italic">
                         <th class="px-6 py-2 text-center w-16">อันดับ</th>
                         <th class="px-6 py-2">โรงเรียน</th>
-                        <th class="px-6 py-2 text-center text-amber-500">ทอง</th>
-                        <th class="px-6 py-2 text-center text-slate-400">เงิน</th>
-                        <th class="px-6 py-2 text-center text-amber-700">ทองแดง</th>
+                        <th class="px-6 py-2 text-center text-sm normal-case tracking-normal" style="color:#ca8a04"><i class="ri-medal-fill text-xl align-middle"></i> ทอง</th>
+                        <th class="px-6 py-2 text-center text-sm normal-case tracking-normal" style="color:#64748b"><i class="ri-medal-fill text-xl align-middle"></i> เงิน</th>
+                        <th class="px-6 py-2 text-center text-sm normal-case tracking-normal" style="color:#92400e"><i class="ri-medal-fill text-xl align-middle"></i> ทองแดง</th>
                         <th class="px-6 py-2 text-center">ไม่มีการแข่งขัน</th>
                         <th class="px-6 py-2 text-center">รวม</th>
                     </tr>
@@ -144,15 +144,21 @@
             <div class="bg-orange-700 px-6 py-3 text-white text-xs uppercase text-white">ผลการแข่งขันตามกลุ่มสาระ</div>
             <div class="overflow-x-auto text-slate-800">
                 <table class="w-full text-xs text-slate-800">
+                    <thead class="bg-slate-50 text-slate-500">
+                        <tr>
+                            <th class="px-6 py-2 text-left">กลุ่มสาระ</th>
+                            <th class="px-3 py-2 text-center">รายการ</th>
+                            <th class="px-3 py-2 text-center">ทีม</th>
+                            <th class="px-3 py-2 text-center text-emerald-600">ประกาศผล</th>
+                        </tr>
+                    </thead>
                     <tbody class="divide-y divide-slate-50 text-slate-600 text-slate-800">
                         @foreach($subjectgroup as $l)
                         <tr class="hover:bg-orange-50/30 text-slate-800">
                             <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/viewactivity/'.$l->id) }}" class="hover:text-orange-600">{{$l->subjectgroup_name}}</a></td>
-                            <td class="px-6 py-3 text-right text-slate-800">
-                                <span class="bg-slate-100 px-2 py-0.5 rounded italic shadow-inner text-slate-800">
-                                    {{$activitycount[$l->id] ?? 0}} / {{ $activityfinish[$l->id] ?? 0 }}
-                                </span>
-                            </td>
+                            <td class="px-3 py-3 text-center">{{ $activitycount[$l->id] ?? 0 }}</td>
+                            <td class="px-3 py-3 text-center">{{ $subjectTeamCount[$l->id] ?? 0 }}</td>
+                            <td class="px-3 py-3 text-center font-black {{ ($activityfinish[$l->id] ?? 0) > 0 ? 'text-emerald-600' : 'text-slate-300' }}">{{ $activityfinish[$l->id] ?? 0 }}</td>
                         </tr>
                         @endforeach
                     </tbody>

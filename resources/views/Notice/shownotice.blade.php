@@ -47,7 +47,7 @@
                                 <th class="px-6 py-4 w-32">วันที่ประกาศ</th>
                                 <th class="px-6 py-4">หัวข้อและรายละเอียด</th>
                                 <th class="px-6 py-4 w-40">ไฟล์แนบ</th>
-                                <th class="px-6 py-4 text-center w-24">จัดการ</th>
+                                <th class="px-6 py-4 text-center w-36">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 text-sm">
@@ -80,7 +80,11 @@
                                         <span class="text-gray-300 italic text-xs">ไม่มีไฟล์</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-6 align-top text-center">
+                                <td class="px-6 py-6 align-top text-center whitespace-nowrap">
+                                    <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('Notice.edit', $l->id) }}?from=district" title="แก้ไขประกาศ" class="w-10 h-10 inline-flex items-center justify-center bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm border border-amber-100">
+                                        <i class="ri-edit-line text-lg"></i>
+                                    </a>
                                     <form id="delform{{$l->id}}" method="post" action="{{ route('Notice.destroy',$l->id)}}" class="inline">
                                         <input type="hidden" name="_method" value="DELETE"/>
                                         {!!csrf_field()!!}
@@ -88,6 +92,7 @@
                                             <i class="ri-delete-bin-line text-lg"></i>
                                         </button>
                                     </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty

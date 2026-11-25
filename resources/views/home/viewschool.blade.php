@@ -32,8 +32,9 @@
                     <thead>
                         <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
                             <th class="px-6 py-4 font-bold text-center w-20">#</th>
-                            <th class="px-6 py-4 font-bold">ชื่อโรงเรียน</th>
-                            <th class="px-6 py-4 font-bold text-center">จำนวนทีมที่สมัคร</th>
+                            <th class="px-6 py-4 font-bold">โรงเรียน</th>
+                            <th class="px-6 py-4 font-bold text-center">จำนวนรายการ</th>
+                            <th class="px-6 py-4 font-bold text-center">จำนวนทีม</th>
                             <th class="px-6 py-4 font-bold text-center w-32">รายละเอียด</th>
                         </tr>
                     </thead>
@@ -58,6 +59,12 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-center">
+                                @php $acts = $activitycount[$l->id] ?? 0; @endphp
+                                <span class="{{ $acts > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400' }} px-4 py-1 rounded-full text-sm font-bold inline-flex items-center gap-1">
+                                    <i class="ri-list-check-2"></i> {{ $acts }} รายการ
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 @php
                                     $count = isset($schoolcount[$l->id]) ? $schoolcount[$l->id] : 0;
                                     $bgClass = $count > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-400';
@@ -75,7 +82,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic bg-gray-50/50">
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-400 italic bg-gray-50/50">
                                 <i class="ri-inbox-line text-4xl block mb-2"></i> ไม่พบข้อมูลโรงเรียนในเครือข่ายนี้
                             </td>
                         </tr>

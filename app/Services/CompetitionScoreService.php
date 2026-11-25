@@ -53,7 +53,7 @@ class CompetitionScoreService
 
             arsort($scores, SORT_NUMERIC);
 
-            // ลำดับ 1-4 ห้ามมีคะแนนเท่ากัน; ลำดับ 5 ขึ้นไปเท่ากันได้และได้ลำดับร่วม (เช่น 5, 5, 7)
+            // ลำดับ 1-4 ห้ามมีคะแนนเท่ากัน (ตัวแทนเครือข่ายส่งต่อลำดับ 1-3 ไปเขต ต้องตัดสินลำดับได้); ลำดับ 5 ขึ้นไปเท่ากันได้และได้ลำดับร่วมแล้วข้ามลำดับ (เช่น 5, 5, 7)
             $format = function (float $score): string {
                 $formatted = rtrim(rtrim(number_format($score, 10, '.', ''), '0'), '.');
 
@@ -75,6 +75,20 @@ class CompetitionScoreService
                 throw ValidationException::withMessages([
                     'activity_score' => 'ลำดับที่ 1-4 ห้ามมีคะแนนเท่ากัน กรุณาแก้คะแนนที่ซ้ำ: '.implode(', ', $duplicateScores),
                 ]);
+            }
+        }
+
+        // ประกาศผลได้ต่อเมื่อบันทึกคะแนนและจัดลำดับแล้ว (คะแนนที่ส่งมาต้องตรงกับที่บันทึกไว้ และอันดับต้องเป็นอันดับที่คำนวณได้)
+        if ($action === 1) {
+            $expected = self::rankScores($scores);
+            foreach ($teams as $team) {
+                $saved = $team->student_score;
+                if (! is_numeric($saved) || abs((float) $saved - $scores[$team->getKey()]) > 0.00001
+                    || (int) $team->activity_rank !== $expected[$team->getKey()]) {
+                    throw ValidationException::withMessages([
+                        'activity_score' => 'ต้องกด "บันทึกคะแนนและจัดลำดับ" ก่อนประกาศผล (พบคะแนนที่ยังไม่ได้บันทึกหรือยังไม่ได้จัดลำดับ)',
+                    ]);
+                }
             }
         }
 
@@ -110,5 +124,25 @@ class CompetitionScoreService
                 Activities::whereKey($activityId)->update(['activity_status' => $action === 1 ? 1 : 0]);
             }
         });
+    }
+
+    /** คำนวณอันดับจากคะแนน (คะแนนเท่ากันได้อันดับเดียวกันแล้วข้ามลำดับ; คะแนน 0 = ไม่มีอันดับ) @return array<int|string,int> */
+    public static function rankScores(array $scores): array
+    {
+        arsort($scores, SORT_NUMERIC);
+        $ranks = [];
+        $position = 0;
+        $rank = 0;
+        $previous = null;
+        foreach ($scores as $id => $score) {
+            $position++;
+            if ($previous === null || $score !== $previous) {
+                $rank = $position;
+            }
+            $ranks[$id] = $score > 0 ? $rank : 0;
+            $previous = $score;
+        }
+
+        return $ranks;
     }
 }

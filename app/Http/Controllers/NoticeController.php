@@ -188,12 +188,12 @@ class NoticeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //dd($id);
         $notice = collect([$this->findOwnedNotice($id)]);
         $data = array(
             "notice"=>$notice,
+            'from' => $request->query('from') === 'area' ? 'area' : 'district',
         );
        // dd($data);
         return view('Notice.edit',$data);
@@ -220,27 +220,23 @@ class NoticeController extends Controller
         $notice->notice_text = $request->notice_text;
         $notice->notice_detail = $request->notice_detail;
 
+        // ไฟล์เดิมที่ยังเก็บไว้ (ตัดไฟล์ที่ผู้ใช้ติ๊กลบ) + ไฟล์ใหม่ที่เพิ่ม
+        $remove = (array) $request->input('remove_files', []);
+        $files = array_values(array_filter($notice->files, fn ($f) => ! in_array($f, $remove, true)));
+
         if ($request->hasFile('notice_file')) {
-            $fileUploads = $request->file('notice_file');
-            $uploadedFilenames = [];
             $year = active_year();
-            if (is_array($fileUploads)) {
-                foreach ($fileUploads as $file) {
-                    $filename = safe_upload_filename($file);
-                    $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
-                    $uploadedFilenames[] = $filename;
-                }
-            } else {
-                $filename = safe_upload_filename($fileUploads);
-                $fileUploads->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
-                $uploadedFilenames[] = $filename;
+            foreach ((array) $request->file('notice_file') as $file) {
+                $filename = safe_upload_filename($file);
+                $file->storeAs(storage_year_path('upload', '', $year), $filename, 'public');
+                $files[] = $filename;
             }
-            $notice->notice_file = json_encode($uploadedFilenames, JSON_UNESCAPED_UNICODE);
         }
+        $notice->notice_file = $files === [] ? '' : json_encode($files, JSON_UNESCAPED_UNICODE);
 
         $notice->save();
-        Session::flash('massage','Data was update successfull!!');
-        return redirect('Notice');
+        Session::flash('massage','แก้ไขประกาศเรียบร้อยแล้ว');
+        return redirect($request->input('from') === 'area' ? url('area/shownotice') : url('shownotice'));
     }
 
     /**

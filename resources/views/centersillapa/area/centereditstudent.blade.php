@@ -21,6 +21,7 @@
                 </a> <x-school-name :school="$addschool[0]->getschoolname" />->{{$addschool[0]->getactivityname->activity_name}}</div>
           
               <div class="panel-body">
+@include('centersillapa._substitution-rule', ['activity' => $addschool[0]->getactivityname])
               
 
                   <table class="table table-hover">

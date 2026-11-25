@@ -41,8 +41,9 @@
                     <thead>
                         <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black italic text-slate-400">
                             <th class="px-6 py-2 text-center w-16">#</th>
-                            <th class="px-6 py-2">รายชื่อสถานศึกษา</th>
-                            <th class="px-6 py-2 text-center">จำนวนทีมที่ลงทะเบียน</th>
+                            <th class="px-6 py-2">โรงเรียน</th>
+                            <th class="px-6 py-2 text-center">จำนวนรายการ</th>
+                            <th class="px-6 py-2 text-center">จำนวนทีม</th>
                             <th class="px-6 py-2 text-right">ข้อมูลสรุปผล</th>
                         </tr>
                     </thead>
@@ -63,12 +64,15 @@
                                 <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest leading-none text-slate-800">Chumphon Primary Educational Area Office</p>
                             </td>
                             <td class="px-6 py-6 text-center text-slate-800">
+                                <span class="text-base font-black">{{ $activitycount[$l->id] ?? 0 }}</span> <span class="text-[10px] font-bold text-slate-400">รายการ</span>
+                            </td>
+                            <td class="px-6 py-6 text-center text-slate-800">
                                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl shadow-inner text-slate-600">
                                     <i class="ri-team-line text-orange-600"></i>
                                     <span class="text-base font-black">
                                         {{ isset($schoolcount[$l->id]) ? $schoolcount[$l->id] : 0 }}
                                     </span>
-                                    <span class="text-[10px] font-bold uppercase">Teams</span>
+                                    <span class="text-[10px] font-bold">ทีม</span>
                                 </div>
                             </td>
                             <td class="px-6 py-6 text-right rounded-r-2xl text-slate-800">
@@ -78,7 +82,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="4" class="text-center py-20 font-black italic text-slate-300 text-slate-800">ไม่พบข้อมูลโรงเรียนในระบบ</td></tr>
+                        <tr><td colspan="5" class="text-center py-20 font-black italic text-slate-300 text-slate-800">ไม่พบข้อมูลโรงเรียนในระบบ</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -183,6 +183,9 @@
                         </div>
                         <div class="md:col-span-2">
                             <x-form.input label="ชื่อเรียกระดับเครือข่าย" name="network_label" :value="$l->network_label ?: 'เครือข่ายสถานศึกษา'" maxlength="100" list="network_label_options" placeholder="เครือข่ายสถานศึกษา" help="ระบบมี 3 ระดับ คือ ระดับโรงเรียน ระดับเครือข่าย (หรือกลุ่มโรงเรียน แล้วแต่กรณี) และระดับเขตพื้นที่การศึกษา ช่องนี้ใช้ตั้งชื่อเรียกระดับเครือข่ายที่เขียนไว้ในหน้าเว็บ เมนู เอกสาร PDF เกียรติบัตร และ Excel ไม่เปลี่ยนชื่อเครือข่ายที่มาจากฐานข้อมูล ค่าเริ่มต้นคือ เครือข่ายสถานศึกษา" />
+                            <div class="md:col-span-2">
+                                <x-form.input label="จำนวนตัวแทนเครือข่ายที่เข้าระดับเขตพื้นที่ (อันดับที่ 1 ถึง ...)" name="representative_count" type="number" min="1" max="10" step="1" :value="$l->representative_count ?: 3" help="กำหนดว่าผู้ชนะระดับเครือข่ายอันดับที่ 1 ถึงอันดับที่เท่าไรจะถูกโอนไประดับเขตพื้นที่ เช่น ใส่ 2 = อันดับ 1-2 ตั้งแยกตามครั้งการแข่งขัน ค่าเริ่มต้นคือ 3 (อันดับ 1-3)" />
+                            </div>
                             <datalist id="network_label_options"><option value="เครือข่ายสถานศึกษา"><option value="กลุ่มโรงเรียน"><option value="กลุ่มโรงเรียน/เครือข่ายสถานศึกษา"></datalist>
                         </div>
                         <div class="space-y-2 md:col-span-2">

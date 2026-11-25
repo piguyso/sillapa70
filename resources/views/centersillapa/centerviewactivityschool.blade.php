@@ -103,7 +103,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <input id="activity_score_{{$l->id}}" 
-                                       type="number" step="any" 
+                                       type="number" step="any" min="0" max="100" 
                                        onfocus="this.select();" 
                                        class="w-full bg-white border-2 border-gray-100 rounded-xl px-3 py-2 text-center font-black text-lg text-primary focus:border-primary focus:ring-0 transition-all outline-none {{ $activity->activity_status==1 ? 'bg-gray-50 opacity-50 cursor-not-allowed' : '' }}" 
                                        name="activity_score[{{$l->id}}]" 
@@ -114,7 +114,7 @@
                                 <input type="text" 
                                        class="w-12 bg-gray-50 border border-gray-200 rounded-lg py-1 text-center font-bold text-gray-400" 
                                        name="activity_rank1[{{$l->id}}]" 
-                                       value="{{$x}}" readOnly>
+                                       value="{{ $l->activity_rank ?: '-' }}" readOnly>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @php $medal = getmedel($l->student_score); @endphp
@@ -140,6 +140,8 @@
                         <i class="ri-error-warning-fill text-xl"></i> คำเตือนและระเบียบปฏิบัติ
                     </h4>
                     <ul class="text-xs text-red-700 space-y-1 font-bold">
+                        <li>• <b>ต้องกด "บันทึกคะแนนและจัดลำดับ" ก่อนประกาศผลเสมอ</b> ระบบจะไม่ยอมให้ประกาศผลถ้ายังไม่ได้บันทึกคะแนนและจัดลำดับ</li>
+                        <li>• คะแนนเต็ม 100 กรอกเกินไม่ได้ ลำดับที่ 1-4 ห้ามคะแนนเท่ากัน ลำดับที่ 5 ขึ้นไปเท่ากันได้ (ได้ลำดับเดียวกันแล้วข้ามลำดับ เช่น 5, 5, 7)</li>
                         <li>• หากมีการแก้ไขคะแนนจะต้องกด <span class="underline">"บันทึกคะแนน"</span> ก่อนเสมอเพื่อจัดลำดับใหม่</li>
                         <li>• เมื่อกด <span class="underline">"ประกาศผลการแข่งขัน"</span> แล้ว ข้อมูลจะถูก Lock ทันที ไม่สามารถแก้ไขได้</li>
                         <li>• หากต้องการแก้ไขหลังประกาศผล ต้องติดต่อแอดมินกลางเพื่อทำการปลดล็อคเท่านั้น 090-1538839 ศน.ศรายุทธ / 082 2822283 รองฯกิตติพงษ์</li>
@@ -150,14 +152,14 @@
                     @if($activity->activity_status==0) 
                         <button type="submit" name="activity_chk" value='0' 
                                 class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-primary text-primary font-black rounded-2xl hover:bg-primary hover:text-white transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return appConfirmSubmit(this, 'ยืนยันการบันทึกคะแนนเพื่อจัดลำดับ?', { danger: false });">
+                                onClick="if (!checkScores('0')) return false; return appConfirmSubmit(this, 'ยืนยันการบันทึกคะแนนเพื่อจัดลำดับ?', { danger: false });">
                             <i class="ri-save-3-line text-xl"></i>
                             บันทึกคะแนนและจัดลำดับ
                         </button>
                         
                         <button type="submit" name="activity_chk" value='1' 
                                 class="w-full sm:w-auto px-8 py-4 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 hover:shadow-2xl hover:shadow-red-200 transition-all shadow-md flex items-center justify-center gap-2" 
-                                onClick="return appConfirmSubmit(this, 'ยืนยันการประกาศผลการแข่งขัน? ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก');">
+                                onClick="if (!checkScores('1')) return false; return appConfirmSubmit(this, 'ยืนยันการประกาศผลการแข่งขัน? (ต้องบันทึกคะแนนและจัดลำดับแล้ว) ข้อมูลจะถูก Lock และแก้ไขไม่ได้อีก');">
                             <i class="ri-notification-badge-line text-xl"></i>
                             ประกาศผลการแข่งขันสู่สาธารณะ
                         </button>
@@ -184,4 +186,5 @@
         {{ $addschool->links() }}
     </div>
 </div>
+@include('centersillapa._score-guard')
 @endsection

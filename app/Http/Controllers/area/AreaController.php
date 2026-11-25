@@ -298,14 +298,15 @@ $schoolcountactivity = DB::table('addschools_areas')
       $activeYear = active_year();
       $school = school::inNetwork($id)->paginate(1000);
       $schoolcount = DB::table('addschools_areas')
-      ->select('school_name', DB::raw('count(*) as total'))
+      ->select('school_name', DB::raw('count(*) as total'), DB::raw('count(distinct school_activity) as activities'))
         ->where('school_schoolgroup',session('area'))
         ->where('year', $activeYear)
       ->groupBy('school_name')
-      ->pluck('total','school_name');
+      ->get()->keyBy('school_name');
       $data = Array(
         'schoolname'=>$school,
-        'schoolcount'=>$schoolcount,
+        'schoolcount'=>$schoolcount->map->total,
+        'activitycount'=>$schoolcount->map->activities,
       );
       return view('area.viewschool',$data);
   }

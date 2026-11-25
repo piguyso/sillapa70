@@ -309,7 +309,7 @@ class DatatranferController extends Controller
             ], 409);
         }
 
-        $stage = 'ค้นหาผู้ชนะอันดับ 1–3 และรายการที่ไม่มีการแข่งขันระดับเครือข่าย';
+        $stage = 'ค้นหาผู้ชนะอันดับ '.TransferReadinessService::transferRanksLabel().' และรายการที่ไม่มีการแข่งขันระดับเครือข่าย';
         $schools = TransferReadinessService::applyTransferableScope(addschools_areas::with('getstudentname'))
             ->orderBy('school_activity')
             ->orderBy('activity_rank')
@@ -320,7 +320,7 @@ class DatatranferController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'ไม่พบผู้แข่งขันอันดับ 1–3 หรือรายการที่ไม่มีการแข่งขันที่ประกาศผลแล้ว ข้อมูลเดิมไม่ได้ถูกเปลี่ยนแปลง',
+                'message' => 'ไม่พบผู้แข่งขันอันดับ '.TransferReadinessService::transferRanksLabel().' หรือรายการที่ไม่มีการแข่งขันที่ประกาศผลแล้ว ข้อมูลเดิมไม่ได้ถูกเปลี่ยนแปลง',
                 'transferred_teams' => 0,
                 'transferred_people' => 0,
             ]);
@@ -412,7 +412,7 @@ class DatatranferController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'โอนผู้แข่งขันอันดับ 1–3 และรายการที่ไม่มีการแข่งขันไปยังระดับเขตพื้นที่เรียบร้อยแล้ว ('
+            'message' => 'โอนผู้แข่งขันอันดับ '.TransferReadinessService::transferRanksLabel().' และรายการที่ไม่มีการแข่งขันไปยังระดับเขตพื้นที่เรียบร้อยแล้ว ('
                 .$schools->count().' ทีม, '.$peopleCount.' คน)',
             'transferred_teams' => $schools->count(),
             'no_contest_teams' => $schools->whereIn('activity_status', TransferReadinessService::NO_CONTEST_STATUSES)->count(),

@@ -86,7 +86,7 @@
                                     @endforeach
                                 </td>
                                 <td class="px-4 py-5">
-                                    <input type="number" step="any" onfocus="this.select();" 
+                                    <input type="number" step="any" min="0" max="100" onfocus="this.select();" 
                                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-center font-black text-orange-700 shadow-inner" 
                                            name="activity_score[{{$l->id}}]" 
                                            value="{{$l->student_score}}" 
@@ -118,7 +118,7 @@
                 <div class="mt-8 p-6 bg-slate-50 rounded-3xl border border-slate-100">
                     <p class="text-[11px] text-red-500 font-black italic mb-6 flex items-start gap-2">
                         <i class="ri-error-warning-line text-lg"></i>
-                        คำเตือน: หากมีการแก้ไขคะแนน จะต้อง "บันทึกคะแนน" ก่อนทุกครั้งเพื่อจัดลำดับผลการแข่งขัน (Ranking) ใหม่ก่อนที่จะกดประกาศผล
+                        คำเตือน: ต้องกด "บันทึกคะแนน" เพื่อจัดลำดับ (Ranking) ก่อนกดประกาศผลทุกครั้ง ระบบไม่ให้ประกาศผลถ้ายังไม่ได้บันทึกคะแนน | คะแนนเต็ม 100 | ลำดับ 1-4 ห้ามคะแนนเท่ากัน ลำดับ 5 ขึ้นไปเท่ากันได้ (ได้ลำดับเดียวกันแล้วข้ามลำดับ เช่น 5, 5, 7)
                     </p>
 
                     <div class="flex flex-wrap gap-4">
@@ -181,6 +181,7 @@
 
 <script>
     function submitWithConfirm(status) {
+        if (!checkScores(status)) return;
         let title = '';
         let message = '';
         if (status === '0') {
@@ -206,4 +207,5 @@
         });
     }
 </script>
+@include('centersillapa._score-guard')
 @endsection

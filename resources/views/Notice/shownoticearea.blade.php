@@ -59,6 +59,9 @@
                                     </td>
                                     <td class="px-6 py-5 text-center rounded-r-2xl text-slate-800">
                                         <div class="flex justify-end gap-2 text-slate-800">
+                                            <a href="{{ route('Notice.edit', $l->id) }}?from=area" title="แก้ไขประกาศ" class="w-9 h-9 flex items-center justify-center bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                                <i class="ri-edit-line"></i>
+                                            </a>
                                             <button onclick="DelConfirm({{$l->id}})" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm">
                                                 <i class="ri-delete-bin-line"></i>
                                             </button>

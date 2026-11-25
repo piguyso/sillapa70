@@ -172,15 +172,21 @@ class areaCentersillapaController extends Controller
     {
         $this->authorizeActivity((int) $request->input('id'));
         $this->guardAnnouncementCancel((int) $request->input('id'), (int) $request->input('activity_chk'), $request);
-        app(CompetitionScoreService::class)->process(
-            addschools_areas::class,
-            (int) $request->input('id'),
-            (array) $request->input('activity_score', []),
-            (int) $request->input('activity_chk'),
-            $this->currentSchoolgroupId(),
-            false,
-            true,
-        );
+        try {
+            app(CompetitionScoreService::class)->process(
+                addschools_areas::class,
+                (int) $request->input('id'),
+                (array) $request->input('activity_score', []),
+                (int) $request->input('activity_chk'),
+                $this->currentSchoolgroupId(),
+                false,
+                true,
+            );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Session::flash('massage', 'ไม่สามารถบันทึก/ประกาศผลได้: '.collect($e->errors())->flatten()->first());
+
+            return redirect(url()->previous())->withInput();
+        }
 
         Session::flash('massage', 'บันทึกและจัดลำดับผลการแข่งขันเรียบร้อยแล้ว');
         return redirect(url()->previous());
