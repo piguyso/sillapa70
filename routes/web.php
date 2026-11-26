@@ -73,6 +73,8 @@ Route::get('area/studentregisterform/{id}','area\areaPrintdocController@studentr
 Route::get('area/teacherregisterform/{id}','area\areaPrintdocController@teacherregisterform')->middleware('auth');
 Route::get('area/jowregisterform/{id}','area\areaPrintdocController@jowregisterform')->middleware('auth');
 
+Route::get('area/dashboard/{id}','ResultDashboardController@network')->where('id', '[0-9]+');
+Route::get('dashboard','ResultDashboardController@district');
 // รายงานตาราง (ผู้เข้าร่วม / โรงเรียน / รายการแข่งขัน) + Excel — เปิดสาธารณะ (ต้องอยู่ก่อน area/report/{id})
 Route::get('area/report/{type}/{id}/export','ParticipantReportController@networkExport')->where(['type' => 'participants|schools|activities', 'id' => '[0-9]+']);
 Route::get('area/report/{type}/{id}','ParticipantReportController@network')->where(['type' => 'participants|schools|activities', 'id' => '[0-9]+']);

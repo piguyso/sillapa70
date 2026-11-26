@@ -28,19 +28,20 @@
     <p class="text-sm font-bold text-slate-700 mb-3">ตัวกรอง: {{ $filterSummary ? implode(' | ', $filterSummary) : 'ทั้งหมด' }}</p>
 
     <div class="no-print flex flex-wrap gap-2 mb-4">
+        <a href="{{ url($level === 'network' ? 'area/dashboard/'.$networkId : 'dashboard') }}" class="pr-tab"><i class="ri-dashboard-line"></i> สรุป Dashboard</a>
         @foreach($types as $key => $t)
             <a href="{{ $tabUrls[$key] }}" class="pr-tab {{ $key === $type ? 'active' : '' }}">{{ $t['file'] }}</a>
         @endforeach
     </div>
 
-    <form method="get" class="no-print grid grid-cols-1 md:grid-cols-6 gap-3 items-end mb-4">
-        <x-form.select label="กลุ่มสาระ" name="subject" onchange="this.form.activity && (this.form.activity.value='');this.form.submit()">
+    <form method="get" onchange="this.submit()" class="no-print grid grid-cols-1 md:grid-cols-6 gap-3 items-end mb-4">
+        <x-form.select label="กลุ่มสาระ" name="subject" onchange="this.form.activity && (this.form.activity.value='')">
             <option value="">ทั้งหมด</option>
             @foreach($subjects as $s)
                 <option value="{{ $s->id }}" @selected($filters['subject'] == $s->id)>{{ $s->subjectgroup_name }}</option>
             @endforeach
         </x-form.select>
-        <x-form.select label="ระดับชั้น" name="class" onchange="this.form.activity && (this.form.activity.value='');this.form.submit()">
+        <x-form.select label="ระดับชั้น" name="class" onchange="this.form.activity && (this.form.activity.value='')">
             <option value="">ทั้งหมด</option>
             @foreach($classes as $c)
                 <option value="{{ $c->id }}" @selected($filters['class'] == $c->id)>{{ $c->class_name }}</option>
@@ -55,7 +56,7 @@
             </x-form.select>
         @endif
         @if($type === 'activities')
-            <x-form.select label="จำนวนผู้ลงทะเบียน" name="teams" onchange="this.form.submit()">
+            <x-form.select label="จำนวนผู้ลงทะเบียน" name="teams">
                 @foreach(\App\Services\ParticipantReportService::TEAM_FILTERS as $k => $label)
                     <option value="{{ $k }}" @selected(($filters['teams'] ?? '') === $k)>{{ $label }}</option>
                 @endforeach
@@ -71,11 +72,10 @@
         @endif
         @if($type === 'participants')
             <label class="flex items-center gap-2 text-sm font-bold text-slate-700 pb-2">
-                <input type="checkbox" name="top3" value="1" @checked($filters['top3'])> เฉพาะอันดับ 1-3
+                <input type="checkbox" name="top3" value="1" @checked($filters['top3'])> {{ \App\Services\ParticipantReportService::topLabel($level) }}
             </label>
         @endif
         <div class="flex flex-nowrap items-center gap-2 pb-1 whitespace-nowrap md:col-span-2">
-            <x-form.button type="submit">ค้นหา</x-form.button>
             <a href="{{ $exportUrl }}" class="ui-btn ui-btn-secondary"><i class="ri-file-excel-2-line"></i> Excel</a>
             <x-form.button variant="secondary" onclick="window.print()"><i class="ri-printer-line"></i> พิมพ์</x-form.button>
         </div>

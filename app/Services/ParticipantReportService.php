@@ -33,6 +33,21 @@ class ParticipantReportService
         'gt3' => 'ลงทะเบียนมากกว่า 3 ราย',
     ];
 
+    /** จำนวนอันดับที่นับว่าเข้ารอบ: ระดับเครือข่ายตาม config จำนวนตัวแทน ระดับเขตพื้นที่ใช้อันดับ 1-3 (เกียรติบัตร) */
+    public static function topN(string $level): int
+    {
+        return $level === self::LEVEL_NETWORK ? TransferReadinessService::representativeCount() : 3;
+    }
+
+    public static function topLabel(string $level): string
+    {
+        $n = self::topN($level);
+
+        return $level === self::LEVEL_NETWORK
+            ? 'เฉพาะตัวแทนเข้าระดับเขต (อันดับ '.($n === 1 ? '1' : '1-'.$n).')'
+            : 'เฉพาะอันดับ 1-3';
+    }
+
     /** สรุปตัวกรองที่เลือก (ใช้เป็นหัวรายงานตอนพิมพ์/ส่งออก) เช่น ['กลุ่มสาระ: ภาพยนตร์สั้น', 'ระดับชั้น: ป.1 - ป.6'] */
     public function filterSummary(array $filters, string $type, string $level): array
     {
@@ -50,7 +65,7 @@ class ParticipantReportService
             $out[] = 'เครือข่าย: '.(\App\Schoolgroup::find($filters['schoolgroup'])->schoolgroup_name ?? $filters['schoolgroup']);
         }
         if ($type === 'participants' && ! empty($filters['top3'])) {
-            $out[] = 'เฉพาะอันดับ 1-3';
+            $out[] = self::topLabel($level);
         }
         if ($type === 'activities' && ! empty($filters['teams'])) {
             $out[] = 'จำนวนผู้ลงทะเบียน: '.(self::TEAM_FILTERS[$filters['teams']] ?? $filters['teams']);
@@ -128,7 +143,7 @@ class ParticipantReportService
             ->sortBy(fn ($t) => sprintf('%08d-%08d-%08d-%s', $t->getactivityname->activity_subject ?? 0, $t->school_activity,
                 $type === 'participants' ? $this->sortRank($t) : 0, $t->getschoolname->school_name ?? ''))
             ->values()
-            ->map(fn ($t) => $type === 'participants' ? $this->participantRow($t) : $this->schoolRow($t));
+            ->map(fn ($t) => $type === 'participants' ? $this->participantRow($t, $level) : $this->schoolRow($t));
     }
 
     private function teams(string $type, string $level, array $filters): Collection
@@ -158,7 +173,7 @@ class ParticipantReportService
             $query->whereHas('getactivityname', fn ($q) => $q->where('activity_class', (int) $filters['class']));
         }
         if ($type === 'participants' && ! empty($filters['top3'])) {
-            $query->where('activity_status', 1)->whereBetween('activity_rank', [1, 3])->where('student_score', '>', 0);
+            $query->where('activity_status', 1)->whereBetween('activity_rank', [1, self::topN($level)])->where('student_score', '>', 0);
         }
 
         return $query->get();
@@ -185,7 +200,7 @@ class ParticipantReportService
         ];
     }
 
-    private function participantRow($team): array
+    private function participantRow($team, string $level): array
     {
         $people = $team->getstudentname ?? collect();
         $names = function ($type) use ($people) {
@@ -201,6 +216,9 @@ class ParticipantReportService
         } elseif ($status === 1 && (float) $team->student_score > 0) {
             [$medal, $rank] = CertificateText::award($team);
             $result = trim($medal.' '.$rank);
+            if ($level === self::LEVEL_NETWORK && (int) $team->activity_rank >= 1 && (int) $team->activity_rank <= self::topN($level)) {
+                $result .= ' (ตัวแทนเข้าระดับเขต)';
+            }
         } elseif ($status === 1) {
             $result = 'ไม่เข้าร่วม';
         } else {

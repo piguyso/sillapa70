@@ -124,7 +124,7 @@ class ParticipantReportController extends Controller
         $book->getDefaultStyle()->getFont()->setName('TH Sarabun New')->setSize(14);
 
         $sheet->setCellValue('A1', Report::TYPES[$type]['title'].' '.$levelName.' ปีการศึกษา '.active_year()
-            .($type === 'participants' && $filters['top3'] ? ' (เฉพาะอันดับ 1-3)' : ''));
+            .($type === 'participants' && $filters['top3'] ? ' ('.Report::topLabel($level).')' : ''));
         $sheet->mergeCells("A1:{$lastCol}1");
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(18);
         $summary = $report->filterSummary($filters, $type, $level);
