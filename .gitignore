@@ -52,3 +52,6 @@ Homestead.yaml
 # Database Backups & Temporary Scripts
 *.sql
 check_*.php
+
+# เอกสารเกณฑ์การแข่งขัน (ไม่เก็บใน git)
+/เกณฑ์การแข่งขัน/
