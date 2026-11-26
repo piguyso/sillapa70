@@ -15,6 +15,7 @@
     </div>
 
     @forelse($notice as $l)
+    @include('Notice._view-stats', ['noticeId' => $l->id])
     <div class="mb-8 group">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl">
             
@@ -82,7 +83,7 @@
                                         <span>ไฟล์เอกสาร PDF: {{ $fileName }}</span>
                                     </div>
                                     
-                                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-inner h-[600px] w-full bg-gray-100">
+                                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-inner h-[90vh] min-h-[700px] w-full bg-gray-100">
                                         <iframe
                                             src="{{ $filePath }}"
                                             class="w-full h-full"

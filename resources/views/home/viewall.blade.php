@@ -19,9 +19,9 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-slate-800 font-sarabun">
     
-    <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white relative overflow-hidden">
+    <div class="bg-gradient-to-r from-primary to-emerald-600 rounded-3xl shadow-xl p-5 sm:p-8 md:p-12 mb-6 md:mb-8 text-white relative overflow-hidden">
         <div class="relative z-10">
-            <h1 class="text-3xl md:text-5xl font-black mb-2 tracking-tight italic uppercase">
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-black mb-2 tracking-tight italic uppercase">
                 {{session('app_name').' '.session('app_group')}}
             </h1>
             <p class="text-green-50 text-lg md:text-xl opacity-90 font-medium">
@@ -33,7 +33,7 @@
 
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         
-        <div class="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="bg-gray-50/50 px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <a href="{{ url('/') }}" class="group inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-primary border border-gray-200 hover:bg-primary hover:text-white transition-all shadow-sm">
                     <i class="ri-home-4-line text-2xl"></i>
@@ -47,8 +47,10 @@
             <div id="excel_tools_area" class="flex items-center"></div>
         </div>
 
-        <div class="p-8">
-            <div class="overflow-x-auto">
+        <div class="p-3 sm:p-4 lg:p-8">
+            @include('area._medal-cards', ['mode' => 'district'])
+
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full text-left border-separate border-spacing-y-3" id="table_medal_ranking">
                     <thead>
                         <tr class="text-gray-400 text-[10px] uppercase tracking-[0.2em] font-black">

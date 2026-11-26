@@ -10,12 +10,12 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sarabun text-slate-800">
 
-    <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white overflow-hidden border-b-8 border-orange-500 text-white">
+    <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-5 sm:p-8 md:p-12 mb-6 md:mb-8 text-white overflow-hidden border-b-8 border-orange-500 text-white">
         <div class="relative z-10 text-white">
             <h2 class="text-xl md:text-2xl font-bold opacity-90 italic mb-2 text-white leading-none">
                 {{ session('app_name')}} {{session()->get('schoolgroup')}}
             </h2>
-            <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white mb-2">
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white mb-2">
                 {{$subjectgroup->subjectgroup_name}}
             </h1>
             <p class="text-orange-100 font-bold italic uppercase tracking-widest text-sm text-white">
@@ -26,7 +26,7 @@
     </div>
 
     <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden text-slate-800">
-        <div class="bg-slate-50 px-8 py-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-800">
+        <div class="bg-slate-50 px-4 sm:px-8 py-4 sm:py-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-800">
             <div class="flex items-center gap-4 text-slate-800">
                 <a href="{{ url('area/'.session('area')) }}" class="w-10 h-10 flex items-center justify-center bg-white text-orange-600 rounded-xl border border-slate-200 hover:bg-orange-600 hover:text-white transition-all shadow-sm group">
                     <i class="ri-arrow-left-s-line text-2xl group-hover:-translate-x-1 transition-transform"></i>
@@ -36,14 +36,16 @@
             <div class="text-[10px] font-black text-slate-400 uppercase italic tracking-widest text-slate-800 italic">คลิกที่แถวเพื่อดูเกณฑ์คะแนน</div>
         </div>
 
-        <div class="p-4 md:p-8 text-slate-800">
+        <div class="p-3 sm:p-4 md:p-8 text-slate-800">
             @if (session('status') || Session::has('massage'))
                 <div class="mb-8 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 rounded-xl shadow-sm font-bold animate-fade-in italic text-sm flex items-center gap-3">
                     <i class="ri-checkbox-circle-fill text-xl text-emerald-500 text-white"></i> {{ session('status') ?: Session::get('massage') }}
                 </div>
             @endif
 
-            <div class="overflow-x-auto text-slate-800">
+            @include('area._activity-cards', ['mode' => 'area', 'start' => ($activity->currentPage() - 1) * $activity->perPage()])
+
+            <div class="hidden lg:block overflow-x-auto text-slate-800">
                 <table class="w-full text-left border-separate border-spacing-y-3 text-slate-800">
                     <thead>
                         <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black italic text-slate-400">

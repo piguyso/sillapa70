@@ -272,12 +272,12 @@
 
     <nav class="bg-primary shadow-lg sticky top-0 z-50" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between min-h-16 gap-2">
                 
-                <div class="flex items-center">
-                    <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center text-white gap-2 group">
-                        <img class="h-10 w-auto bg-white rounded-full p-1" src="{{ asset('imgs/obec_icon2.png') }}" alt="Logo">
-                        <span class="font-bold text-lg tracking-wide group-hover:text-pink-200 transition">
+                <div class="flex items-center min-w-0">
+                    <a href="{{ url('/') }}" class="flex items-center min-w-0 text-white gap-2 group">
+                        <img class="h-10 w-auto shrink-0 bg-white rounded-full p-1" src="{{ asset('imgs/obec_icon2.png') }}" alt="Logo">
+                        <span class="font-bold text-sm sm:text-base lg:text-lg leading-tight line-clamp-2 tracking-wide group-hover:text-pink-200 transition">
                             {{ $appName.' '.$appGroup.' '.$appYear }}
                         </span>
                     </a>
@@ -293,6 +293,7 @@
                             <i class="ri-information-line mr-1"></i> ข้อมูลสารสนเทศ <i class="ri-arrow-down-s-line text-xs"></i>
                         </button>
                         <div x-show="open" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-100 transition-all" style="display: none;">
+                            <a href="{{ url('dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-bold"><i class="ri-dashboard-line"></i> สรุป Dashboard ผลการแข่งขัน</a>
                             <a href="{{ url('report/participants') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-medium"><i class="ri-file-excel-2-line"></i> รายงานผู้เข้าร่วม (Excel)</a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <a href="{{ url('report')}}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-secondary font-bold"><i class="ri-medal-line text-yellow-500"></i> เกียรติบัตร</a>
@@ -448,7 +449,7 @@
                     @endguest
                 </div>
 
-                <div class="-mr-2 flex md:hidden">
+                <div class="flex shrink-0 items-center md:hidden">
                     <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="bg-primaryDark inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-800 focus:outline-none transition">
                         <i class="ri-menu-3-line text-2xl" x-show="!mobileMenuOpen"></i>
                         <i class="ri-close-line text-2xl" x-show="mobileMenuOpen" style="display:none;"></i>

@@ -27,7 +27,9 @@
                 </div>
             @endif
 
-            <div class="overflow-x-auto">
+            @include('area._school-cards', ['mode' => 'district'])
+
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
@@ -50,9 +52,6 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm">
-                                        <i class="ri-school-line text-xl"></i>
-                                    </div>
                                     <a href="{{ url('showschooldetail/'.$l->id.'/'.$l->school_group) }}" class="font-bold text-gray-800 hover:text-secondary transition-colors text-lg">
                                         <x-school-name :school="$l" />
                                     </a>

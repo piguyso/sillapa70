@@ -24,6 +24,7 @@
     </div>
 
     @forelse($notice as $l)
+    @include('Notice._view-stats', ['noticeId' => $l->id])
     <div class="mb-12 animate-fade-in text-slate-800">
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden text-slate-800">
             <div class="bg-slate-50 px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-800">
@@ -83,7 +84,7 @@
                                     {{-- 📄 PDF --}}
                                     @elseif (in_array($fileExtension, $pdfExtensions))
                                         <div class="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-white">
-                                            <iframe src="{{ $filePath }}" width="100%" height="500px" class="border-none"></iframe>
+                                            <iframe src="{{ $filePath }}" width="100%" class="border-none w-full h-[90vh] min-h-[700px]"></iframe>
                                         </div>
                                         <div class="mt-4 flex justify-end">
                                             <a href="{{ $filePath }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl font-black text-sm hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 uppercase italic text-white">

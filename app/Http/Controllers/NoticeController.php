@@ -54,7 +54,8 @@ class NoticeController extends Controller
 
 
 
-    public function notice_detail($id){
+    public function notice_detail(\Illuminate\Http\Request $request, $id){
+        \App\Services\NoticeViewService::record($request, (int) $id, 'district');
         $notice = Notices::where('id','=',$id)->get();
         $data = Array(
             'notice'=>$notice,
@@ -62,7 +63,8 @@ class NoticeController extends Controller
         return view('Notice.notice_detail',$data);
     }
 
-   public function areanotice_detail($id){
+   public function areanotice_detail(\Illuminate\Http\Request $request, $id){
+        \App\Services\NoticeViewService::record($request, (int) $id, 'area');
         $notice = Notices::where('id','=',$id)->get();
         $data = Array(
             'notice'=>$notice,
@@ -94,6 +96,7 @@ class NoticeController extends Controller
        $shownotice = Notices::where('owner_id','=',Auth::user()->id)->paginate(20);
         $data = Array(
             'shownotice' =>$shownotice,
+            'viewTotals' => \App\Services\NoticeViewService::totals($shownotice->pluck('id')->all()),
         );
      //   return $data;
         return view('Notice.shownotice',$data);

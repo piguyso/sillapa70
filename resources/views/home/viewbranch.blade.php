@@ -27,7 +27,9 @@
                 </div>
             @endif
 
-            <div class="overflow-x-auto">
+            @include('area._activity-cards', ['mode' => 'district', 'start' => ($activity->currentPage() - 1) * $activity->perPage()])
+
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full text-left border-collapse" id="table1">
                     <thead>
                         <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">

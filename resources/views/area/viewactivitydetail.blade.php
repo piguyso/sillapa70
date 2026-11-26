@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sarabun text-slate-800">
 
-    <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-8 md:p-12 mb-8 text-white overflow-hidden border-b-8 border-orange-500 text-white">
+    <div class="relative bg-gradient-to-r from-amber-800 to-orange-600 rounded-3xl shadow-xl p-5 sm:p-8 md:p-12 mb-6 md:mb-8 text-white overflow-hidden border-b-8 border-orange-500 text-white">
         <div class="relative z-10 text-white">
             <h2 class="text-lg md:text-xl font-bold opacity-90 italic mb-2 text-white leading-none">
                 @guest
@@ -45,8 +45,10 @@
             </div>
         </div>
 
-        <div class="p-4 md:p-8 text-slate-800">
-            <div class="overflow-x-auto text-slate-800">
+        <div class="p-3 sm:p-4 md:p-8 text-slate-800">
+            @include('area._result-cards', ['mode' => 'area', 'heading' => session('app_name').' '.session()->get('schoolgroup')])
+
+            <div class="hidden lg:block overflow-x-auto text-slate-800">
                 <table class="w-full text-left border-separate border-spacing-y-3 text-slate-800">
                     <thead>
                         <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black italic text-slate-400">

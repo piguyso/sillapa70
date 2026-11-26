@@ -30,7 +30,7 @@
                       </div>
                   @endif
                   <h4>สรุปผลการแข่งขัน รางวัลชนะเลิศอันดับ ๑</h4>
-                  <table class="table table-hover table-bordered">
+                  <div style="overflow-x:auto"><table class="table table-hover table-bordered">
                    <thead>
                      <tr>
                        <th>#</th>
@@ -147,7 +147,7 @@
                    @endforelse
                   
                    </tbody>
-                 </table>
+                 </table></div>
                  {{ $addschool2->links()}}
 
                 

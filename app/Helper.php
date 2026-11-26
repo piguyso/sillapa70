@@ -396,7 +396,7 @@ function getactivitystatus($x){
   if($x==1){
     echo "<span class='glyphicon glyphicon-ok' style='color:brown'> ประกาศผลแล้ว</span>";
   }else{
-    echo "- ";
+    echo "รอประกาศ";
   }
 }
 function position($position){

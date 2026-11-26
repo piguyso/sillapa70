@@ -26,9 +26,9 @@
         <div class="bg-orange-500 px-6 py-4 font-black text-white flex items-center gap-2 italic uppercase tracking-wider text-white">
             <i class="ri-notification-3-line text-white"></i> ประกาศจากศูนย์การแข่งขัน
         </div>
-        <div class="p-6 space-y-4 font-bold">
+        <div class="p-4 sm:p-6 space-y-4 font-bold">
             @forelse($notice_2 as $b)
-                <div class="flex items-center gap-3 border-b border-slate-50 pb-3 last:border-0">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-slate-50 pb-3 last:border-0">
                     <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-lg uppercase tracking-tighter italic shadow-sm">
                         {{$b->notice_owner}}
                     </span>
@@ -78,7 +78,8 @@
         <div class="bg-orange-600 px-8 py-5 text-white flex justify-between items-center text-white">
             <h3 class="font-black italic uppercase tracking-widest text-white"><i class="ri-medal-line text-white"></i> สรุปเหรียญการแข่งขันรายโรงเรียน TOP 10</h3>
         </div>
-        <div class="overflow-x-auto p-4">
+        @include('area._medal-cards', ['mode' => 'area'])
+        <div class="hidden lg:block overflow-x-auto p-4">
             <table class="w-full text-left border-separate border-spacing-y-2">
                 <thead>
                     <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black italic">
@@ -115,29 +116,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8 italic text-slate-800">
-        <div class="bg-slate-800 px-8 py-4 font-black text-white uppercase italic tracking-widest text-xs text-white">
-            <i class="ri-bar-chart-2-line text-white"></i> สถิติการแข่งขัน งานศิลปหัตถกรรมนักเรียน
-        </div>
-        <div class="p-8 grid grid-cols-2 lg:grid-cols-4 gap-4 font-black italic uppercase">
-            <div class="p-6 bg-orange-50 border border-orange-100 rounded-3xl text-center shadow-sm">
-                <p class="text-[10px] text-orange-600 mb-1">นักเรียน</p>
-                <p class="text-4xl text-orange-700">{{number_format($countstudent)}}</p>
-            </div>
-            <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl text-center shadow-sm text-slate-800">
-                <p class="text-[10px] text-slate-500 mb-1">ครู</p>
-                <p class="text-4xl text-amber-900">{{number_format($countteacher)}}</p>
-            </div>
-            <div class="p-6 bg-orange-50 border border-orange-100 rounded-3xl text-center shadow-sm">
-                <p class="text-[10px] text-orange-600 mb-1">กรรมการตัดสิน</p>
-                <p class="text-4xl text-orange-700">{{number_format($countjow)}}</p>
-            </div>
-            <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl text-center shadow-sm text-slate-800">
-                <p class="text-[10px] text-slate-500 mb-1">กรรมการดำเนินงาน</p>
-                <p class="text-4xl text-amber-900">{{number_format($countjow2)}}</p>
-            </div>
-        </div>
-    </div>
+    @include('area._stats-panel', ['mode' => 'area'])
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 font-bold italic text-slate-800">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-slate-800">

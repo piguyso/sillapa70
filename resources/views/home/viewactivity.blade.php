@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <div class="bg-gradient-to-r from-primary to-emerald-500 rounded-2xl shadow-lg p-8 mb-8 text-white">
+    <div class="bg-gradient-to-r from-primary to-emerald-500 rounded-2xl shadow-lg p-5 sm:p-8 mb-6 sm:mb-8 text-white">
         <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ session('app_name').' '.session('app_group') }}</h1>
         <p class="text-green-50 text-lg opacity-90">{{ session('app_area') }}</p>
     </div>
@@ -31,7 +31,9 @@
                 </div>
             @endif
 
-            <div class="overflow-x-auto">
+            @include('area._activity-cards', ['mode' => 'district', 'start' => ($activity->currentPage() - 1) * $activity->perPage()])
+
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full text-left border-collapse" id="table1">
                     <thead>
                         <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider border-b border-gray-200">

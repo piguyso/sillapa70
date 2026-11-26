@@ -61,6 +61,9 @@
                                 <td class="px-6 py-6 align-top">
                                     <div class="font-black text-gray-800 text-base mb-2 group-hover:text-primary transition-colors italic">
                                         {{$l->notice_text}}
+                                        @if ((int) auth()->user()->position === 10)
+                                            <span class="ml-2 inline-flex items-center gap-1 text-[11px] font-bold not-italic text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2 py-0.5"><i class="ri-eye-line"></i> อ่าน {{ number_format($viewTotals[$l->id] ?? 0) }}</span>
+                                        @endif
                                     </div>
                                     <div class="text-gray-500 text-xs leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100 ck-content">
                                         {!! $l->notice_detail !!}

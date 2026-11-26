@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* มือถือ: ตารางประกาศ (DataTables) เรียงเป็นบล็อก ไม่ให้ล้นจอ — แถวแรก ผู้ประกาศ+เวลา, แถวสอง หัวข้อ */
+    @media (max-width: 767px) {
+        #noticeTable1 thead, #noticeTable2 thead { display: none; }
+        #noticeTable1 tbody tr, #noticeTable2 tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .6rem; padding: .6rem 0; }
+        #noticeTable1 tbody td, #noticeTable2 tbody td { display: block; padding: 0 !important; border: 0 !important; width: auto !important; }
+        #noticeTable1 tbody td:nth-child(2), #noticeTable2 tbody td:nth-child(2) { order: 3; flex-basis: 100%; }
+        #noticeTable1_wrapper .dataTables_filter, #noticeTable2_wrapper .dataTables_filter { text-align: left; }
+    }
+</style>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 <style>
@@ -253,7 +263,8 @@
             <h3 class="font-bold text-lg"><i class="fas fa-medal text-yellow-400 mr-2"></i> สรุปเหรียญรางวัล TOP 10</h3>
             <a href="{{ url('viewall') }}" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white transition">ดูทั้งหมด</a>
         </div>
-        <div class="overflow-x-auto">
+        @include('area._medal-cards', ['mode' => 'district'])
+        <div class="hidden lg:block overflow-x-auto">
             <table class="w-full text-left" id="table1">
                 <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold">
                     <tr>
@@ -397,37 +408,7 @@
     </div>
 </div>
 
-    <div class="bg-white rounded-xl shadow-lg border-t-4 border-green-600 mb-12">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="font-bold text-gray-800"><i class="fas fa-chart-pie mr-2"></i> สถิติการแข่งขัน</h3>
-        </div>
-        <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="p-4 bg-blue-50 rounded-lg text-center border border-blue-100">
-                    <div class="text-blue-500 text-sm font-bold mb-1">นักเรียน</div>
-                    <div class="text-2xl font-extrabold text-blue-700">{{number_format($countstudent)}}</div>
-                </div>
-                <div class="p-4 bg-green-50 rounded-lg text-center border border-green-100">
-                    <div class="text-green-500 text-sm font-bold mb-1">ครู</div>
-                    <div class="text-2xl font-extrabold text-green-700">{{number_format($countteacher)}}</div>
-                </div>
-                <div class="p-4 bg-yellow-50 rounded-lg text-center border border-yellow-100">
-                    <div class="text-yellow-600 text-sm font-bold mb-1">กรรมการตัดสิน</div>
-                    <div class="text-2xl font-extrabold text-yellow-700">{{number_format($countjow)}}</div>
-                </div>
-                <div class="p-4 bg-red-50 rounded-lg text-center border border-red-100">
-                    <div class="text-red-500 text-sm font-bold mb-1">กรรมการดำเนินงาน</div>
-                    <div class="text-2xl font-extrabold text-red-700">{{number_format($countjow2)}}</div>
-                </div>
-            </div>
-
-            <div class="relative h-64 w-full">
-                <canvas id="statChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>   
+    @include('area._stats-panel', ['mode' => 'district'])
 
 <script>
 $(function () {
@@ -447,48 +428,6 @@ $(function () {
     $('#noticeTable1').DataTable(dtConfig);
     $('#noticeTable2').DataTable(dtConfig);
 
-
-    // ----------------------------------------------------
-    // ส่วน Chart.js ของเดิม
-    // ----------------------------------------------------
-    var areaChartData = {
-      labels  : ['นักเรียน', 'ครู', 'กรรมการตัดสิน', 'กรรมการดำเนินงาน'],
-      datasets: [
-        {
-          label               : 'จำนวนคน',
-          backgroundColor     : ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'], // Blue, Green, Yellow, Red
-          data                : [{{$countstudent}}, {{$countteacher}}, {{$countjow}}, {{$countjow2}}], 
-          borderWidth: 5,
-          hoverOffset: 15
-        },
-      ]
-    }
-
-    var barChartCanvas = $('#statChart').get(0).getContext('2d')
-    var barChartOptions = {
-      responsive              : true,
-      maintainAspectRatio     : false,
-      cutoutPercentage        : 40,
-      legend: { 
-        display: true,
-        position: 'right',
-        labels: {
-            fontFamily: 'Sarabun',
-            fontStyle: 'bold',
-            padding: 20
-        }
-      },
-      animation: {
-        animateScale: true,
-        animateRotate: true
-      }
-    }
-
-    new Chart(barChartCanvas, {
-      type: 'doughnut',
-      data: areaChartData,
-      options: barChartOptions
-    })
 })
 </script>
 </div>
