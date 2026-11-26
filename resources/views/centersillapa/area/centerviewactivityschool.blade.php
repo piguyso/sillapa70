@@ -1,4 +1,5 @@
 @extends('layouts.apparea')
+@php $noTieThrough = \App\Services\TransferReadinessService::representativeCount() + 1; @endphp
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sarabun text-slate-800">
@@ -118,7 +119,7 @@
                 <div class="mt-8 p-6 bg-slate-50 rounded-3xl border border-slate-100">
                     <p class="text-[11px] text-red-500 font-black italic mb-6 flex items-start gap-2">
                         <i class="ri-error-warning-line text-lg"></i>
-                        คำเตือน: ต้องกด "บันทึกคะแนน" เพื่อจัดลำดับ (Ranking) ก่อนกดประกาศผลทุกครั้ง ระบบไม่ให้ประกาศผลถ้ายังไม่ได้บันทึกคะแนน | คะแนนเต็ม 100 | ลำดับ 1-4 ห้ามคะแนนเท่ากัน ลำดับ 5 ขึ้นไปเท่ากันได้ (ได้ลำดับเดียวกันแล้วข้ามลำดับ เช่น 5, 5, 7)
+                        คำเตือน: ต้องกด "บันทึกคะแนน" เพื่อจัดลำดับ (Ranking) ก่อนกดประกาศผลทุกครั้ง ระบบไม่ให้ประกาศผลถ้ายังไม่ได้บันทึกคะแนน | คะแนนเต็ม 100 | ตัวแทนเข้าระดับเขตอันดับ 1-{{ $noTieThrough - 1 }} | ลำดับ 1-{{ $noTieThrough }} ห้ามคะแนนเท่ากัน ลำดับ {{ $noTieThrough + 1 }} ขึ้นไปเท่ากันได้ (ได้ลำดับเดียวกันแล้วข้ามลำดับ เช่น {{ $noTieThrough + 1 }}, {{ $noTieThrough + 1 }}, {{ $noTieThrough + 3 }})
                     </p>
 
                     <div class="flex flex-wrap gap-4">
@@ -181,7 +182,7 @@
 
 <script>
     function submitWithConfirm(status) {
-        if (!checkScores(status)) return;
+        if (!checkScores(status, {{ $noTieThrough }})) return;
         let title = '';
         let message = '';
         if (status === '0') {

@@ -9,6 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 class CompetitionScoreService
 {
+    /** ลำดับที่ห้ามคะแนนซ้ำ (1 ถึงค่านี้) ระดับเขตใช้ค่านี้ ระดับเครือข่ายใช้ จำนวนตัวแทน + 1 */
+    public const DEFAULT_NO_TIE_THROUGH = 4;
+
     public function process(
         string $teamModel,
         int $activityId,
@@ -17,6 +20,7 @@ class CompetitionScoreService
         ?int $schoolgroupId = null,
         bool $updateActivityStatus = false,
         bool $allowNoContest = false,
+        int $noTieThrough = self::DEFAULT_NO_TIE_THROUGH,
     ): void {
         if (! in_array($action, $allowNoContest ? [0, 1, 2, 98, 99] : [0, 1, 2], true)) {
             throw ValidationException::withMessages(['activity_chk' => 'สถานะผลการแข่งขันไม่ถูกต้อง']);
@@ -53,7 +57,7 @@ class CompetitionScoreService
 
             arsort($scores, SORT_NUMERIC);
 
-            // ลำดับ 1-4 ห้ามมีคะแนนเท่ากัน (ตัวแทนเครือข่ายส่งต่อลำดับ 1-3 ไปเขต ต้องตัดสินลำดับได้); ลำดับ 5 ขึ้นไปเท่ากันได้และได้ลำดับร่วมแล้วข้ามลำดับ (เช่น 5, 5, 7)
+            // ลำดับ 1 ถึง $noTieThrough ห้ามมีคะแนนเท่ากัน (ระดับเครือข่าย = จำนวนตัวแทน + 1 เพื่อแยกตัวแทนกับทีมถัดไปให้ชัด); ลำดับถัดไปเท่ากันได้และได้ลำดับร่วมแล้วข้ามลำดับ (เช่น 5, 5, 7)
             $format = function (float $score): string {
                 $formatted = rtrim(rtrim(number_format($score, 10, '.', ''), '0'), '.');
 
@@ -70,10 +74,10 @@ class CompetitionScoreService
                 $groups[$key] ??= [$position, 0];
                 $groups[$key][1]++;
             }
-            $duplicateScores = array_keys(array_filter($groups, fn (array $g): bool => $g[1] > 1 && $g[0] <= 4));
+            $duplicateScores = array_keys(array_filter($groups, fn (array $g): bool => $g[1] > 1 && $g[0] <= $noTieThrough));
             if ($duplicateScores !== []) {
                 throw ValidationException::withMessages([
-                    'activity_score' => 'ลำดับที่ 1-4 ห้ามมีคะแนนเท่ากัน กรุณาแก้คะแนนที่ซ้ำ: '.implode(', ', $duplicateScores),
+                    'activity_score' => 'ลำดับที่ 1-'.$noTieThrough.' ห้ามมีคะแนนเท่ากัน กรุณาแก้คะแนนที่ซ้ำ: '.implode(', ', $duplicateScores),
                 ]);
             }
         }

@@ -181,6 +181,7 @@ class areaCentersillapaController extends Controller
                 $this->currentSchoolgroupId(),
                 false,
                 true,
+                \App\Services\TransferReadinessService::representativeCount() + 1,
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
             Session::flash('massage', 'ไม่สามารถบันทึก/ประกาศผลได้: '.collect($e->errors())->flatten()->first());
