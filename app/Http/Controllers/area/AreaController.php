@@ -106,6 +106,16 @@ $activityfinish = $rows->pluck('total', 'activity_subject')->toArray();
     ////////////////////////
     $schoolgroupcount  = DB::table('school_schoolgroup')->select('schoolgroup_id', DB::raw('count(*) as total'))->groupBy('schoolgroup_id')->pluck('total','schoolgroup_id');
 
+    // โรงเรียนในเครือข่ายนี้ พร้อมจำนวนทีมที่ลงทะเบียน (แสดงในหน้าแรกระดับเครือข่าย)
+    $networkSchools = school::inNetwork($id)->orderBy('school_name')->get();
+    $networkSchoolTeams = DB::table('addschools_areas')->where('school_schoolgroup', $id)->where('year', $activeYear)
+        ->select('school_name', DB::raw('count(distinct school_activity) as total'))->groupBy('school_name')->pluck('total', 'school_name');
+    $networkSchoolStudents = DB::table('addstudents_areas')
+        ->join('addschools_areas', 'addschools_areas.id', '=', 'addstudents_areas.school')
+        ->where('addschools_areas.school_schoolgroup', $id)->where('addschools_areas.year', $activeYear)
+        ->where('addstudents_areas.type', 0)
+        ->select('addschools_areas.school_name', DB::raw('count(*) as total'))->groupBy('addschools_areas.school_name')->pluck('total', 'school_name');
+
     $branchactivitycount = DB::table('Activities')
     ->select('activity_branch', DB::raw('count(*) as total'))
     ->where('year', $activeYear)
@@ -171,6 +181,9 @@ $subjectTeamCount = DB::table('addschools_areas')
            'teamCount' => $teamCount, // <--- เพิ่มบรรทัดนี้
            'subjectTeamCount'=>$subjectTeamCount,
            'schoolgroupcount'=>$schoolgroupcount,
+           'networkSchools'=>$networkSchools,
+           'networkSchoolTeams'=>$networkSchoolTeams,
+           'networkSchoolStudents'=>$networkSchoolStudents,
            'schoolgroupactivitycount'=>$schoolgroupactivitycount,
            'selectschool'=>$selectschool,
            'schoolrank'=>$schoolrank,

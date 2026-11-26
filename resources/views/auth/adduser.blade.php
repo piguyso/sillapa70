@@ -86,7 +86,7 @@
                                 <td class="px-6 py-6 text-center font-bold text-gray-300">{{$l->id}}</td>
                                 <td class="px-6 py-6">
                                   <div class="flex items-center gap-3">
-                                    <x-school-logo :school="$l->getschool" :icon="['0' => 'ri-school-line', '1' => 'ri-map-pin-2-line', '5' => 'ri-share-circle-line', '10' => 'ri-shield-user-line'][(string) $l->position] ?? 'ri-user-line'" />
+                                    <x-school-logo :school="$l->getschool" :icon="['0' => 'ri-school-line', '1' => 'ri-map-pin-2-line', '5' => 'ri-community-line', '10' => 'ri-shield-user-line'][(string) $l->position] ?? 'ri-user-line'" />
                                     <div>
                                     <div class="font-black text-gray-800 text-base leading-tight">{{$l->name.' '.$l->lastname}}</div>
                                     <div class="text-xs text-primary font-bold italic mt-1"><i class="ri-mail-line"></i> {{$l->email}}</div>
@@ -204,7 +204,7 @@
                 return {
                     types: [
                         { key: 'school', label: 'โรงเรียน', hint: 'ได้สิทธิ์โรงเรียน', icon: 'ri-school-line' },
-                        { key: 'network', label: 'เครือข่าย', hint: 'ได้สิทธิ์เครือข่าย', icon: 'ri-share-circle-line' },
+                        { key: 'network', label: 'เครือข่าย', hint: 'ได้สิทธิ์เครือข่าย', icon: 'ri-community-line' },
                         { key: 'center', label: 'ศูนย์การแข่งขัน', hint: 'ได้สิทธิ์ศูนย์', icon: 'ri-map-pin-2-line' },
                         { key: 'admin', label: 'ผู้ดูแลระบบ', hint: 'ได้สิทธิ์สูงสุด', icon: 'ri-shield-user-line' },
                     ],

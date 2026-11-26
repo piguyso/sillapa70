@@ -128,7 +128,7 @@
                 @forelse($schoolgroup as $s)
                     <a href="{{url('area/'.$s->id)}}" target="_self" class="flex items-center p-3 rounded-lg hover:bg-green-50 transition border border-transparent hover:border-green-100">
                         <span class="w-8 h-8 rounded-full bg-green-100 text-primary flex items-center justify-center mr-3">
-                            <i class="ri-share-circle-line"></i>
+                            <i class="ri-community-line"></i>
                         </span>
                         <span class="text-gray-700 font-medium group-hover:text-primary"> {{$s->schoolgroup_name}}</span>
                     </a>

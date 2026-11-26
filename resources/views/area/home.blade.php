@@ -145,16 +145,22 @@
             </div>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-slate-800">
-            <div class="bg-amber-900 px-6 py-3 text-white text-xs uppercase text-white">จำนวนโรงเรียนในเครือข่าย</div>
+            <div class="flex items-center justify-between bg-amber-900 px-6 py-3 text-xs text-white">
+                <span class="uppercase">โรงเรียนในเครือข่าย {{ $schoolgroup[0]->schoolgroup_name ?? '' }}</span>
+                <span>{{ $networkSchools->count() }} โรงเรียน · ส่ง {{ $networkSchoolTeams->sum() }} รายการ · นักเรียน {{ $networkSchoolStudents->sum() }} คน</span>
+            </div>
             <div class="overflow-x-auto text-slate-800">
                 <table class="w-full text-xs text-slate-800">
-                    <tbody class="divide-y divide-slate-50 text-slate-600 text-slate-800">
-                        @foreach($schoolgroup as $l)
-                        <tr class="hover:bg-amber-50/30 text-slate-800">
-                            <td class="px-6 py-3 text-slate-800"><a href="{{ url('area/showschool/'.$l->id) }}" class="hover:text-amber-700">{{$l->schoolgroup_name}}</a></td>
-                            <td class="px-6 py-3 text-right text-amber-900 font-black italic text-slate-800">{{$schoolgroupcount[$l->id] ?? 0}} โรงเรียน</td>
+                    <tbody class="divide-y divide-slate-50 text-slate-800">
+                        @forelse($networkSchools->sortBy([[fn ($a, $b) => ($networkSchoolTeams[$b->id] ?? 0) <=> ($networkSchoolTeams[$a->id] ?? 0)], [fn ($a, $b) => ($networkSchoolStudents[$b->id] ?? 0) <=> ($networkSchoolStudents[$a->id] ?? 0)]]) as $sc)
+                        <tr class="hover:bg-amber-50/40">
+                            <td class="px-6 py-3"><a href="{{ url('area/showschooldetail/'.$sc->id.'/0') }}" class="hover:text-amber-700"><x-school-name :id="$sc->id" :name="$sc->school_name" /></a></td>
+                            <td class="whitespace-nowrap px-3 py-3 text-right font-black text-amber-900">{{ $networkSchoolTeams[$sc->id] ?? 0 }} <span class="font-medium text-slate-500">รายการ</span></td>
+                            <td class="whitespace-nowrap px-6 py-3 text-right font-black text-emerald-700">{{ $networkSchoolStudents[$sc->id] ?? 0 }} <span class="font-medium text-slate-500">คน</span></td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr><td class="px-6 py-6 text-center italic text-slate-400">- ไม่พบโรงเรียนในเครือข่าย -</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
