@@ -9,7 +9,7 @@
                 {{ session('app_name')}} {{ session()->get('schoolgroup') }}
             </h2>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase italic text-white leading-none text-white">
-                @if(isset($addschool[0])) <x-school-name :school="$addschool[0]->getschoolname" /> @else รายงานสรุปผลการแข่งขัน @endif
+                @if(isset($addschool[0])) <x-school-name :school="$addschool[0]->getschoolname" size="xl" class="inline-flex items-center gap-3 align-middle md:gap-5" /> @else รายงานสรุปผลการแข่งขัน @endif
             </h1>
             <p class="mt-4 text-orange-100 font-bold italic uppercase tracking-widest text-sm text-white">
                 <i class="ri-pie-chart-2-line mr-1 text-white"></i> สรุปเหรียญรางวัลและอันดับการแข่งขัน ปีการศึกษา {{ session('app_year') }}

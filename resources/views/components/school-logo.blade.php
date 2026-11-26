@@ -1,7 +1,7 @@
 @props(['school' => null, 'id' => null, 'size' => 'md', 'icon' => 'ri-school-line'])
 @php
     // ขนาดวงกลม: sm=24px md=40px lg=64px
-    $dim = ['sm' => 'w-6 h-6 text-xs', 'md' => 'w-10 h-10 text-lg', 'lg' => 'w-16 h-16 text-3xl'][$size] ?? 'w-10 h-10 text-lg';
+    $dim = ['sm' => 'w-6 h-6 text-xs', 'md' => 'w-10 h-10 text-lg', 'lg' => 'w-16 h-16 text-3xl', 'xl' => 'w-16 h-16 md:w-24 md:h-24 text-4xl'][$size] ?? 'w-10 h-10 text-lg';
     $url = $school ? ($school->logo_url ?? null) : school_logo_url_by_id($id);
 @endphp
 @if($url)
