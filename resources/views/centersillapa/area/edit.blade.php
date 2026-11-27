@@ -116,24 +116,6 @@
                                     </span>
                                 @endif
                             </div>
-                             <label for="activity_teamnumber" class="col-md-2 control-label">จำนวนทีมที่เข้ารอบ</label>
-                              <div class="col-md-3">
-                                <select class="form-control" id="activity_teamnumber" name="activity_teamnumber" disabled>
-                                
-                                <option value="999">ไม่จำกัดจำนวน </option>
-                                  @for($i=1;$i<=5;$i++)
-                                  <option value="{{$i}}"@if($activity->activity_teamnumber == $i) selected @endif>{{$i}}</option>
-                      
-                                  @endfor
-
-                                </select>
-
-                                  @if ($errors->has('activity_teamnumber'))
-                                      <span class="help-block">
-                                          <strong>{{ $errors->first('activity_teamnumber') }}</strong>
-                                      </span>
-                                  @endif
-                              </div>
                             
 
                         </div>

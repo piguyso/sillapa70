@@ -103,15 +103,15 @@ class AddschoolController extends Controller
 
         $chkschool = addschool::where('school','=',$request->school_name)->where('school_activity','=',$request->school_activity)->count();
         $numschool = $activity->activity_schoolteamnumber;
-        $activityteamnumber = $activity->activity_teamnumber;
         //dd($numschool);
         if($chkschool >= $numschool){
             Session::flash('massage','จำนวนทีมต่อโรงเรียนเกินที่กำหนด !!');
             return redirect(url()->previous());
         }
         $chktotelschool = addschool::where('school_activity','=',$request->school_activity)->where('school_schoolgroup','=',$request->school_schoolgroup)->count();
-        if($chktotelschool>=$activityteamnumber){
-            Session::flash('massage','จำนวนทีมต่อรายการสามารถลงได้แค่ '.$activityteamnumber.' ทีม !!');
+        $representatives = \App\Services\TransferReadinessService::representativeCount();
+        if($chktotelschool>=$representatives){
+            Session::flash('massage','เครือข่ายนี้ส่งตัวแทนเข้าระดับเขตได้แค่ '.$representatives.' ทีมต่อรายการ !!');
             return redirect(url()->previous());
         }
 

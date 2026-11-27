@@ -93,7 +93,7 @@ class ActivityController extends Controller
       $activity->activity_class = $request->activity_class;
       $activity->activity_studennumber = $request->activity_studennumber;
       $activity->activity_teachernumber = $request->activity_teachernumber;
-      $activity->activity_teamnumber = $request->activity_teamnumber;
+      $activity->activity_teamnumber = 999; // ไม่ใช้จำกัดอีกแล้ว (จำนวนตัวแทนเข้าระดับเขตตั้งที่หน้า config)
       $activity->activity_schoolteamnumber = $request->activity_schoolteamnumber;
       $activity->activity_score = $request->activity_score;
       $activity->activity_branch = $request->activity_branch;
@@ -167,7 +167,6 @@ class ActivityController extends Controller
         $activity->activity_class = $request->activity_class;
         $activity->activity_studennumber = $request->activity_studennumber;
         $activity->activity_teachernumber = $request->activity_teachernumber;
-        $activity->activity_teamnumber = $request->activity_teamnumber;
         $activity->activity_schoolteamnumber = $request->activity_schoolteamnumber;
         $activity->activity_branch = $request->activity_branch;
         $activity->activity_branchroom = $request->activity_branchroom;

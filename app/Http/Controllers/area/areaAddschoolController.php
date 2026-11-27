@@ -130,17 +130,12 @@ class areaAddschoolController extends Controller
 //dd($request);
         $chkschool = addschools_areas::where('school','=',$request->school_name)->where('school_activity','=',$request->school_activity)->count();
         $numschool = $activity->activity_schoolteamnumber;
-        $activityteamnumber = $activity->activity_teamnumber;
         //dd($numschool);
         if($chkschool >= $numschool){
             Session::flash('massage','จำนวนทีมต่อโรงเรียนเกินที่กำหนด !!');
             return redirect(url()->previous());
         }
-        $chktotelschool = addschools_areas::where('school_activity','=',$request->school_activity)->where('school_schoolgroup','=',$this->registrationGroupId())->count();
-        if($chktotelschool>=$activityteamnumber){
-            Session::flash('massage','จำนวนทีมต่อรายการสามารถลงได้แค่ '.$activityteamnumber.' ทีม !!');
-            return redirect(url()->previous());
-        }
+        // ระดับเครือข่ายไม่จำกัดจำนวนทีมต่อรายการ (ตัวแทนเข้าระดับเขตกำหนดจากหน้า config)
 
 
         $addschool  = new addschools_areas;

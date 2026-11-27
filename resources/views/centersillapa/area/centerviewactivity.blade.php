@@ -67,7 +67,6 @@
                                                   จำนวนนักเรียน : {{$l->activity_studennumber}} คน<br>
                                                   จำนวนครูที่เข้าร่วม : {{$l->activity_teachernumber}} คน<br>
                                                   จำนวนทีมต่อโรงเรียน : {{$l->activity_schoolteamnumber}} ทีม<br>
-                                                  จำนวนทีมที่เข้ารอบ : {{$l->activity_teamnumber}} ทีม<br>
                                                   คะแนน : {{$l->activity_score}} คะแนน<br>
                                                   สถานที่ : {{$l->activity_branchroom}}<br>
                                                   วันที่แข่งขัน : {{Datethai($l->activity_day)}}<br>

@@ -78,16 +78,6 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-xs font-black text-gray-500 uppercase tracking-widest italic">จำนวนทีมที่เข้ารอบ</label>
-                        <select name="activity_teamnumber" class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl font-bold text-gray-700 shadow-inner">
-                            <option value="999">ไม่จำกัดจำนวน</option>
-                            @for($i=1;$i<=5;$i++)
-                                <option value="{{$i}}" @if($activity->activity_teamnumber == $i) selected @endif>{{$i}} ทีม</option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
                         <label class="block text-xs font-black text-gray-500 uppercase tracking-widest italic">จำนวนทีมต่อโรงเรียน</label>
                         <select name="activity_schoolteamnumber" class="block w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl font-bold text-gray-700 shadow-inner">
                             <option value="999">ไม่จำกัดจำนวน</option>

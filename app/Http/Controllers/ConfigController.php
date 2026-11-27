@@ -403,7 +403,7 @@ class ConfigController extends Controller
                         'activity_class'            => $act->activity_class,
                         'activity_studennumber'     => $act->activity_studennumber,
                         'activity_teachernumber'    => $act->activity_teachernumber,
-                        'activity_teamnumber'       => $act->activity_teamnumber,
+                        'activity_teamnumber'       => 999,
                         'activity_schoolteamnumber' => $act->activity_schoolteamnumber,
                         'activity_score'            => $act->activity_score,
                         'activity_branch'           => $newBranchId,

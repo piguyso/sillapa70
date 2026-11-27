@@ -62,16 +62,6 @@
                         @endfor
                     </select>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">จำนวนทีมที่เข้ารอบ</label>
-                    <select disabled class="w-full bg-gray-50 border border-gray-200 text-gray-500 rounded-xl px-4 py-3 cursor-not-allowed appearance-none">
-                        <option value="999">ไม่จำกัดจำนวน</option>
-                        @for($i=1;$i<=5;$i++)
-                            <option value="{{$i}}" @if($activity->activity_teamnumber == $i) selected @endif>{{$i}}</option>
-                        @endfor
-                    </select>
-                </div>
             </div>
 
             <hr class="border-gray-100">
